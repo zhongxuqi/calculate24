@@ -10,10 +10,18 @@ cocos2d::Layer* BgMain::create(float width, float height) {
     auto layer = LayerColor::create(Color4B(50, 54, 66, 255));
     layer->setContentSize(CCSizeMake(width, height));
     
-    auto block1 = LayerColor::create(Colors::NumberColors[0]);
-    block1->setContentSize(CCSizeMake(width / PROP_BLOCK_SIZE, width / PROP_BLOCK_SIZE));
-    block1->setPosition(width / 2, height / 2);
-    layer->addChild(block1);
+    for (int i=0;i<14;i++) {
+        auto color = Colors::NumberColors[i];
+        color.a = 80;
+        auto block = LayerColor::create(color);
+        block->setContentSize(CCSizeMake(width / PROP_BLOCK_SIZE, width / PROP_BLOCK_SIZE));
+        block->setPosition(width * RandomHelper::random_real(0.0, 1.0), height * RandomHelper::random_real(0.0, 1.0));
+        block->setRotation(360 * RandomHelper::random_real(0.0, 1.0));
+        block->setAnchorPoint(Vec2(0.5, 0.5));
+        layer->addChild(block);
+        auto rotateAction = RepeatForever::create(RotateBy::create(4, 360));
+        block->runAction(rotateAction);
+    }
 
     return layer;
 }

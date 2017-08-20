@@ -15,6 +15,8 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
+
+    void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
 };
 
 #endif
