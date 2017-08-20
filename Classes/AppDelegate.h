@@ -12,8 +12,6 @@ class  AppDelegate : private cocos2d::Application
 {
     
 public:
-    cocos2d::Size frameSize;
-
     AppDelegate();
     virtual ~AppDelegate();
 

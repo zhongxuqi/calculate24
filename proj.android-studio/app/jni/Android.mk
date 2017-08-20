@@ -14,6 +14,7 @@ LOCAL_MODULE_FILENAME := libMyGame
 FILE_LIST := $(LOCAL_PATH)/hellocpp/main.cpp
 FILE_LIST += $(wildcard $(LOCAL_PATH)/../../../Classes/*.cpp)
 FILE_LIST += $(wildcard $(LOCAL_PATH)/../../../Classes/*/*.cpp)
+FILE_LIST += $(wildcard $(LOCAL_PATH)/../../../Classes/*/*/*.cpp)
 LOCAL_SRC_FILES := $(FILE_LIST:$(LOCAL_PATH)/%=%)
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes

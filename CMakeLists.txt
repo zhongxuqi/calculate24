@@ -125,19 +125,19 @@ if ( WIN32 )
 )
 endif( WIN32 )
 
+file(GLOB MY_GAME_SRC Classes/*/*.cpp Classes/*/*/*.cpp)
+
 set(GAME_SRC
   Classes/AppDelegate.cpp
-  Classes/HelloWorldScene.cpp
-  Classes/MainScene/scene.cpp
-  Classes/base/Screen.cpp
+  $(MY_GAME_SRC)
   ${PLATFORM_SPECIFIC_SRC}
 )
 
+file(GLOB MY_GAME_HEADERS Classes/*/*.h Classes/*/*/*.h)
+
 set(GAME_HEADERS
   Classes/AppDelegate.h
-  Classes/HelloWorldScene.h
-  Classes/MainScene/scene.h
-  Classes/base/Screen.h
+  $(MY_GAME_HEADERS)
   ${PLATFORM_SPECIFIC_HEADERS}
 )
 

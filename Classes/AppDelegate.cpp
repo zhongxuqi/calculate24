@@ -1,7 +1,5 @@
 #include "AppDelegate.h"
-#include "HelloWorldScene.h"
-#include "MainScene/scene.h"
-#include "base/Screen.h"
+#include "scenes/MainScene.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -71,9 +69,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setAnimationInterval(1.0f / 60);
 
     // Set the design resolution
-    auto screen = Screen::GetInstance();
-    screen->VisibleSize = glview->getFrameSize();
-    glview->setDesignResolutionSize(screen->VisibleSize.width, screen->VisibleSize.height, ResolutionPolicy::NO_BORDER);
+    auto frameSize = glview->getFrameSize();
+    glview->setDesignResolutionSize(frameSize.width, frameSize.height, ResolutionPolicy::NO_BORDER);
 
     register_all_packages();
 
