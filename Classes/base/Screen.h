@@ -11,7 +11,7 @@ protected:
     static Screen *instance;
 
 public:
-    cocos2d::Size FrameSize;
+    cocos2d::Size VisibleSize;
 
     static Screen* GetInstance();
 };

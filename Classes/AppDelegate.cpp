@@ -72,8 +72,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     // Set the design resolution
     auto screen = Screen::GetInstance();
-    screen->FrameSize = glview->getFrameSize();
-    // glview->setDesignResolutionSize(screen->FrameSize.width, screen->FrameSize.height, ResolutionPolicy::NO_BORDER);
+    screen->VisibleSize = glview->getFrameSize();
+    glview->setDesignResolutionSize(screen->VisibleSize.width, screen->VisibleSize.height, ResolutionPolicy::NO_BORDER);
 
     register_all_packages();
 
