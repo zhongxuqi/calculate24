@@ -1,6 +1,7 @@
 #include "SimpleAudioEngine.h"
 #include "MainScene.h"
 #include "../components/background/BgMain.h"
+#include "../components/personal_info/PersonalInfo.h"
 
 USING_NS_CC;
 
@@ -26,6 +27,12 @@ bool MainScene::init() {
     auto LayerBgMain = BgMain::create(visibleSize.width, visibleSize.height);
     LayerBgMain->setPosition(origin);
     this->addChild(LayerBgMain, 0);
+
+    // 添加个人信息
+    auto personalInfo = PersonalInfo::create(visibleSize.width / 3, visibleSize.height / 15);
+    auto personalInfoSize = personalInfo->ContentLayer->getContentSize();
+    personalInfo->ContentLayer->setPosition(origin.x + 20, origin.y + visibleSize.height - personalInfoSize.height - 20);
+    this->addChild(personalInfo->ContentLayer, 0);
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
