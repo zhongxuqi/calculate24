@@ -2,8 +2,9 @@
 #define __MAIN_SCENE_H__
 
 #include "cocos2d.h"
+#include "Base.h"
 
-class PersonalInfo {
+class PersonalInfo : public BaseComponent {
 public:
     PersonalInfo();
     cocos2d::Layer* const ContentLayer;

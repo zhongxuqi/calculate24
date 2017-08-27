@@ -5,7 +5,7 @@
 USING_NS_CC;
 using namespace cocos2d::extension;
 
-ScoreBar::ScoreBar(): RootLayer(LayerColor::create()), ContentLayer(LayerColor::create()) {
+ScoreBar::ScoreBar(): ContentLayer(LayerColor::create()) {
     
 }
 
@@ -29,7 +29,7 @@ ScoreBar* ScoreBar::create(float width, float height) {
     scoreBar->RootLayer->addChild(starImg, 1);
 
     // add content layer
-    scoreBar->ContentLayer->setContentSize(Size(width - starImg->getContentSize().width * height/starImg->getContentSize().height / 2, height * 0.8));
+    scoreBar->ContentLayer->setContentSize(Size(width - starImg->getContentSize().width * height/starImg->getContentSize().height / 2, height * 0.7));
     scoreBar->ContentLayer->ignoreAnchorPointForPosition(false);
     auto bgScoreBar = Scale9Sprite::create("BgScoreBar.png", Rect(0, 0, 39, 28), Rect(6, 6, 27, 16));
     bgScoreBar->setContentSize(scoreBar->ContentLayer->getContentSize());
