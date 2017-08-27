@@ -1,7 +1,8 @@
 #include "SimpleAudioEngine.h"
 #include "MainScene.h"
-#include "../components/background/BgMain.h"
-#include "../components/personal_info/PersonalInfo.h"
+#include "../components/BgMain.h"
+#include "../components/PersonalInfo.h"
+#include "../components/ScoreBar.h"
 
 USING_NS_CC;
 
@@ -29,10 +30,18 @@ bool MainScene::init() {
     this->addChild(LayerBgMain, 0);
 
     // 添加个人信息
-    auto personalInfo = PersonalInfo::create(visibleSize.width / 3, visibleSize.height / 15);
+    auto personalInfo = PersonalInfo::create(visibleSize.width * 0.4, visibleSize.height / 18);
     auto personalInfoSize = personalInfo->ContentLayer->getContentSize();
-    personalInfo->ContentLayer->setPosition(origin.x + 20, origin.y + visibleSize.height - personalInfoSize.height - 20);
+    personalInfo->ContentLayer->setAnchorPoint(Point(0, 1));
+    personalInfo->ContentLayer->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
     this->addChild(personalInfo->ContentLayer, 0);
+
+    // 添加个人纪录
+    auto scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
+    auto scoreBarSize = scoreBar->RootLayer->getContentSize();
+    scoreBar->RootLayer->setAnchorPoint(Point(1, 1));
+    scoreBar->RootLayer->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(scoreBar->RootLayer, 0);
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
