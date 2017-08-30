@@ -1,0 +1,14 @@
+#ifndef __BTN_NORMAL_MODE_H__
+#define __BTN_NORMAL_MODE_H__
+
+#include "cocos2d.h"
+#include "Base.h"
+
+class BtnNormalMode: public BaseComponent {
+public:
+    BtnNormalMode();
+
+    static BtnNormalMode* create(float width, float height);
+};
+
+#endif

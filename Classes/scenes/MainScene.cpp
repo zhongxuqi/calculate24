@@ -3,6 +3,7 @@
 #include "../components/BgMain.h"
 #include "../components/PersonalInfo.h"
 #include "../components/ScoreBar.h"
+#include "../components/BtnNormalMode.h"
 
 USING_NS_CC;
 
@@ -42,6 +43,13 @@ bool MainScene::init() {
     scoreBar->GetRootLayer()->setAnchorPoint(Point(1, 1));
     scoreBar->GetRootLayer()->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
     this->addChild(scoreBar->GetRootLayer(), 0);
+
+    // add normal mode btn
+    auto btnNormalMode = BtnNormalMode::create(visibleSize.width -40, visibleSize.height * 0.3);
+    auto btnNormalModeSize = btnNormalMode->GetRootLayer()->getContentSize();
+    btnNormalMode->GetRootLayer()->setAnchorPoint(Point(0.5, 0));
+    btnNormalMode->GetRootLayer()->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.3 + 40);
+    this->addChild(btnNormalMode->GetRootLayer(), 0);
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
