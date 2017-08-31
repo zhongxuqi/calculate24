@@ -3,8 +3,12 @@
 
 #include "cocos2d.h"
 #include "Base.h"
+#include "ui/CocosGUI.h"
 
 class BtnNormalMode: public BaseComponent {
+protected:
+    cocos2d::ui::Button* button;
+
 public:
     BtnNormalMode();
 

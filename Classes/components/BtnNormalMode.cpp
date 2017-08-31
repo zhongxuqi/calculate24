@@ -5,28 +5,37 @@
 USING_NS_CC;
 using namespace cocos2d::extension;
 
-BtnNormalMode::BtnNormalMode() {
+BtnNormalMode::BtnNormalMode(): BaseComponent(LayerColor::create()) {
     
 }
 
 BtnNormalMode* BtnNormalMode::create(float width, float height) {
     auto btnNormalMode = new BtnNormalMode();
-    btnNormalMode->RootLayer->setContentSize(Size(width, height));
-    btnNormalMode->RootLayer->ignoreAnchorPointForPosition(false);
-    auto btnSize = btnNormalMode->RootLayer->getContentSize();
+    btnNormalMode->RootNode->setContentSize(Size(width, height));
+    btnNormalMode->RootNode->ignoreAnchorPointForPosition(false);
+    auto btnSize = btnNormalMode->RootNode->getContentSize();
 
-    // add sprite
-    auto btnBg = Scale9Sprite::create("BgNormalMode.png", Rect(0, 0, 162, 123));
-    btnBg->setContentSize(btnNormalMode->RootLayer->getContentSize());
-    btnBg->setAnchorPoint(Point(0, 0));
-    btnNormalMode->RootLayer->addChild(btnBg, 0);
+    // add Button
+    btnNormalMode->button = ui::Button::create("res/BgNormalModeBtn.png", "res/BgNormalModeBtn_Pressed.png");
+    btnNormalMode->button->setScale9Enabled(true);
+    btnNormalMode->button->setContentSize(btnSize);
+    btnNormalMode->button->setAnchorPoint(Point(0, 0));
+    btnNormalMode->button->setPosition(Point(0, 0));
+    btnNormalMode->RootNode->addChild(btnNormalMode->button, 0);
 
     // add label
-    auto btnText = Label::createWithTTF("Normal Mode", "default_font.ttf", 30);
+    auto btnText = Label::createWithTTF("Normal Mode", "fonts/arial.ttf", 60);
     btnText->setAnchorPoint(Point(0.5, 1));
     btnText->setPosition(Point(btnSize.width / 2, btnSize.height - 20));
     btnText->setTextColor(Color4B::WHITE);
-    btnNormalMode->RootLayer->addChild(btnText, 0);
+    btnNormalMode->button->addChild(btnText, 0);
+
+    // add icon
+    auto btnIcon = Sprite::create("res/Star_White.png");
+    btnIcon->setAnchorPoint(Point(0.5, 0));
+    btnIcon->setScale(0.8 * (btnNormalMode->button->getContentSize().height - btnText->getContentSize().height - 40) / btnIcon->getContentSize().height);
+    btnIcon->setPosition(Point(btnSize.width / 2, 20));
+    btnNormalMode->button->addChild(btnIcon, 0);
 
     return btnNormalMode;
 }

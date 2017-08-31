@@ -3,10 +3,10 @@
 
 USING_NS_CC;
 
-BaseComponent::BaseComponent(): RootLayer(LayerColor::create()) {
+BaseComponent::BaseComponent(Node* node): RootNode(node) {
     
 }
 
-Layer* BaseComponent::GetRootLayer() {
-    return this->RootLayer;
+Node* BaseComponent::GetRootNode() {
+    return this->RootNode;
 }

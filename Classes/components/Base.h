@@ -5,11 +5,11 @@
 
 class BaseComponent {
 protected:
-    BaseComponent();
-    cocos2d::Layer* const RootLayer;
+    BaseComponent(cocos2d::Node* node);
+    cocos2d::Node* const RootNode;
 
 public:
-    cocos2d::Layer* GetRootLayer();
+    cocos2d::Node* GetRootNode();
 };
 
 #endif
