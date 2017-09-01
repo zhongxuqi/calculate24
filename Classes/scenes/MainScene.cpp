@@ -4,6 +4,7 @@
 #include "../components/PersonalInfo.h"
 #include "../components/ScoreBar.h"
 #include "../components/BtnNormalMode.h"
+#include "../components/BtnOnlineBattle.h"
 
 USING_NS_CC;
 
@@ -50,6 +51,13 @@ bool MainScene::init() {
     btnNormalMode->GetRootNode()->setAnchorPoint(Point(0.5, 0));
     btnNormalMode->GetRootNode()->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.3 + 60);
     this->addChild(btnNormalMode->GetRootNode(), 0);
+
+    // add online battle btn
+    auto btnOnlineBattle = BtnOnlineBattle::create(visibleSize.width - 40, visibleSize.height * 0.3);
+    auto btnOnlineBattleSize = btnOnlineBattle->GetRootNode()->getContentSize();
+    btnOnlineBattle->GetRootNode()->setAnchorPoint(Point(0.5, 0));
+    btnOnlineBattle->GetRootNode()->setPosition(origin.x + visibleSize.width / 2, origin.y + 30);
+    this->addChild(btnOnlineBattle->GetRootNode(), 0);
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
