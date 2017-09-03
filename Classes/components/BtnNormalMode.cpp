@@ -1,9 +1,9 @@
 #include "SimpleAudioEngine.h"
 #include "BtnNormalMode.h"
-#include "cocos-ext.h"
 
 USING_NS_CC;
 using namespace cocos2d::extension;
+using namespace ui;
 
 BtnNormalMode::BtnNormalMode(): BaseComponent(LayerColor::create()) {
     
@@ -38,4 +38,8 @@ BtnNormalMode* BtnNormalMode::create(float width, float height) {
     btnNormalMode->button->addChild(btnIcon, 0);
 
     return btnNormalMode;
+}
+
+void BtnNormalMode::SetOnClickListener(std::function<void(Ref*)> clickListener) {
+    this->button->addClickEventListener(clickListener);
 }

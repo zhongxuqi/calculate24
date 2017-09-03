@@ -1,5 +1,5 @@
 #ifndef __PERSONAL_INFO_H__
-#define __MAIN_SCENE_H__
+#define __PERSONAL_INFO_H__
 
 #include "cocos2d.h"
 #include "Base.h"

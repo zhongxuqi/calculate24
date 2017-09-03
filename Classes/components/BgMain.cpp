@@ -7,7 +7,7 @@ USING_NS_CC;
 const float PROP_BLOCK_SIZE = 15.0;
 
 cocos2d::Layer* BgMain::create(float width, float height) {
-    auto layer = LayerColor::create(Color4B(38, 50, 56, 255));
+    auto layer = LayerColor::create(Colors::BgColor);
     layer->setContentSize(CCSizeMake(width, height));
     
     for (int i=0;i<14;i++) {

@@ -5,6 +5,7 @@
 #include "../components/ScoreBar.h"
 #include "../components/BtnNormalMode.h"
 #include "../components/BtnOnlineBattle.h"
+#include "SingleGameScene.h"
 
 USING_NS_CC;
 
@@ -18,7 +19,7 @@ bool MainScene::init() {
         return false;
     }
 
-    // 添加事件
+    // add event
     auto listener = EventListenerKeyboard::create();
     listener->onKeyReleased = CC_CALLBACK_2(MainScene::onKeyReleased, this);
     this->_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
@@ -26,19 +27,19 @@ bool MainScene::init() {
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-    // 添加背景
+    // add background
     auto LayerBgMain = BgMain::create(visibleSize.width, visibleSize.height);
     LayerBgMain->setPosition(origin);
     this->addChild(LayerBgMain, 0);
 
-    // 添加个人信息
+    // add user info
     auto personalInfo = PersonalInfo::create(visibleSize.width * 0.35, visibleSize.height / 18);
     auto personalInfoSize = personalInfo->GetRootNode()->getContentSize();
     personalInfo->GetRootNode()->setAnchorPoint(Point(0, 1));
     personalInfo->GetRootNode()->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
     this->addChild(personalInfo->GetRootNode(), 0);
 
-    // 添加个人纪录
+    // add user score
     auto scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
     auto scoreBarSize = scoreBar->GetRootNode()->getContentSize();
     scoreBar->GetRootNode()->setAnchorPoint(Point(1, 1));
@@ -51,6 +52,9 @@ bool MainScene::init() {
     btnNormalMode->GetRootNode()->setAnchorPoint(Point(0.5, 0));
     btnNormalMode->GetRootNode()->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.3 + 60);
     this->addChild(btnNormalMode->GetRootNode(), 0);
+    btnNormalMode->SetOnClickListener([](Ref* pRef) {
+        Director::getInstance()->pushScene(SingleGameScene::create());
+    });
 
     // add online battle btn
     auto btnOnlineBattle = BtnOnlineBattle::create(visibleSize.width - 40, visibleSize.height * 0.3);
