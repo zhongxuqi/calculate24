@@ -4,6 +4,8 @@
 
 USING_NS_CC;
 
+Color4B Colors::Transparent = Color4B(0, 0, 0, 0);
+Color4B Colors::White = Color4B(255, 255, 255, 255);
 Color4B Colors::BgColor = Color4B(38, 50, 56, 255);
 Color4B Colors::OutNumberColor = Color4B(169,169,169, 255);
 

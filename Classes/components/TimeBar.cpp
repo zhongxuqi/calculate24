@@ -29,7 +29,7 @@ TimeBar* TimeBar::create(float width, float height) {
     loadingBar->setScale9Enabled(true);
     loadingBar->setCapInsets(Rect(20, 8, 63, 4));
     loadingBar->setAnchorPoint(Point(0, 0.5));
-    loadingBar->setContentSize(Size(width - height - 40, height / 2));
+    loadingBar->setContentSize(Size(width - height - 20, height / 2));
     loadingBar->setPosition(Point(height + 20, height / 2));
     timeBar->GetRootNode()->addChild(loadingBar, 0);
 

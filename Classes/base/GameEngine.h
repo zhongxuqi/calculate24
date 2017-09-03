@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 
+const int SELECTED_MAX = 4;
 const int NUMBER_MAX = 13;
 const int MATRIX_WIDTH = 8;
 const int MATRIX_HEIGHT = 10;

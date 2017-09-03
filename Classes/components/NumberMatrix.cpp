@@ -6,27 +6,110 @@ USING_NS_CC;
 
 GameEngine* const gameEngine = GameEngine::Instance;
 
-NumberMatrix::NumberMatrix(): BaseComponent(LayerColor::create()) {
+NumberMatrix::NumberMatrix() {
     gameEngine->InitNumberMatrix();
+    this->selectedLen = 0;
 }
 
 NumberMatrix* NumberMatrix::create(float width, float height) {
     auto numberMatrix = new NumberMatrix();
-    numberMatrix->RootNode->setContentSize(Size(width, height));
-    numberMatrix->RootNode->ignoreAnchorPointForPosition(false);
+    numberMatrix->setContentSize(Size(width, height));
+    numberMatrix->ignoreAnchorPointForPosition(false);
 
-    auto numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * width / MATRIX_WIDTH;
-    auto numberBlockInterval = 0.02 * width;
+    numberMatrix->numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * width / MATRIX_WIDTH;
+    numberMatrix->numberBlockInterval = 0.02 * width;
     for (int h=0;h<MATRIX_HEIGHT;h++) {
         for (int w=0;w<MATRIX_WIDTH;w++) {
-            auto numberBlock = NumberBlock::create(numberBlockSize, gameEngine->GetNumber(w, h));
+            auto numberBlock = NumberBlock::create(numberMatrix->numberBlockSize, gameEngine->GetNumber(w, h));
             numberMatrix->numberNodeMatrix[h][w] = numberBlock;
 
             // add number block
             numberBlock->GetRootNode()->setAnchorPoint(Point(0, 0));
-            numberBlock->GetRootNode()->setPosition(w * (numberBlockInterval + numberBlockSize), h * (numberBlockInterval + numberBlockSize));
-            numberMatrix->RootNode->addChild(numberBlock->GetRootNode(), 0);
+            numberBlock->GetRootNode()->setPosition(w * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize), \
+                h * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize));
+            numberMatrix->addChild(numberBlock->GetRootNode(), 0);
         }
     }
+
+    // add touch listener
+    numberMatrix->eventListener = EventListenerTouchOneByOne::create();
+    numberMatrix->eventListener->onTouchBegan = CC_CALLBACK_2(NumberMatrix::onTouchBegan, numberMatrix);
+    numberMatrix->eventListener->onTouchMoved = CC_CALLBACK_2(NumberMatrix::onTouchMoved, numberMatrix);
+    numberMatrix->eventListener->onTouchEnded = CC_CALLBACK_2(NumberMatrix::onTouchEnded, numberMatrix);
+    numberMatrix->eventListener->setSwallowTouches(true);
+
     return numberMatrix;
+}
+
+bool NumberMatrix::onTouchBegan(Touch *touch, Event *unused_event) {
+    this->handleTouch(touch);
+    return true;
+}
+
+void NumberMatrix::onTouchMoved(Touch *touch, Event *unused_event) {
+    this->handleTouch(touch);
+}
+
+void NumberMatrix::onTouchEnded(Touch *touch, Event *unused_event) {
+    this->handleSelectBlock();
+}
+
+void NumberMatrix::handleTouch(Touch *touch) {
+    int selectedLen = this->selectedLen;
+    if (selectedLen >= SELECTED_MAX) {
+        return;
+    }
+    float locationX = touch->getLocation().x - (this->getPosition().x - this->getAnchorPoint().x * this->getContentSize().width);
+    float locationY = touch->getLocation().y - (this->getPosition().y - this->getAnchorPoint().y * this->getContentSize().height);
+    int w = (int)(locationX / (this->numberBlockSize + this->numberBlockInterval));
+    int h = (int)(locationY / (this->numberBlockSize + this->numberBlockInterval));
+    if (!this->numberNodeMatrix[h][w]->IsActive() && w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT) {
+
+        // check the block is continuous
+        if (selectedLen > 0) {
+            auto isLegel = false;
+            for (int i=0;i<selectedLen;i++) {
+                if (abs(this->selectedBlockIndexes[i][0] - w) + abs(this->selectedBlockIndexes[i][1] - h) <= 1) {
+                    isLegel = true;
+                    break;
+                }
+            }
+            if (!isLegel) {
+                return;
+            }
+        }
+        this->selectedLen = selectedLen + 1;
+
+        this->selectedNumberBlocks[selectedLen] = this->numberNodeMatrix[h][w];
+        this->selectedBlockIndexes[selectedLen][0] = w;
+        this->selectedBlockIndexes[selectedLen][1] = h;
+        this->numberNodeMatrix[h][w]->SetActiveState(true);
+    }
+}
+
+void NumberMatrix::setTouchable(bool isTouchable) {
+    if (isTouchable) {
+        this->_eventDispatcher->addEventListenerWithSceneGraphPriority(this->eventListener, this);
+    } else {
+        this->_eventDispatcher->removeEventListener(this->eventListener);
+    }
+}
+
+void NumberMatrix::handleSelectBlock() {
+    this->cancelSelectBlock();
+}
+
+void NumberMatrix::cancelSelectBlock() {
+    if (this->selectListener != NULL) {
+        this->selectListener();
+    }
+    int selectedLen = this->selectedLen;
+    for (int i=0;i<selectedLen;i++) {
+        this->selectedNumberBlocks[i]->SetActiveState(false);
+    }
+    this->selectedLen = 0;
+}
+
+void NumberMatrix::SetOnSelectListener(std::function<void(void)> listener) {
+    this->selectListener = listener;
 }
