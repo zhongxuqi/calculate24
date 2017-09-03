@@ -34,34 +34,34 @@ bool MainScene::init() {
 
     // add user info
     auto personalInfo = PersonalInfo::create(visibleSize.width * 0.35, visibleSize.height / 18);
-    auto personalInfoSize = personalInfo->GetRootNode()->getContentSize();
-    personalInfo->GetRootNode()->setAnchorPoint(Point(0, 1));
-    personalInfo->GetRootNode()->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
-    this->addChild(personalInfo->GetRootNode(), 0);
+    auto personalInfoSize = personalInfo->getContentSize();
+    personalInfo->setAnchorPoint(Point(0, 1));
+    personalInfo->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
+    this->addChild(personalInfo, 0);
 
     // add user score
     auto scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto scoreBarSize = scoreBar->GetRootNode()->getContentSize();
-    scoreBar->GetRootNode()->setAnchorPoint(Point(1, 1));
-    scoreBar->GetRootNode()->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
-    this->addChild(scoreBar->GetRootNode(), 0);
+    auto scoreBarSize = scoreBar->getContentSize();
+    scoreBar->setAnchorPoint(Point(1, 1));
+    scoreBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(scoreBar, 0);
 
     // add normal mode btn
     auto btnNormalMode = BtnNormalMode::create(visibleSize.width - 40, visibleSize.height * 0.3);
-    auto btnNormalModeSize = btnNormalMode->GetRootNode()->getContentSize();
-    btnNormalMode->GetRootNode()->setAnchorPoint(Point(0.5, 0));
-    btnNormalMode->GetRootNode()->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.3 + 60);
-    this->addChild(btnNormalMode->GetRootNode(), 0);
+    auto btnNormalModeSize = btnNormalMode->getContentSize();
+    btnNormalMode->setAnchorPoint(Point(0.5, 0));
+    btnNormalMode->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.3 + 60);
+    this->addChild(btnNormalMode, 0);
     btnNormalMode->SetOnClickListener([](Ref* pRef) {
         Director::getInstance()->pushScene(SingleGameScene::create());
     });
 
     // add online battle btn
     auto btnOnlineBattle = BtnOnlineBattle::create(visibleSize.width - 40, visibleSize.height * 0.3);
-    auto btnOnlineBattleSize = btnOnlineBattle->GetRootNode()->getContentSize();
-    btnOnlineBattle->GetRootNode()->setAnchorPoint(Point(0.5, 0));
-    btnOnlineBattle->GetRootNode()->setPosition(origin.x + visibleSize.width / 2, origin.y + 30);
-    this->addChild(btnOnlineBattle->GetRootNode(), 0);
+    auto btnOnlineBattleSize = btnOnlineBattle->getContentSize();
+    btnOnlineBattle->setAnchorPoint(Point(0.5, 0));
+    btnOnlineBattle->setPosition(origin.x + visibleSize.width / 2, origin.y + 30);
+    this->addChild(btnOnlineBattle, 0);
 }
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {

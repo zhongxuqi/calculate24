@@ -2,11 +2,10 @@
 #define __BTN_NORMAL_MODE_H__
 
 #include "cocos2d.h"
-#include "Base.h"
 #include "ui/CocosGUI.h"
 #include "cocos-ext.h"
 
-class BtnNormalMode: public BaseComponent {
+class BtnNormalMode: public cocos2d::Layer {
 protected:
     cocos2d::ui::Button* button;
 

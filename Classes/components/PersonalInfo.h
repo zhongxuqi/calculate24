@@ -2,9 +2,8 @@
 #define __PERSONAL_INFO_H__
 
 #include "cocos2d.h"
-#include "Base.h"
 
-class PersonalInfo : public BaseComponent {
+class PersonalInfo : public cocos2d::Layer {
 public:
     PersonalInfo();
     cocos2d::Layer* const ContentLayer;

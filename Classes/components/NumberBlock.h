@@ -2,9 +2,8 @@
 #define __NUMBER_BLOCK_H__
 
 #include "cocos2d.h"
-#include "Base.h"
 
-class NumberBlock : public BaseComponent {
+class NumberBlock : public cocos2d::Layer {
 protected:
     cocos2d::DrawNode* NodeBackground;
     cocos2d::Label* NodeNumber;

@@ -5,15 +5,15 @@
 USING_NS_CC;
 using namespace cocos2d::extension;
 
-BtnOnlineBattle::BtnOnlineBattle(): BaseComponent(LayerColor::create()) {
+BtnOnlineBattle::BtnOnlineBattle() {
     
 }
 
 BtnOnlineBattle* BtnOnlineBattle::create(float width, float height) {
     auto btnOnlineBattle = new BtnOnlineBattle();
-    btnOnlineBattle->RootNode->setContentSize(Size(width, height));
-    btnOnlineBattle->RootNode->ignoreAnchorPointForPosition(false);
-    auto btnSize = btnOnlineBattle->RootNode->getContentSize();
+    btnOnlineBattle->setContentSize(Size(width, height));
+    btnOnlineBattle->ignoreAnchorPointForPosition(false);
+    auto btnSize = btnOnlineBattle->getContentSize();
 
     // add Button
     btnOnlineBattle->button = ui::Button::create("res/BgOnlineBattleBtn.png", "res/BgOnlineBattleBtn_Pressed.png");
@@ -21,7 +21,7 @@ BtnOnlineBattle* BtnOnlineBattle::create(float width, float height) {
     btnOnlineBattle->button->setContentSize(btnSize);
     btnOnlineBattle->button->setAnchorPoint(Point(0, 0));
     btnOnlineBattle->button->setPosition(Point(0, 0));
-    btnOnlineBattle->RootNode->addChild(btnOnlineBattle->button, 0);
+    btnOnlineBattle->addChild(btnOnlineBattle->button, 0);
 
     // add label
     auto btnText = Label::createWithTTF("Online Battle", "fonts/arial.ttf", 60);

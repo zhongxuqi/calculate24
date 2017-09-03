@@ -2,10 +2,9 @@
 #define __BTN_ONLINE_BATTLE_H__
 
 #include "cocos2d.h"
-#include "Base.h"
 #include "ui/CocosGUI.h"
 
-class BtnOnlineBattle: public BaseComponent {
+class BtnOnlineBattle: public cocos2d::Layer {
 protected:
     cocos2d::ui::Button* button;
 

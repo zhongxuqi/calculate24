@@ -2,9 +2,8 @@
 #define __SCORE_BAR_H__
 
 #include "cocos2d.h"
-#include "Base.h"
 
-class ScoreBar: public BaseComponent {
+class ScoreBar: public cocos2d::Layer {
 public:
     ScoreBar();
     cocos2d::Layer* const ContentLayer;

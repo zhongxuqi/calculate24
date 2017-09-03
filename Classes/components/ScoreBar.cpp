@@ -5,7 +5,7 @@
 USING_NS_CC;
 using namespace cocos2d::extension;
 
-ScoreBar::ScoreBar(): ContentLayer(LayerColor::create()), BaseComponent(LayerColor::create()) {
+ScoreBar::ScoreBar(): ContentLayer(LayerColor::create()) {
     
 }
 
@@ -18,15 +18,15 @@ void ScoreBar::SetScore(Label* score) {
 
 ScoreBar* ScoreBar::create(float width, float height) {
     auto scoreBar = new ScoreBar();
-    scoreBar->RootNode->setContentSize(Size(width, height));
-    scoreBar->RootNode->ignoreAnchorPointForPosition(false);
+    scoreBar->setContentSize(Size(width, height));
+    scoreBar->ignoreAnchorPointForPosition(false);
 
     // add star image
     auto starImg = Sprite::create("res/Star.png");
     starImg->setAnchorPoint(Point(0, 0.5));
     starImg->setScale(height/starImg->getContentSize().height);
     starImg->setPosition(Point(0, height/2));
-    scoreBar->RootNode->addChild(starImg, 1);
+    scoreBar->addChild(starImg, 1);
 
     // add content layer
     scoreBar->ContentLayer->setContentSize(Size(width - starImg->getContentSize().width * height/starImg->getContentSize().height / 2, height * 0.7));
@@ -37,7 +37,7 @@ ScoreBar* ScoreBar::create(float width, float height) {
     scoreBar->ContentLayer->addChild(bgScoreBar, 0);
     scoreBar->ContentLayer->setAnchorPoint(Point(1, 0.5));
     scoreBar->ContentLayer->setPosition(Point(width, height /2));
-    scoreBar->RootNode->addChild(scoreBar->ContentLayer, 0);
+    scoreBar->addChild(scoreBar->ContentLayer, 0);
 
     scoreBar->SetScore(Label::createWithTTF("100", "fonts/arial.ttf", 30));
     return scoreBar;

@@ -3,10 +3,9 @@
 
 #include "cocos2d.h"
 
-class BgGameDefault
-{
+class BgGameDefault : public cocos2d::LayerColor {
 public:
-    static cocos2d::Layer* create(float width, float height);
+    static BgGameDefault* create(float width, float height);
 };
 
 #endif

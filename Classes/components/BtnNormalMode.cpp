@@ -5,15 +5,15 @@ USING_NS_CC;
 using namespace cocos2d::extension;
 using namespace ui;
 
-BtnNormalMode::BtnNormalMode(): BaseComponent(LayerColor::create()) {
+BtnNormalMode::BtnNormalMode() {
     
 }
 
 BtnNormalMode* BtnNormalMode::create(float width, float height) {
     auto btnNormalMode = new BtnNormalMode();
-    btnNormalMode->RootNode->setContentSize(Size(width, height));
-    btnNormalMode->RootNode->ignoreAnchorPointForPosition(false);
-    auto btnSize = btnNormalMode->RootNode->getContentSize();
+    btnNormalMode->setContentSize(Size(width, height));
+    btnNormalMode->ignoreAnchorPointForPosition(false);
+    auto btnSize = btnNormalMode->getContentSize();
 
     // add Button
     btnNormalMode->button = ui::Button::create("res/BgNormalModeBtn.png", "res/BgNormalModeBtn_Pressed.png");
@@ -21,7 +21,7 @@ BtnNormalMode* BtnNormalMode::create(float width, float height) {
     btnNormalMode->button->setContentSize(btnSize);
     btnNormalMode->button->setAnchorPoint(Point(0, 0));
     btnNormalMode->button->setPosition(Point(0, 0));
-    btnNormalMode->RootNode->addChild(btnNormalMode->button, 0);
+    btnNormalMode->addChild(btnNormalMode->button, 0);
 
     // add label
     auto btnText = Label::createWithTTF("Normal Mode", "fonts/arial.ttf", 60);

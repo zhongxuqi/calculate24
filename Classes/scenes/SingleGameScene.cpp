@@ -31,28 +31,39 @@ bool SingleGameScene::init() {
 
     // add user score
     auto scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto scoreBarSize = scoreBar->GetRootNode()->getContentSize();
-    scoreBar->GetRootNode()->setAnchorPoint(Point(0, 1));
-    scoreBar->GetRootNode()->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
-    this->addChild(scoreBar->GetRootNode(), 0);
+    auto scoreBarSize = scoreBar->getContentSize();
+    scoreBar->setAnchorPoint(Point(0, 1));
+    scoreBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
+    this->addChild(scoreBar, 0);
 
     // add time bar
     auto timeBar = TimeBar::create(visibleSize.width - scoreBarSize.width - 60, visibleSize.height / 18);
-    auto timeBarSize = timeBar->GetRootNode()->getContentSize();
-    timeBar->GetRootNode()->setAnchorPoint(Point(1, 1));
-    timeBar->GetRootNode()->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
-    this->addChild(timeBar->GetRootNode(), 0);
+    auto timeBarSize = timeBar->getContentSize();
+    timeBar->setAnchorPoint(Point(1, 1));
+    timeBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(timeBar, 0);
+
+    // add dialog
+    this->dialog = SolutionDialog::create(visibleSize.width - 40, visibleSize.width - 40);
+    this->dialog->setAnchorPoint(Point(0.5, 0.5));
+    this->dialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(this->dialog, -1);
+    this->dialog->setZOrder(-1);
 
     // add number matrix
     this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height * 0.7);
     this->numberMatrix->setAnchorPoint(Point(0.5, 0));
     this->numberMatrix->setPosition(visibleSize.width / 2, 20);
     this->numberMatrix->setTouchable(true);
-    this->numberMatrix->SetOnSelectListener([this, visibleSize]() {
-        auto dialog = SolutionDialog::create(visibleSize.width - 40, visibleSize.width - 40);
-        dialog->setAnchorPoint(Point(0.5, 0.5));
-        dialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
-        this->addChild(dialog);
+    this->numberMatrix->SetOnSelectListener([this]() {
+        this->dialog->setZOrder(1);
+        this->numberMatrix->setTouchable(false);
+
+        // add close listener
+        this->dialog->SetOnCloseListener([this](Ref* pRef) {
+            this->dialog->setZOrder(-1);
+            this->numberMatrix->setTouchable(true);
+        });
     });
     this->addChild(this->numberMatrix, 0);
 

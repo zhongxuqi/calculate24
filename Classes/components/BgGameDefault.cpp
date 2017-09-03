@@ -4,8 +4,9 @@
 
 USING_NS_CC;
 
-cocos2d::Layer* BgGameDefault::create(float width, float height) {
-    auto layer = LayerColor::create(Colors::BgColor);
-    layer->setContentSize(CCSizeMake(width, height));
-    return layer;
+BgGameDefault* BgGameDefault::create(float width, float height) {
+    auto bgGameDefault = new BgGameDefault();
+    bgGameDefault->initWithColor(Colors::BgColor);
+    bgGameDefault->setContentSize(CCSizeMake(width, height));
+    return bgGameDefault;
 }

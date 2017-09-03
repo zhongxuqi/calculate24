@@ -3,10 +3,12 @@
 
 #include "cocos2d.h"
 #include "../components/NumberMatrix.h"
+#include "../components/SolutionDialog.h"
 
 class SingleGameScene : public cocos2d::Scene {
 protected:
     NumberMatrix* numberMatrix;
+    SolutionDialog* dialog;
 
 public:
     static cocos2d::Scene* createScene();

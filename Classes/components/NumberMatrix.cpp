@@ -24,19 +24,15 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
             numberMatrix->numberNodeMatrix[h][w] = numberBlock;
 
             // add number block
-            numberBlock->GetRootNode()->setAnchorPoint(Point(0, 0));
-            numberBlock->GetRootNode()->setPosition(w * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize), \
+            numberBlock->setAnchorPoint(Point(0, 0));
+            numberBlock->setPosition(w * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize), \
                 h * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize));
-            numberMatrix->addChild(numberBlock->GetRootNode(), 0);
+            numberMatrix->addChild(numberBlock, 0);
         }
     }
 
-    // add touch listener
-    numberMatrix->eventListener = EventListenerTouchOneByOne::create();
-    numberMatrix->eventListener->onTouchBegan = CC_CALLBACK_2(NumberMatrix::onTouchBegan, numberMatrix);
-    numberMatrix->eventListener->onTouchMoved = CC_CALLBACK_2(NumberMatrix::onTouchMoved, numberMatrix);
-    numberMatrix->eventListener->onTouchEnded = CC_CALLBACK_2(NumberMatrix::onTouchEnded, numberMatrix);
-    numberMatrix->eventListener->setSwallowTouches(true);
+    // set touchable
+    numberMatrix->setTouchable(true);
 
     return numberMatrix;
 }
@@ -63,7 +59,7 @@ void NumberMatrix::handleTouch(Touch *touch) {
     float locationY = touch->getLocation().y - (this->getPosition().y - this->getAnchorPoint().y * this->getContentSize().height);
     int w = (int)(locationX / (this->numberBlockSize + this->numberBlockInterval));
     int h = (int)(locationY / (this->numberBlockSize + this->numberBlockInterval));
-    if (!this->numberNodeMatrix[h][w]->IsActive() && w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT) {
+    if (w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT && !this->numberNodeMatrix[h][w]->IsActive()) {
 
         // check the block is continuous
         if (selectedLen > 0) {
@@ -89,6 +85,11 @@ void NumberMatrix::handleTouch(Touch *touch) {
 
 void NumberMatrix::setTouchable(bool isTouchable) {
     if (isTouchable) {
+        this->eventListener = EventListenerTouchOneByOne::create();
+        this->eventListener->onTouchBegan = CC_CALLBACK_2(NumberMatrix::onTouchBegan, this);
+        this->eventListener->onTouchMoved = CC_CALLBACK_2(NumberMatrix::onTouchMoved, this);
+        this->eventListener->onTouchEnded = CC_CALLBACK_2(NumberMatrix::onTouchEnded, this);
+        this->eventListener->setSwallowTouches(true);
         this->_eventDispatcher->addEventListenerWithSceneGraphPriority(this->eventListener, this);
     } else {
         this->_eventDispatcher->removeEventListener(this->eventListener);
@@ -96,13 +97,13 @@ void NumberMatrix::setTouchable(bool isTouchable) {
 }
 
 void NumberMatrix::handleSelectBlock() {
+    if (this->selectListener != NULL && this->selectedLen == SELECTED_MAX) {
+        this->selectListener();
+    }
     this->cancelSelectBlock();
 }
 
 void NumberMatrix::cancelSelectBlock() {
-    if (this->selectListener != NULL) {
-        this->selectListener();
-    }
     int selectedLen = this->selectedLen;
     for (int i=0;i<selectedLen;i++) {
         this->selectedNumberBlocks[i]->SetActiveState(false);

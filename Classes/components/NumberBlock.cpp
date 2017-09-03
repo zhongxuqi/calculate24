@@ -4,14 +4,14 @@
 
 USING_NS_CC;
 
-NumberBlock::NumberBlock(int number): Number(number), BaseComponent(LayerColor::create()) {
+NumberBlock::NumberBlock(int number): Number(number) {
     this->activeState = false;
 }
 
 NumberBlock* NumberBlock::create(float width, int number) {
     auto numberBlock = new NumberBlock(number);
-    numberBlock->RootNode->setContentSize(Size(width, width));
-    numberBlock->RootNode->ignoreAnchorPointForPosition(false);
+    numberBlock->setContentSize(Size(width, width));
+    numberBlock->ignoreAnchorPointForPosition(false);
 
     numberBlock->borderWidth = width / 30;
     if (numberBlock->borderWidth < 1) {
@@ -32,7 +32,7 @@ NumberBlock* NumberBlock::create(float width, int number) {
     };
     numberBlock->NodeBackground->drawPolygon(numberBlock->points, 4, Color4F(Colors::Transparent), \
         numberBlock->borderWidth, Color4F(Colors::GetColorsByNumber(numberBlock->Number)));
-    numberBlock->RootNode->addChild(numberBlock->NodeBackground, 0);
+    numberBlock->addChild(numberBlock->NodeBackground, 0);
 
     // add number
     std::stringstream ss;
@@ -42,7 +42,7 @@ NumberBlock* NumberBlock::create(float width, int number) {
     numberBlock->NodeNumber->setAnchorPoint(Point(0.5, 0.5));
     numberBlock->NodeNumber->setPosition(width / 2, width / 2);
     numberBlock->NodeNumber->setTextColor(Colors::GetColorsByNumber(numberBlock->Number));
-    numberBlock->RootNode->addChild(numberBlock->NodeNumber, 0);
+    numberBlock->addChild(numberBlock->NodeNumber, 0);
 
     return numberBlock;
 }

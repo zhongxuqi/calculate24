@@ -2,7 +2,6 @@
 #define __NUMBER_MATRIX_H__
 
 #include "cocos2d.h"
-#include "Base.h"
 #include "NumberBlock.h"
 #include "../base/GameEngine.h"
 

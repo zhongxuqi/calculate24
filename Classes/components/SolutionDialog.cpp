@@ -23,21 +23,25 @@ SolutionDialog* SolutionDialog::create(float width, float height) {
     solutionDialog->addChild(bgDialog, 0);
 
     // add back button
-    auto backButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
-    backButton->setScale9Enabled(true);
-    backButton->setCapInsets(Rect(10, 10, 88, 79));
-    backButton->setContentSize(Size(height * 1.5 / 10, height / 10));
+    solutionDialog->backButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
+    solutionDialog->backButton->setScale9Enabled(true);
+    solutionDialog->backButton->setCapInsets(Rect(10, 10, 88, 79));
+    solutionDialog->backButton->setContentSize(Size(height * 1.5 / 10, height / 10));
 
     // add icon
     auto backIcon = Sprite::create("res/IconBack.png");
-    backIcon->setScale(height * 0.7 / 10 / backIcon->getContentSize().height);
+    backIcon->setScale(solutionDialog->backButton->getContentSize().height * 0.6 / backIcon->getContentSize().height);
     backIcon->setAnchorPoint(Point(0.5, 0.5));
-    backIcon->setPosition(Point(backButton->getContentSize().width / 2, backButton->getContentSize().height / 2));
-    backButton->addChild(backIcon, 0);
+    backIcon->setPosition(Point(solutionDialog->backButton->getContentSize().width / 2, solutionDialog->backButton->getContentSize().height / 2));
+    solutionDialog->backButton->addChild(backIcon, 0);
 
-    backButton->setAnchorPoint(Point(0, 1));
-    backButton->setPosition(Point(0, height));
-    solutionDialog->addChild(backButton, 0);
+    solutionDialog->backButton->setAnchorPoint(Point(0, 1));
+    solutionDialog->backButton->setPosition(Point(0, height));
+    solutionDialog->addChild(solutionDialog->backButton, 0);
 
     return solutionDialog;
+}
+
+void SolutionDialog::SetOnCloseListener(std::function<void(Ref*)> listener) {
+    this->backButton->addClickEventListener(listener);
 }
