@@ -6,8 +6,15 @@ USING_NS_CC;
 
 const float PROP_BLOCK_SIZE = 15.0;
 
+bool BgMain::init() {
+    if (!LayerColor::init()) {
+        return false;
+    }
+    return true;
+}
+
 BgMain* BgMain::create(float width, float height) {
-    auto bgMain = new BgMain();
+    auto bgMain = BgMain::create();
     bgMain->setContentSize(Size(width, height));
     bgMain->initWithColor(Colors::BgColor);
     for (int i=0;i<14;i++) {

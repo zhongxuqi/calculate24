@@ -33,7 +33,7 @@ bool MainScene::init() {
     this->addChild(LayerBgMain, 0);
 
     // add user info
-    auto personalInfo = PersonalInfo::create(visibleSize.width * 0.35, visibleSize.height / 18);
+    auto personalInfo = PersonalInfo::create(visibleSize.width * 0.4, visibleSize.height / 18);
     auto personalInfoSize = personalInfo->getContentSize();
     personalInfo->setAnchorPoint(Point(0, 1));
     personalInfo->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);

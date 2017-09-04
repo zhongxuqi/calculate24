@@ -7,12 +7,15 @@ USING_NS_CC;
 using namespace cocos2d::extension;
 using namespace ui;
 
-SolutionDialog::SolutionDialog() {
-
+bool SolutionDialog::init() {
+    if (!Layer::init()) {
+        return false;
+    }
+    return true;
 }
 
 SolutionDialog* SolutionDialog::create(float width, float height) {
-    auto solutionDialog = new SolutionDialog();
+    auto solutionDialog = SolutionDialog::create();
     solutionDialog->setContentSize(Size(width, height));
     solutionDialog->ignoreAnchorPointForPosition(false);
 

@@ -9,6 +9,13 @@ ScoreBar::ScoreBar(): ContentLayer(LayerColor::create()) {
     
 }
 
+bool ScoreBar::init() {
+    if (!Layer::init()) {
+        return false;
+    }
+    return true;
+}
+
 void ScoreBar::SetScore(Label* score) {
     auto contentSize = this->ContentLayer->getContentSize();
     score->setAnchorPoint(Point(1, 0.5));
@@ -17,7 +24,7 @@ void ScoreBar::SetScore(Label* score) {
 }
 
 ScoreBar* ScoreBar::create(float width, float height) {
-    auto scoreBar = new ScoreBar();
+    auto scoreBar = ScoreBar::create();
     scoreBar->setContentSize(Size(width, height));
     scoreBar->ignoreAnchorPointForPosition(false);
 
@@ -39,6 +46,6 @@ ScoreBar* ScoreBar::create(float width, float height) {
     scoreBar->ContentLayer->setPosition(Point(width, height /2));
     scoreBar->addChild(scoreBar->ContentLayer, 0);
 
-    scoreBar->SetScore(Label::createWithTTF("100", "fonts/arial.ttf", 30));
+    scoreBar->SetScore(Label::createWithTTF("100", "fonts/arial.ttf", height / 2));
     return scoreBar;
 }

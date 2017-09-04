@@ -6,13 +6,17 @@ USING_NS_CC;
 
 GameEngine* const gameEngine = GameEngine::Instance;
 
-NumberMatrix::NumberMatrix() {
+bool NumberMatrix::init() {
+    if (!Layer::init()) {
+        return false;
+    }
     gameEngine->InitNumberMatrix();
     this->selectedLen = 0;
+    return true;
 }
 
 NumberMatrix* NumberMatrix::create(float width, float height) {
-    auto numberMatrix = new NumberMatrix();
+    auto numberMatrix = NumberMatrix::create();
     numberMatrix->setContentSize(Size(width, height));
     numberMatrix->ignoreAnchorPointForPosition(false);
 

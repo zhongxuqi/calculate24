@@ -8,12 +8,13 @@
 class BtnNormalMode: public cocos2d::Layer {
 protected:
     cocos2d::ui::Button* button;
+    virtual bool init();
 
 public:
-    BtnNormalMode();
     void SetOnClickListener(std::function<void(cocos2d::Ref*)>);
 
     static BtnNormalMode* create(float width, float height);
+    CREATE_FUNC(BtnNormalMode);
 };
 
 #endif

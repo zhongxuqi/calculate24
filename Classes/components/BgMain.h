@@ -4,8 +4,13 @@
 #include "cocos2d.h"
 
 class BgMain : public cocos2d::LayerColor {
+protected:
+    virtual bool init();
+
 public:
     static BgMain* create(float width, float height);
+
+    CREATE_FUNC(BgMain);
 };
 
 #endif

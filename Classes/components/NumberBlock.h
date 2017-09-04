@@ -10,14 +10,14 @@ protected:
     float borderWidth;
     cocos2d::Vec2 *points;
     bool activeState;
+    virtual bool init();
+    int number;
 
 public:
-    NumberBlock(int number);
-    const int Number;
+    static NumberBlock* create(float width, int number);
+    CREATE_FUNC(NumberBlock);
     void SetActiveState(bool isActive);
     bool IsActive();
-
-    static NumberBlock* create(float width, int number);
 };
 
 #endif

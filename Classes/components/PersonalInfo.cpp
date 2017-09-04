@@ -9,6 +9,13 @@ PersonalInfo::PersonalInfo(): ContentLayer(LayerColor::create()) {
     
 }
 
+bool PersonalInfo::init() {
+    if (!Layer::init()) {
+        return false;
+    }
+    return true;
+}
+
 void PersonalInfo::SetHeadImage(Sprite* headImg) {
     auto rootSize = this->getContentSize();
     headImg->setScale(rootSize.height / headImg->getContentSize().height);
@@ -25,7 +32,7 @@ void PersonalInfo::SetUserName(Label* userName) {
 }
 
 PersonalInfo* PersonalInfo::create(float width, float height) {
-    auto personalInfo = new PersonalInfo();
+    auto personalInfo = PersonalInfo::create();
     personalInfo->setContentSize(Size(width, height));
     personalInfo->ignoreAnchorPointForPosition(false);
 
@@ -37,10 +44,10 @@ PersonalInfo* PersonalInfo::create(float width, float height) {
     bgPersonalInfo->setAnchorPoint(Point(0, 0));
     personalInfo->ContentLayer->addChild(bgPersonalInfo, 0);
     personalInfo->ContentLayer->setAnchorPoint(Point(1, 0.5));
-    personalInfo->ContentLayer->setPosition(Point(width, height /2));
+    personalInfo->ContentLayer->setPosition(Point(width, height / 2));
     personalInfo->addChild(personalInfo->ContentLayer, 0);
 
     personalInfo->SetHeadImage(Sprite::create("res/DefaultHeadImage.png"));
-    personalInfo->SetUserName(Label::createWithTTF("User Name", "fonts/arial.ttf", 30));
+    personalInfo->SetUserName(Label::createWithTTF("User Name", "fonts/arial.ttf", height / 2));
     return personalInfo;
 }

@@ -5,8 +5,15 @@
 USING_NS_CC;
 using namespace ui;
 
+bool TimeBar::init() {
+    if (!Layer::init()) {
+        return false;
+    }
+    return true;
+}
+
 TimeBar* TimeBar::create(float width, float height) {
-    auto timeBar = new TimeBar();
+    auto timeBar = TimeBar::create();
     timeBar->setContentSize(Size(width, height));
     timeBar->ignoreAnchorPointForPosition(false);
     

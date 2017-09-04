@@ -7,11 +7,11 @@
 class BtnOnlineBattle: public cocos2d::Layer {
 protected:
     cocos2d::ui::Button* button;
+    virtual bool init();
 
 public:
-    BtnOnlineBattle();
-
     static BtnOnlineBattle* create(float width, float height);
+    CREATE_FUNC(BtnOnlineBattle);
 };
 
 #endif

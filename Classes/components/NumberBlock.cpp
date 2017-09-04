@@ -4,12 +4,17 @@
 
 USING_NS_CC;
 
-NumberBlock::NumberBlock(int number): Number(number) {
+bool NumberBlock::init() {
+    if (!Layer::init()) {
+        return false;
+    }
     this->activeState = false;
+    return true;
 }
 
 NumberBlock* NumberBlock::create(float width, int number) {
-    auto numberBlock = new NumberBlock(number);
+    auto numberBlock = NumberBlock::create();
+    numberBlock->number = number;
     numberBlock->setContentSize(Size(width, width));
     numberBlock->ignoreAnchorPointForPosition(false);
 
@@ -31,17 +36,17 @@ NumberBlock* NumberBlock::create(float width, int number) {
         Vec2(halfStrokeWidth, width - halfStrokeWidth),
     };
     numberBlock->NodeBackground->drawPolygon(numberBlock->points, 4, Color4F(Colors::Transparent), \
-        numberBlock->borderWidth, Color4F(Colors::GetColorsByNumber(numberBlock->Number)));
+        numberBlock->borderWidth, Color4F(Colors::GetColorsByNumber(numberBlock->number)));
     numberBlock->addChild(numberBlock->NodeBackground, 0);
 
     // add number
     std::stringstream ss;
     ss << number;
-    numberBlock->NodeNumber = Label::createWithTTF(ss.str(), "fonts/arial.ttf", 40);
+    numberBlock->NodeNumber = Label::createWithTTF(ss.str(), "fonts/arial.ttf", width / 2);
     numberBlock->NodeNumber->enableBold();
     numberBlock->NodeNumber->setAnchorPoint(Point(0.5, 0.5));
     numberBlock->NodeNumber->setPosition(width / 2, width / 2);
-    numberBlock->NodeNumber->setTextColor(Colors::GetColorsByNumber(numberBlock->Number));
+    numberBlock->NodeNumber->setTextColor(Colors::GetColorsByNumber(numberBlock->number));
     numberBlock->addChild(numberBlock->NodeNumber, 0);
 
     return numberBlock;
@@ -51,13 +56,13 @@ void NumberBlock::SetActiveState(bool isActive) {
     this->NodeBackground->clear();
     this->activeState = isActive;
     if (this->activeState) {
-        this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::GetColorsByNumber(this->Number)), \
-            this->borderWidth, Color4F(Colors::GetColorsByNumber(this->Number)));
+        this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::GetColorsByNumber(this->number)), \
+            this->borderWidth, Color4F(Colors::GetColorsByNumber(this->number)));
         this->NodeNumber->setTextColor(Colors::BgColor);
     } else {
         this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::Transparent), this->borderWidth, \
-            Color4F(Colors::GetColorsByNumber(this->Number)));
-        this->NodeNumber->setTextColor(Colors::GetColorsByNumber(this->Number));
+            Color4F(Colors::GetColorsByNumber(this->number)));
+        this->NodeNumber->setTextColor(Colors::GetColorsByNumber(this->number));
     }
 }
 

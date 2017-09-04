@@ -7,15 +7,15 @@
 
 class SolutionDialog : public cocos2d::Layer {
 protected:
+    virtual bool init();
     int number[SELECTED_MAX];
     std::function<void(void)> closeListener;
     cocos2d::ui::Button* backButton;
 
 public:
-    SolutionDialog();
-    void SetOnCloseListener(std::function<void(cocos2d::Ref*)> listener);
-
     static SolutionDialog* create(float width, float height);
+    CREATE_FUNC(SolutionDialog);
+    void SetOnCloseListener(std::function<void(cocos2d::Ref*)> listener);
 };
 
 #endif

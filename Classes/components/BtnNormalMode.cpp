@@ -5,12 +5,15 @@ USING_NS_CC;
 using namespace cocos2d::extension;
 using namespace ui;
 
-BtnNormalMode::BtnNormalMode() {
-    
+bool BtnNormalMode::init() {
+    if (!Layer::init()) {
+        return false;
+    }
+    return true;
 }
 
 BtnNormalMode* BtnNormalMode::create(float width, float height) {
-    auto btnNormalMode = new BtnNormalMode();
+    auto btnNormalMode = BtnNormalMode::create();
     btnNormalMode->setContentSize(Size(width, height));
     btnNormalMode->ignoreAnchorPointForPosition(false);
     auto btnSize = btnNormalMode->getContentSize();
@@ -24,7 +27,7 @@ BtnNormalMode* BtnNormalMode::create(float width, float height) {
     btnNormalMode->addChild(btnNormalMode->button, 0);
 
     // add label
-    auto btnText = Label::createWithTTF("Normal Mode", "fonts/arial.ttf", 60);
+    auto btnText = Label::createWithTTF("Normal Mode", "fonts/arial.ttf", height / 7);
     btnText->setAnchorPoint(Point(0.5, 1));
     btnText->setPosition(Point(btnSize.width / 2, btnSize.height - 20));
     btnText->setTextColor(Color4B::WHITE);
