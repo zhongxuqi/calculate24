@@ -26,7 +26,7 @@ void ScoreBar::SetScore(Label* score) {
 ScoreBar* ScoreBar::create(float width, float height) {
     auto scoreBar = ScoreBar::create();
     scoreBar->setContentSize(Size(width, height));
-    scoreBar->ignoreAnchorPointForPosition(false);
+    scoreBar->setIgnoreAnchorPointForPosition(false);
 
     // add star image
     auto starImg = Sprite::create("res/Star.png");
@@ -37,7 +37,7 @@ ScoreBar* ScoreBar::create(float width, float height) {
 
     // add content layer
     scoreBar->ContentLayer->setContentSize(Size(width - starImg->getContentSize().width * height/starImg->getContentSize().height / 2, height * 0.7));
-    scoreBar->ContentLayer->ignoreAnchorPointForPosition(false);
+    scoreBar->ContentLayer->setIgnoreAnchorPointForPosition(false);
     auto bgScoreBar = Scale9Sprite::create("res/BgScoreBar.png", Rect(0, 0, 39, 28), Rect(6, 6, 27, 16));
     bgScoreBar->setContentSize(scoreBar->ContentLayer->getContentSize());
     bgScoreBar->setAnchorPoint(Point(0, 0));

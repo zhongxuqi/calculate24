@@ -11,6 +11,7 @@ protected:
     int number[SELECTED_MAX];
     std::function<void(void)> closeListener;
     cocos2d::ui::Button* backButton;
+    cocos2d::ui::Button* resetButton;
 
 public:
     static SolutionDialog* create(float width, float height);

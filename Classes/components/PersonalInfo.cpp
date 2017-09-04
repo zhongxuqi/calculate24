@@ -34,11 +34,11 @@ void PersonalInfo::SetUserName(Label* userName) {
 PersonalInfo* PersonalInfo::create(float width, float height) {
     auto personalInfo = PersonalInfo::create();
     personalInfo->setContentSize(Size(width, height));
-    personalInfo->ignoreAnchorPointForPosition(false);
+    personalInfo->setIgnoreAnchorPointForPosition(false);
 
     // add content layer
     personalInfo->ContentLayer->setContentSize(Size(width - height / 2, height * 0.8));
-    personalInfo->ContentLayer->ignoreAnchorPointForPosition(false);
+    personalInfo->ContentLayer->setIgnoreAnchorPointForPosition(false);
     auto bgPersonalInfo = Scale9Sprite::create("res/BgPersonalInfo.png", Rect(0, 0, 39, 28), Rect(6, 6, 27, 16));
     bgPersonalInfo->setContentSize(personalInfo->ContentLayer->getContentSize());
     bgPersonalInfo->setAnchorPoint(Point(0, 0));

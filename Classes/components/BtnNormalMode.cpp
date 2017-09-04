@@ -15,7 +15,7 @@ bool BtnNormalMode::init() {
 BtnNormalMode* BtnNormalMode::create(float width, float height) {
     auto btnNormalMode = BtnNormalMode::create();
     btnNormalMode->setContentSize(Size(width, height));
-    btnNormalMode->ignoreAnchorPointForPosition(false);
+    btnNormalMode->setIgnoreAnchorPointForPosition(false);
     auto btnSize = btnNormalMode->getContentSize();
 
     // add Button

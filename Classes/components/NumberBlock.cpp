@@ -16,7 +16,7 @@ NumberBlock* NumberBlock::create(float width, int number) {
     auto numberBlock = NumberBlock::create();
     numberBlock->number = number;
     numberBlock->setContentSize(Size(width, width));
-    numberBlock->ignoreAnchorPointForPosition(false);
+    numberBlock->setIgnoreAnchorPointForPosition(false);
 
     numberBlock->borderWidth = width / 30;
     if (numberBlock->borderWidth < 1) {
@@ -40,9 +40,9 @@ NumberBlock* NumberBlock::create(float width, int number) {
     numberBlock->addChild(numberBlock->NodeBackground, 0);
 
     // add number
-    std::stringstream ss;
-    ss << number;
-    numberBlock->NodeNumber = Label::createWithTTF(ss.str(), "fonts/arial.ttf", width / 2);
+    std::stringstream numberStr;
+    numberStr << number;
+    numberBlock->NodeNumber = Label::createWithTTF(numberStr.str(), "fonts/arial.ttf", width / 2);
     numberBlock->NodeNumber->enableBold();
     numberBlock->NodeNumber->setAnchorPoint(Point(0.5, 0.5));
     numberBlock->NodeNumber->setPosition(width / 2, width / 2);

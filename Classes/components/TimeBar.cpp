@@ -15,7 +15,7 @@ bool TimeBar::init() {
 TimeBar* TimeBar::create(float width, float height) {
     auto timeBar = TimeBar::create();
     timeBar->setContentSize(Size(width, height));
-    timeBar->ignoreAnchorPointForPosition(false);
+    timeBar->setIgnoreAnchorPointForPosition(false);
     
     // add clock icon
     auto clockIcon = Sprite::create("res/Clock.png");

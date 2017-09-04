@@ -18,7 +18,7 @@ bool NumberMatrix::init() {
 NumberMatrix* NumberMatrix::create(float width, float height) {
     auto numberMatrix = NumberMatrix::create();
     numberMatrix->setContentSize(Size(width, height));
-    numberMatrix->ignoreAnchorPointForPosition(false);
+    numberMatrix->setIgnoreAnchorPointForPosition(false);
 
     numberMatrix->numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * width / MATRIX_WIDTH;
     numberMatrix->numberBlockInterval = 0.02 * width;
@@ -36,6 +36,12 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
     }
 
     // set touchable
+    numberMatrix->eventListener = EventListenerTouchOneByOne::create();
+    numberMatrix->eventListener->onTouchBegan = CC_CALLBACK_2(NumberMatrix::onTouchBegan, numberMatrix);
+    numberMatrix->eventListener->onTouchMoved = CC_CALLBACK_2(NumberMatrix::onTouchMoved, numberMatrix);
+    numberMatrix->eventListener->onTouchEnded = CC_CALLBACK_2(NumberMatrix::onTouchEnded, numberMatrix);
+    numberMatrix->eventListener->setSwallowTouches(true);
+    numberMatrix->_eventDispatcher->addEventListenerWithSceneGraphPriority(numberMatrix->eventListener, numberMatrix);
     numberMatrix->setTouchable(true);
 
     return numberMatrix;
@@ -89,14 +95,9 @@ void NumberMatrix::handleTouch(Touch *touch) {
 
 void NumberMatrix::setTouchable(bool isTouchable) {
     if (isTouchable) {
-        this->eventListener = EventListenerTouchOneByOne::create();
-        this->eventListener->onTouchBegan = CC_CALLBACK_2(NumberMatrix::onTouchBegan, this);
-        this->eventListener->onTouchMoved = CC_CALLBACK_2(NumberMatrix::onTouchMoved, this);
-        this->eventListener->onTouchEnded = CC_CALLBACK_2(NumberMatrix::onTouchEnded, this);
-        this->eventListener->setSwallowTouches(true);
-        this->_eventDispatcher->addEventListenerWithSceneGraphPriority(this->eventListener, this);
+        this->_eventDispatcher->resumeEventListenersForTarget(this);
     } else {
-        this->_eventDispatcher->removeEventListener(this->eventListener);
+        this->_eventDispatcher->pauseEventListenersForTarget(this);
     }
 }
 
