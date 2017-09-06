@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "../base/GameEngine.h"
+#include "SolutionBoard.h"
 
 class SolutionDialog : public cocos2d::Layer {
 protected:
@@ -12,6 +13,9 @@ protected:
     std::function<void(void)> closeListener;
     cocos2d::ui::Button* backButton;
     cocos2d::ui::Button* resetButton;
+    void addBackBtn();
+    void addResetBtn();
+    SolutionBoard* solutionBoard;
 
 public:
     static SolutionDialog* create(float width, float height);

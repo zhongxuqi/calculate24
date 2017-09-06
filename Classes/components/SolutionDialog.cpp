@@ -25,43 +25,56 @@ SolutionDialog* SolutionDialog::create(float width, float height) {
     bgDialog->setAnchorPoint(Point(0, 0));
     solutionDialog->addChild(bgDialog, 0);
 
-    // add back button
-    solutionDialog->backButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
-    solutionDialog->backButton->setScale9Enabled(true);
-    solutionDialog->backButton->setCapInsets(Rect(10, 10, 88, 79));
-    solutionDialog->backButton->setContentSize(Size(height * 1.5 / 10, height / 10));
+    solutionDialog->addBackBtn();
+    solutionDialog->addResetBtn();
 
-    // add back icon
-    auto backIcon = Sprite::create("res/IconBack.png");
-    backIcon->setScale(solutionDialog->backButton->getContentSize().height * 0.6 / backIcon->getContentSize().height);
-    backIcon->setAnchorPoint(Point(0.5, 0.5));
-    backIcon->setPosition(Point(solutionDialog->backButton->getContentSize().width / 2, solutionDialog->backButton->getContentSize().height / 2));
-    solutionDialog->backButton->addChild(backIcon, 0);
-
-    solutionDialog->backButton->setAnchorPoint(Point(0, 1));
-    solutionDialog->backButton->setPosition(Point(0, height));
-    solutionDialog->addChild(solutionDialog->backButton, 0);
-
-    // add reset button
-    solutionDialog->resetButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
-    solutionDialog->resetButton->setScale9Enabled(true);
-    solutionDialog->resetButton->setCapInsets(Rect(10, 10, 88, 79));
-    solutionDialog->resetButton->setContentSize(Size(height * 1.5 / 10, height / 10));
-
-    // add reset icon
-    auto resetIcon = Sprite::create("res/IconReset.png");
-    resetIcon->setScale(solutionDialog->resetButton->getContentSize().height * 0.6 / resetIcon->getContentSize().height);
-    resetIcon->setAnchorPoint(Point(0.5, 0.5));
-    resetIcon->setPosition(Point(solutionDialog->resetButton->getContentSize().width / 2, solutionDialog->resetButton->getContentSize().height / 2));
-    solutionDialog->resetButton->addChild(resetIcon, 0);
-
-    solutionDialog->resetButton->setAnchorPoint(Point(1, 1));
-    solutionDialog->resetButton->setPosition(Point(width, height));
-    solutionDialog->addChild(solutionDialog->resetButton, 0);
+    solutionDialog->solutionBoard = SolutionBoard::create(width, height - solutionDialog->backButton->getContentSize().height);
+    solutionDialog->solutionBoard->setAnchorPoint(Point(0, 0));
+    solutionDialog->solutionBoard->setPosition(Point(0, 0));
+    solutionDialog->addChild(solutionDialog->solutionBoard, 0);
 
     return solutionDialog;
 }
 
 void SolutionDialog::SetOnCloseListener(std::function<void(Ref*)> listener) {
     this->backButton->addClickEventListener(listener);
+}
+
+void SolutionDialog::addBackBtn() {
+    float height = this->getContentSize().height;
+    this->backButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
+    this->backButton->setScale9Enabled(true);
+    this->backButton->setCapInsets(Rect(10, 10, 88, 79));
+    this->backButton->setContentSize(Size(height * 1.5 / 10, height / 10));
+
+    // add back icon
+    auto backIcon = Sprite::create("res/IconBack.png");
+    backIcon->setScale(this->backButton->getContentSize().height * 0.6 / backIcon->getContentSize().height);
+    backIcon->setAnchorPoint(Point(0.5, 0.5));
+    backIcon->setPosition(Point(this->backButton->getContentSize().width / 2, this->backButton->getContentSize().height / 2));
+    this->backButton->addChild(backIcon, 0);
+
+    this->backButton->setAnchorPoint(Point(0, 1));
+    this->backButton->setPosition(Point(0, height));
+    this->addChild(this->backButton, 0);
+}
+
+void SolutionDialog::addResetBtn() {
+    float width = this->getContentSize().width;
+    float height = this->getContentSize().height;
+    this->resetButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
+    this->resetButton->setScale9Enabled(true);
+    this->resetButton->setCapInsets(Rect(10, 10, 88, 79));
+    this->resetButton->setContentSize(Size(height * 1.5 / 10, height / 10));
+
+    // add reset icon
+    auto resetIcon = Sprite::create("res/IconReset.png");
+    resetIcon->setScale(this->resetButton->getContentSize().height * 0.6 / resetIcon->getContentSize().height);
+    resetIcon->setAnchorPoint(Point(0.5, 0.5));
+    resetIcon->setPosition(Point(this->resetButton->getContentSize().width / 2, this->resetButton->getContentSize().height / 2));
+    this->resetButton->addChild(resetIcon, 0);
+
+    this->resetButton->setAnchorPoint(Point(1, 1));
+    this->resetButton->setPosition(Point(width, height));
+    this->addChild(this->resetButton, 0);
 }
