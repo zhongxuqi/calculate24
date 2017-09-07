@@ -16,8 +16,10 @@ protected:
     void addBackBtn();
     void addResetBtn();
     SolutionBoard* solutionBoard;
+    int numbers[4];
 
 public:
+    void SetNumbers(int numbers[4]);
     static SolutionDialog* create(float width, float height);
     CREATE_FUNC(SolutionDialog);
     void SetOnCloseListener(std::function<void(cocos2d::Ref*)> listener);

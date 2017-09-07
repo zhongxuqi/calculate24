@@ -78,3 +78,10 @@ void SolutionDialog::addResetBtn() {
     this->resetButton->setPosition(Point(width, height));
     this->addChild(this->resetButton, 0);
 }
+
+void SolutionDialog::SetNumbers(int numbers[4]) {
+    for (int i = 0; i < 4; i++) {
+        this->numbers[i] = numbers[i];
+    }
+    this->solutionBoard->InitNumber(this->numbers);
+}

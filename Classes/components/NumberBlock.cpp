@@ -69,3 +69,7 @@ void NumberBlock::SetActiveState(bool isActive) {
 bool NumberBlock::IsActive() {
     return this->activeState;
 }
+
+int NumberBlock::GetNumber() {
+    return this->number;
+}

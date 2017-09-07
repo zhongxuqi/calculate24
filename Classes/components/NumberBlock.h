@@ -18,6 +18,7 @@ public:
     CREATE_FUNC(NumberBlock);
     void SetActiveState(bool isActive);
     bool IsActive();
+    int GetNumber();
 };
 
 #endif

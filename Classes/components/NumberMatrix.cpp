@@ -103,7 +103,11 @@ void NumberMatrix::setTouchable(bool isTouchable) {
 
 void NumberMatrix::handleSelectBlock() {
     if (this->selectListener != NULL && this->selectedLen == SELECTED_MAX) {
-        this->selectListener();
+        int numbers[4];
+        for (int i = 0; i < 4; i++) {
+            numbers[i] = this->selectedNumberBlocks[i]->GetNumber();
+        }
+        this->selectListener(numbers);
     }
     this->cancelSelectBlock();
 }
@@ -116,6 +120,6 @@ void NumberMatrix::cancelSelectBlock() {
     this->selectedLen = 0;
 }
 
-void NumberMatrix::SetOnSelectListener(std::function<void(void)> listener) {
+void NumberMatrix::SetOnSelectListener(std::function<void(int[4])> listener) {
     this->selectListener = listener;
 }
