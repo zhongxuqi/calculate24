@@ -47,13 +47,13 @@ protected:
     GameEngine();
     BlockLocation selectedBlocks[SELECTED_MAX];
     int selectedLen;
-    AccurateNumber calculateSolution(SolutionStep *solution);
-    BlockTransfer* sortMatrix();
+    AccurateNumber *calculateSolution(SolutionStep *solution);
+    BlockTransfer *sortMatrix();
 
 public:
     void InitNumberMatrix();
     int GetNumber(int w, int h);
-    Response PostSolution(SolutionStep *solution);
+    Response *PushSolution(SolutionStep *solution);
     AccurateNumber *CalculateFormula(AccurateNumber accurateNumberLeft, char theOp, AccurateNumber accurateNumberRight);
 
     static GameEngine* Instance;

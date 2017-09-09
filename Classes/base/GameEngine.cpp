@@ -24,22 +24,22 @@ int GameEngine::GetNumber(int w, int h) {
     return NUMBER_DISABLE;
 }
 
-Response GameEngine::PostSolution(SolutionStep *solution) {
-    Response resp;
-    resp.isValid = false;
+Response *GameEngine::PushSolution(SolutionStep *solution) {
+    auto resp = new Response{};
+    resp->isValid = false;
     if (!solution) {
         return resp;
     }
     this->selectedLen = 0;
     auto calculateResult = this->calculateSolution(solution);
-    if (calculateResult.value / calculateResult.divider != 24 || calculateResult.value % calculateResult.divider != 0) {
+    if (calculateResult->value / calculateResult->divider != 24 || calculateResult->value % calculateResult->divider != 0) {
         return resp;
     }
     for (int i = 0; i < SELECTED_MAX; i++) {
         this->numberMatrix[this->selectedBlocks[i].H][this->selectedBlocks[i].W] = 0;
     }
-    resp.isValid = true;
-    resp.blockTransfer = this->sortMatrix();
+    resp->isValid = true;
+    resp->blockTransfer = this->sortMatrix();
     return resp;
 }
 
@@ -79,24 +79,24 @@ BlockTransfer* GameEngine::sortMatrix() {
     }
 }
 
-AccurateNumber GameEngine::calculateSolution(SolutionStep *solution) {
-    AccurateNumber accurateNumber;
-    accurateNumber.value = 0;
-    accurateNumber.divider = 1;
-    accurateNumber.wrong = false;
+AccurateNumber *GameEngine::calculateSolution(SolutionStep *solution) {
+    auto accurateNumber = new AccurateNumber{};
+    accurateNumber->value = 0;
+    accurateNumber->divider = 1;
+    accurateNumber->wrong = false;
     if (solution == NULL) {
         return accurateNumber;
     }
 
     // get left accurate number
-    AccurateNumber accurateNumberLeft;
-    accurateNumber.value = 0;
-    accurateNumber.divider = 1;
-    accurateNumber.wrong = false;
+    auto accurateNumberLeft = new AccurateNumber{};
+    accurateNumberLeft->value = 0;
+    accurateNumberLeft->divider = 1;
+    accurateNumberLeft->wrong = false;
 
     // check operator
     if (solution->Operator != '+' && solution->Operator != '-' && solution->Operator != '*' && solution->Operator != '/') {
-        accurateNumber.wrong = true;
+        accurateNumber->wrong = true;
         return accurateNumber;
     }
 
@@ -104,85 +104,66 @@ AccurateNumber GameEngine::calculateSolution(SolutionStep *solution) {
     if (solution->IsValueLeft && leftW >= 0 && leftW < MATRIX_WIDTH && leftH >= 0 && leftH < MATRIX_HEIGHT && \
     this->numberMatrix[leftH][leftW] > 0) {
         if (this->selectedLen == SELECTED_MAX) {
-            accurateNumber.wrong = true;
+            accurateNumber->wrong = true;
             return accurateNumber;
         }
         // check left location
         for (int i = 0; i < this->selectedLen; i++) {
             if (this->selectedBlocks[i].H == leftH && this->selectedBlocks[i].W == leftW) {
-                accurateNumber.wrong = true;
+                accurateNumber->wrong = true;
                 return accurateNumber;
             }
         }
         this->selectedBlocks[this->selectedLen].H = leftH;
         this->selectedBlocks[this->selectedLen].W = leftW;
         this->selectedLen++;
-        accurateNumberLeft.value = this->numberMatrix[leftH][leftW];
+        accurateNumberLeft->value = this->numberMatrix[leftH][leftW];
     } else if (!(solution->IsValueLeft) && solution != NULL) {
         accurateNumberLeft = this->calculateSolution(solution);
     } else {
-        accurateNumberLeft.wrong = true;
+        accurateNumberLeft->wrong = true;
     }
-    if (accurateNumberLeft.wrong) {
-        accurateNumber.wrong = true;
+    if (accurateNumberLeft->wrong) {
+        accurateNumber->wrong = true;
         return accurateNumber;
     }
 
     // get right accurate number
-    AccurateNumber accurateNumberRight;
-    accurateNumber.value = 0;
-    accurateNumber.divider = 1;
-    accurateNumber.wrong = false;
+    auto accurateNumberRight = new AccurateNumber{};
+    accurateNumberRight->value = 0;
+    accurateNumberRight->divider = 1;
+    accurateNumberRight->wrong = false;
 
     int rightW = solution->LocationRight.W, rightH = solution->LocationRight.H;
     if (solution->IsValueRight && rightW >= 0 && rightW < MATRIX_WIDTH && rightH >= 0 && rightH < MATRIX_HEIGHT && \
     this->numberMatrix[rightH][rightW] > 0) {
         if (this->selectedLen == SELECTED_MAX) {
-            accurateNumber.wrong = true;
+            accurateNumber->wrong = true;
             return accurateNumber;
         }
         // check right location
         for (int i = 0; i < this->selectedLen; i++) {
             if (this->selectedBlocks[i].H == rightH && this->selectedBlocks[i].W == rightW) {
-                accurateNumber.wrong = true;
+                accurateNumber->wrong = true;
                 return accurateNumber;
             }
         }
         this->selectedBlocks[this->selectedLen].H = rightH;
         this->selectedBlocks[this->selectedLen].W = rightW;
         this->selectedLen++;
-        accurateNumberRight.value = this->numberMatrix[rightH][rightW];
+        accurateNumberRight->value = this->numberMatrix[rightH][rightW];
     } else if (!(solution->IsValueRight) && solution != NULL) {
         accurateNumberRight = this->calculateSolution(solution);
     } else {
-        accurateNumberRight.wrong = true;
+        accurateNumberRight->wrong = true;
     }
-    if (accurateNumberRight.wrong) {
-        accurateNumber.wrong = true;
+    if (accurateNumberRight->wrong) {
+        accurateNumber->wrong = true;
         return accurateNumber;
     }
 
     // calculate result
-    switch (solution->Operator) {
-    case '+':
-        accurateNumber.value = accurateNumberLeft.value * accurateNumberRight.divider + accurateNumberRight.value * accurateNumberLeft.divider;
-        accurateNumber.divider = accurateNumberLeft.divider * accurateNumberRight.divider;
-        break;
-    case '-':
-        accurateNumber.value = accurateNumberLeft.value * accurateNumberRight.divider - accurateNumberRight.value * accurateNumberLeft.divider;
-        accurateNumber.divider = accurateNumberLeft.divider * accurateNumberRight.divider;
-        break;
-    case '*':
-        accurateNumber.value = accurateNumberLeft.value * accurateNumberRight.value;
-        accurateNumber.divider = accurateNumberLeft.divider * accurateNumberRight.divider;
-        break;
-    case '/':
-        accurateNumber.value = accurateNumberLeft.value * accurateNumberRight.divider;
-        accurateNumber.divider = accurateNumberLeft.divider * accurateNumberRight.value;
-        break;
-    default:
-        accurateNumber.wrong = true;
-    }
+    accurateNumber = this->CalculateFormula(*accurateNumberLeft, solution->Operator, *accurateNumberRight);
     return accurateNumber;
 }
 

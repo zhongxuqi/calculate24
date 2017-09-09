@@ -112,11 +112,11 @@ void NumberMatrix::handleSelectBlock() {
         }
         this->selectListener(accurateNumbers);
     } else {
-        this->cancelSelectBlock();
+        this->CancelSelectBlock();
     }
 }
 
-void NumberMatrix::cancelSelectBlock() {
+void NumberMatrix::CancelSelectBlock() {
     int selectedLen = this->selectedLen;
     for (int i=0;i<selectedLen;i++) {
         this->selectedNumberBlocks[i]->SetActiveState(false);
@@ -150,7 +150,6 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
     SolutionStep *solution;
     AccurateNumber lastResult;
     for (int i = 0; i < 3; i++) {
-        CCLOG("inputSteps %d", i);
         auto solutionStep = new SolutionStep{};
         
         // add left number
@@ -162,7 +161,6 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
                 solutionStep->LocationLeft.W = this->selectedBlockIndexes[i].W;
                 solutionStep->LocationLeft.H = this->selectedBlockIndexes[i].H;
                 matched = true;
-                CCLOG("inputSteps %d left find in number %d %d %d", i, j, accurateNumbers[j].value, accurateNumbers[j].divider);
                 break;
             }
         }
@@ -173,7 +171,6 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
                     solutionStep->IsValueLeft = false;
                     solutionStep->SolutionStepLeft = solutionSteps[j];
                     matched = true;
-                    CCLOG("inputSteps %d left find in solution %d %d %d", i, j, resultAccurateNumbers[j].value, resultAccurateNumbers[j].divider);
                     break;
                 }
             }
@@ -194,7 +191,6 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
                 solutionStep->LocationRight.W = this->selectedBlockIndexes[i].W;
                 solutionStep->LocationRight.H = this->selectedBlockIndexes[i].H;
                 matched = true;
-                CCLOG("inputSteps %d right find in number %d %d %d", i, j, accurateNumbers[j].value, accurateNumbers[j].divider);
                 break;
             }
         }
@@ -205,7 +201,6 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
                     solutionStep->IsValueRight = false;
                     solutionStep->SolutionStepRight = solutionSteps[j];
                     matched = true;
-                    CCLOG("inputSteps %d right find in solution %d %d %d", i, j, resultAccurateNumbers[j].value, resultAccurateNumbers[j].divider);
                     break;
                 }
             }
@@ -224,9 +219,8 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
         }
     }
 
-    CCLOG("inputSteps result %d %d", lastResult.value, lastResult.divider);
     if (lastResult.value / lastResult.divider == 24 && lastResult.value % lastResult.divider == 0) {
-        this->cancelSelectBlock();
+        this->CancelSelectBlock();
         return true;
     }
     return false;

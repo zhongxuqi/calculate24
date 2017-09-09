@@ -18,7 +18,6 @@ protected:
     cocos2d::EventListenerTouchOneByOne* eventListener;
     NumberBlock* numberNodeMatrix[MATRIX_HEIGHT][MATRIX_WIDTH];
     void handleSelectBlock();
-    void cancelSelectBlock();
     std::function<void(AccurateNumber*[4])> selectListener;
 
 public:
@@ -30,6 +29,7 @@ public:
     void setTouchable(bool isTouchable);
     void SetOnSelectListener(std::function<void(AccurateNumber*[4])> listener);
     bool PushSolution(InputStep* inputSteps[3]);
+    void CancelSelectBlock();
 };
 
 #endif

@@ -51,9 +51,7 @@ bool SingleGameScene::init() {
     this->addChild(this->dialog, -1);
     this->dialog->setZOrder(-1);
     this->dialog->SetOnFinishListener([this](InputStep* inputSteps[3]) {
-        CCLOG("In onFinishListener");
         if (this->numberMatrix->PushSolution(inputSteps)) {
-            CCLOG("In onFinishListener true");
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
         }
@@ -73,6 +71,7 @@ bool SingleGameScene::init() {
         this->dialog->SetOnCloseListener([this](Ref* pRef) {
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
+            this->numberMatrix->CancelSelectBlock();
         });
     });
     this->addChild(this->numberMatrix, 0);
