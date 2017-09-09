@@ -22,11 +22,11 @@ struct AccurateNumber {
 
 struct SolutionStep {
     bool IsValueLeft;
-    int LocationLeft[2];
+    BlockLocation LocationLeft;
     SolutionStep *SolutionStepLeft;
     char Operator;
     bool IsValueRight;
-    int LocationRight[2];
+    BlockLocation LocationRight;
     SolutionStep *SolutionStepRight;
 };
 

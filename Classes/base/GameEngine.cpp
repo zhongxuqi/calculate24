@@ -100,7 +100,7 @@ AccurateNumber GameEngine::calculateSolution(SolutionStep *solution) {
         return accurateNumber;
     }
 
-    int leftW = solution->LocationLeft[0], leftH = solution->LocationLeft[1];
+    int leftW = solution->LocationLeft.W, leftH = solution->LocationLeft.H;
     if (solution->IsValueLeft && leftW >= 0 && leftW < MATRIX_WIDTH && leftH >= 0 && leftH < MATRIX_HEIGHT && \
     this->numberMatrix[leftH][leftW] > 0) {
         if (this->selectedLen == SELECTED_MAX) {
@@ -134,7 +134,7 @@ AccurateNumber GameEngine::calculateSolution(SolutionStep *solution) {
     accurateNumber.divider = 1;
     accurateNumber.wrong = false;
 
-    int rightW = solution->LocationRight[0], rightH = solution->LocationRight[1];
+    int rightW = solution->LocationRight.W, rightH = solution->LocationRight.H;
     if (solution->IsValueRight && rightW >= 0 && rightW < MATRIX_WIDTH && rightH >= 0 && rightH < MATRIX_HEIGHT && \
     this->numberMatrix[rightH][rightW] > 0) {
         if (this->selectedLen == SELECTED_MAX) {

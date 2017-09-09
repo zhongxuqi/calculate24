@@ -23,6 +23,7 @@ public:
     static SolutionDialog* create(float width, float height);
     CREATE_FUNC(SolutionDialog);
     void SetOnCloseListener(std::function<void(cocos2d::Ref*)> listener);
+    void SetOnFinishListener(std::function<void(InputStep*[3])> listener);
 };
 
 #endif

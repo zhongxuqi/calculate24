@@ -14,6 +14,7 @@ bool SolutionBoard::init() {
     if (!Layer::init()) {
         return false;
     }
+    this->onFinishListener = NULL;
     return true;
 }
 
@@ -218,6 +219,10 @@ void SolutionBoard::cursorToNext() {
             this->currLine++;
         }
     }
+    if (this->currLine > 2 && this->onFinishListener != NULL) {
+        CCLOG("onFinishListener");
+        this->onFinishListener(this->inputSteps);
+    }
 }
 
 void SolutionBoard::calculateLine() {
@@ -246,4 +251,13 @@ void SolutionBoard::calculateLine() {
             }
         }
     }
+    this->inputSteps[this->currLine] = new InputStep{};
+    this->inputSteps[this->currLine]->NumberLeft = *accurateNumberLeft;
+    this->inputSteps[this->currLine]->OperatorTxt = this->operatorOuts[this->currLine]->GetOperator();
+    this->inputSteps[this->currLine]->NumberRight = *accurateNumberRight;
+    this->inputSteps[this->currLine]->NumberResult = *accurateNumber;
+}
+
+void SolutionBoard::SetOnFinishListener(std::function<void(InputStep*[3])> listener) {
+    this->onFinishListener = listener;
 }

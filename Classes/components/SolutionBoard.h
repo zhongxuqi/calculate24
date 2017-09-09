@@ -10,6 +10,13 @@
 #include "OperateDiv.h"
 #include "OperateBtn.h"
 
+struct InputStep {
+    AccurateNumber NumberLeft;
+    char OperatorTxt;
+    AccurateNumber NumberRight;
+    AccurateNumber NumberResult;
+};
+
 class SolutionBoard : public cocos2d::Layer {
 protected:
     virtual bool init();
@@ -38,11 +45,14 @@ protected:
     void cursorToNext();
     bool checkCursor();
     void calculateLine();
+    InputStep *inputSteps[3];
+    std::function<void(InputStep*[3])> onFinishListener;
 
 public:
     void InitNumber(AccurateNumber *accurateNumbers[4]);
     static SolutionBoard* create(float width, float height);
     CREATE_FUNC(SolutionBoard);
+    void SetOnFinishListener(std::function<void(InputStep*[3])> listener);
 };
 
 #endif

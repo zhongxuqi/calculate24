@@ -4,11 +4,12 @@
 #include "cocos2d.h"
 #include "NumberBlock.h"
 #include "../base/GameEngine.h"
+#include "SolutionBoard.h"
 
 class NumberMatrix : public cocos2d::Layer {
 protected:
     virtual bool init();
-    int selectedBlockIndexes[SELECTED_MAX][2];
+    BlockLocation selectedBlockIndexes[SELECTED_MAX];
     NumberBlock* selectedNumberBlocks[SELECTED_MAX];
     int selectedLen;
     float numberBlockSize;
@@ -28,6 +29,7 @@ public:
     virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     void setTouchable(bool isTouchable);
     void SetOnSelectListener(std::function<void(AccurateNumber*[4])> listener);
+    bool PushSolution(InputStep* inputSteps[3]);
 };
 
 #endif

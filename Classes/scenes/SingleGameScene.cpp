@@ -4,6 +4,7 @@
 #include "../components/ScoreBar.h"
 #include "../components/TimeBar.h"
 #include "../components/SolutionDialog.h"
+#include "../components/SolutionBoard.h"
 
 USING_NS_CC;
 
@@ -49,6 +50,14 @@ bool SingleGameScene::init() {
     this->dialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(this->dialog, -1);
     this->dialog->setZOrder(-1);
+    this->dialog->SetOnFinishListener([this](InputStep* inputSteps[3]) {
+        CCLOG("In onFinishListener");
+        if (this->numberMatrix->PushSolution(inputSteps)) {
+            CCLOG("In onFinishListener true");
+            this->dialog->setZOrder(-1);
+            this->numberMatrix->setTouchable(true);
+        }
+    });
 
     // add number matrix
     this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height * 0.7);

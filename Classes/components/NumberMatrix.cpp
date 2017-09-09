@@ -78,7 +78,7 @@ void NumberMatrix::handleTouch(Touch *touch) {
         if (selectedLen > 0) {
             auto isLegel = false;
             for (int i=0;i<selectedLen;i++) {
-                if (abs(this->selectedBlockIndexes[i][0] - w) + abs(this->selectedBlockIndexes[i][1] - h) <= 1) {
+                if (abs(this->selectedBlockIndexes[i].W - w) + abs(this->selectedBlockIndexes[i].H - h) <= 1) {
                     isLegel = true;
                     break;
                 }
@@ -90,8 +90,8 @@ void NumberMatrix::handleTouch(Touch *touch) {
         this->selectedLen = selectedLen + 1;
 
         this->selectedNumberBlocks[selectedLen] = this->numberNodeMatrix[h][w];
-        this->selectedBlockIndexes[selectedLen][0] = w;
-        this->selectedBlockIndexes[selectedLen][1] = h;
+        this->selectedBlockIndexes[selectedLen].W = w;
+        this->selectedBlockIndexes[selectedLen].H = h;
         this->numberNodeMatrix[h][w]->SetActiveState(true);
     }
 }
@@ -111,8 +111,9 @@ void NumberMatrix::handleSelectBlock() {
             accurateNumbers[i] = this->selectedNumberBlocks[i]->GetNumber();
         }
         this->selectListener(accurateNumbers);
+    } else {
+        this->cancelSelectBlock();
     }
-    this->cancelSelectBlock();
 }
 
 void NumberMatrix::cancelSelectBlock() {
@@ -125,4 +126,108 @@ void NumberMatrix::cancelSelectBlock() {
 
 void NumberMatrix::SetOnSelectListener(std::function<void(AccurateNumber*[4])> listener) {
     this->selectListener = listener;
+}
+
+bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
+    bool numberUsed[6];
+    for (int i = 0; i < 6; i++) {
+        if (i < 4) {
+            numberUsed[i] = false;
+        } else {
+            numberUsed[i] = true;
+        }
+    }
+    AccurateNumber accurateNumbers[4];
+    for (int i = 0; i < SELECTED_MAX; i++) {
+        accurateNumbers[i] = *(this->numberNodeMatrix[this->selectedBlockIndexes[i].H][this->selectedBlockIndexes[i].W]->GetNumber());
+    }
+    SolutionStep *solutionSteps[2];
+    AccurateNumber resultAccurateNumbers[2];
+    for (int i = 0; i < 2; i++) {
+        solutionSteps[i] = NULL;
+    }
+
+    SolutionStep *solution;
+    AccurateNumber lastResult;
+    for (int i = 0; i < 3; i++) {
+        CCLOG("inputSteps %d", i);
+        auto solutionStep = new SolutionStep{};
+        
+        // add left number
+        bool matched = false;
+        for (int j = 0; j < 4; j++) {
+            if (!numberUsed[j] && (inputSteps[i]->NumberLeft.value * accurateNumbers[j].divider == inputSteps[i]->NumberLeft.divider * accurateNumbers[j].value)) {
+                numberUsed[j] = true;
+                solutionStep->IsValueLeft = true;
+                solutionStep->LocationLeft.W = this->selectedBlockIndexes[i].W;
+                solutionStep->LocationLeft.H = this->selectedBlockIndexes[i].H;
+                matched = true;
+                CCLOG("inputSteps %d left find in number %d %d %d", i, j, accurateNumbers[j].value, accurateNumbers[j].divider);
+                break;
+            }
+        }
+        if (!matched) {
+            for (int j = 0; j < 2; j++) {
+                if (!numberUsed[4 + j] && (inputSteps[i]->NumberLeft.value * resultAccurateNumbers[j].divider == inputSteps[i]->NumberLeft.divider * resultAccurateNumbers[j].value)) {
+                    numberUsed[4 + j] = true;
+                    solutionStep->IsValueLeft = false;
+                    solutionStep->SolutionStepLeft = solutionSteps[j];
+                    matched = true;
+                    CCLOG("inputSteps %d left find in solution %d %d %d", i, j, resultAccurateNumbers[j].value, resultAccurateNumbers[j].divider);
+                    break;
+                }
+            }
+        }
+        if (!matched) {
+            return false;
+        }
+
+        // add operator
+        solutionStep->Operator = inputSteps[i]->OperatorTxt;
+
+        // add right number
+        matched = false;
+        for (int j = 0; j < 4; j++) {
+            if (!numberUsed[j] && (inputSteps[i]->NumberRight.value * accurateNumbers[j].divider == inputSteps[i]->NumberRight.divider * accurateNumbers[j].value)) {
+                numberUsed[j] = true;
+                solutionStep->IsValueRight = true;
+                solutionStep->LocationRight.W = this->selectedBlockIndexes[i].W;
+                solutionStep->LocationRight.H = this->selectedBlockIndexes[i].H;
+                matched = true;
+                CCLOG("inputSteps %d right find in number %d %d %d", i, j, accurateNumbers[j].value, accurateNumbers[j].divider);
+                break;
+            }
+        }
+        if (!matched) {
+            for (int j = 0; j < 2; j++) {
+                if (!numberUsed[4 + j] && (inputSteps[i]->NumberRight.value * resultAccurateNumbers[j].divider == inputSteps[i]->NumberRight.divider * resultAccurateNumbers[j].value)) {
+                    numberUsed[4 + j] = true;
+                    solutionStep->IsValueRight = false;
+                    solutionStep->SolutionStepRight = solutionSteps[j];
+                    matched = true;
+                    CCLOG("inputSteps %d right find in solution %d %d %d", i, j, resultAccurateNumbers[j].value, resultAccurateNumbers[j].divider);
+                    break;
+                }
+            }
+        }
+        if (!matched) {
+            return false;
+        }
+
+        if (i < 2) {
+            solutionSteps[i] = solutionStep;
+            resultAccurateNumbers[i] = inputSteps[i]->NumberResult;
+            numberUsed[4 + i] = false;
+        } else {
+            solution = solutionStep;
+            lastResult = inputSteps[i]->NumberResult;
+        }
+    }
+
+    CCLOG("inputSteps result %d %d", lastResult.value, lastResult.divider);
+    if (lastResult.value / lastResult.divider == 24 && lastResult.value % lastResult.divider == 0) {
+        this->cancelSelectBlock();
+        return true;
+    }
+    return false;
 }

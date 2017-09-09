@@ -90,3 +90,7 @@ void SolutionDialog::SetNumbers(AccurateNumber *accurateNumbers[4]) {
     }
     this->solutionBoard->InitNumber(this->accurateNumbers);
 }
+
+void SolutionDialog::SetOnFinishListener(std::function<void(InputStep*[3])> listener) {
+    this->solutionBoard->SetOnFinishListener(listener);
+}
