@@ -49,6 +49,14 @@ NumberBlock* NumberBlock::create(float width, int number) {
     numberBlock->NodeNumber->setTextColor(Colors::GetColorsByNumber(numberBlock->number));
     numberBlock->addChild(numberBlock->NodeNumber, 0);
 
+    // add event listener
+    numberBlock->eventListener = EventListenerTouchOneByOne::create();
+    numberBlock->eventListener->onTouchBegan = CC_CALLBACK_2(NumberBlock::onTouchBegan, numberBlock);
+    numberBlock->eventListener->onTouchMoved = CC_CALLBACK_2(NumberBlock::onTouchMoved, numberBlock);
+    numberBlock->eventListener->onTouchEnded = CC_CALLBACK_2(NumberBlock::onTouchEnded, numberBlock);
+    numberBlock->eventListener->setSwallowTouches(true);
+    numberBlock->_eventDispatcher->addEventListenerWithSceneGraphPriority(numberBlock->eventListener, numberBlock);
+
     return numberBlock;
 }
 
@@ -72,4 +80,34 @@ bool NumberBlock::IsActive() {
 
 int NumberBlock::GetNumber() {
     return this->number;
+}
+
+bool NumberBlock::onTouchBegan(Touch *touch, Event *unused_event) {
+    auto locationOnView = this->convertToNodeSpace(touch->getLocation());
+    if (locationOnView.x > 0 && locationOnView.x < this->getContentSize().width && \
+    locationOnView.y > 0 && locationOnView.y < this->getContentSize().height) {
+        if (this->clickListener != NULL) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void NumberBlock::onTouchMoved(Touch *touch, Event *unused_event) {
+    
+}
+
+void NumberBlock::onTouchEnded(Touch *touch, Event *unused_event) {
+    auto locationOnView = this->convertToNodeSpace(touch->getLocation());
+    if (locationOnView.x > 0 && locationOnView.x < this->getContentSize().width && \
+    locationOnView.y > 0 && locationOnView.y < this->getContentSize().height) {
+        if (this->clickListener != NULL) {
+            this->clickListener(unused_event->getCurrentTarget());
+        }
+    }
+    this->clickListener(unused_event->getCurrentTarget());
+}
+
+void NumberBlock::SetOnClickListener(std::function<void(cocos2d::Node*)> listener) {
+    this->clickListener = listener;
 }

@@ -22,8 +22,15 @@ protected:
     OperateMult* operateMultBtn;
     OperateDiv* operateDivBtn;
     NumberBlock* numberBlocks[4];
+    NumberBlock* numberOuts[3];
+    NumberBlock* numberNewBlocks[2];
     float numberSize;
     float operateSize;
+    int currLine;
+    int currIndex;
+    bool emptyBlock[4];
+    cocos2d::Vec2 getTargetLocation();
+    void onNumberClickListener(cocos2d::Node* node);
 
 public:
     void InitNumber(int numbers[4]);

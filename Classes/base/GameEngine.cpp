@@ -45,7 +45,7 @@ Response GameEngine::PostSolution(SolutionStep *solution) {
 
 BlockTransfer* GameEngine::sortMatrix() {
     BlockTransfer *head = NULL, *curr = NULL;
-    for (int h = 0; h < MATRIX_HEIGHT; h++) {
+    for (int h = 0; h < MATRIX_HEIGHT - 1; h++) {
         for (int w = 0; w < MATRIX_WIDTH; w++) {
             if (this->numberMatrix[h][w] == 0) {
                 for (int ht = h + 1; ht < MATRIX_HEIGHT; ht++) {
