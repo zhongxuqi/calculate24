@@ -24,15 +24,32 @@ int GameEngine::GetNumber(int w, int h) {
     return NUMBER_DISABLE;
 }
 
+void GameEngine::printSolution(SolutionStep *solution, int layer) {
+    if (solution->IsValueLeft) {
+        int w = solution->LocationLeft.W, h = solution->LocationLeft.H;
+        CCLOG("[%d] Value Left: %d", layer, this->numberMatrix[h][w]);
+    } else {
+        printSolution(solution->SolutionStepLeft, layer + 1);
+    }
+    CCLOG("[%d] Operator: %c", layer, solution->Operator);
+    if (solution->IsValueRight) {
+        int w = solution->LocationRight.W, h = solution->LocationRight.H;
+        CCLOG("[%d] Value Right: %d", layer, this->numberMatrix[h][w]);
+    } else {
+        printSolution(solution->SolutionStepRight, layer + 1);
+    }
+}
+
 Response *GameEngine::PushSolution(SolutionStep *solution) {
     auto resp = new Response{};
     resp->isValid = false;
-    if (!solution) {
-        return resp;
-    }
+    printSolution(solution, 0);
     this->selectedLen = 0;
     auto calculateResult = this->calculateSolution(solution);
-    if (calculateResult->value / calculateResult->divider != 24 || calculateResult->value % calculateResult->divider != 0) {
+    if (calculateResult->wrong || calculateResult->value / calculateResult->divider != 24 || calculateResult->value % calculateResult->divider != 0) {
+        return resp;
+    }
+    if (this->selectedLen != 4) {
         return resp;
     }
     for (int i = 0; i < SELECTED_MAX; i++) {
@@ -47,13 +64,13 @@ BlockTransfer* GameEngine::sortMatrix() {
     BlockTransfer *head = NULL, *curr = NULL;
     for (int h = 0; h < MATRIX_HEIGHT - 1; h++) {
         for (int w = 0; w < MATRIX_WIDTH; w++) {
-            if (this->numberMatrix[h][w] == 0) {
+            if (this->numberMatrix[h][w] <= 0) {
                 for (int ht = h + 1; ht < MATRIX_HEIGHT; ht++) {
-                    if (this->numberMatrix[ht][w] != 0) {
+                    if (this->numberMatrix[ht][w] > 0) {
                         this->numberMatrix[h][w] = this->numberMatrix[ht][w];
                         this->numberMatrix[ht][w] = 0;
 
-                        // add transfert to chain
+                        // add transfer to chain
                         if (head == NULL) {
                             head = new BlockTransfer{};
                             head->OldLocation.H = ht;
@@ -71,21 +88,37 @@ BlockTransfer* GameEngine::sortMatrix() {
                             curr->Next->Next = NULL;
                             curr = curr->Next;
                         }
+                        CCLOG("transfer: (%d, %d) => (%d, %d)", curr->OldLocation.H, curr->OldLocation.W, \
+                        curr->NewLocation.H, curr->NewLocation.W);
                         break;
                     }
                 }
             }
         }
     }
+    return head;
 }
 
 AccurateNumber *GameEngine::calculateSolution(SolutionStep *solution) {
+    CCLOG("calculateSolution");
     auto accurateNumber = new AccurateNumber{};
     accurateNumber->value = 0;
     accurateNumber->divider = 1;
-    accurateNumber->wrong = false;
+    accurateNumber->wrong = true;
     if (solution == NULL) {
+        accurateNumber->wrong = false;
         return accurateNumber;
+    }
+    
+    // check operator
+    if (solution->Operator != '+' && solution->Operator != '-' && solution->Operator != '*' && solution->Operator != '/') {
+        accurateNumber->wrong = true;
+        return accurateNumber;
+    }
+
+    if (solution->IsValueLeft) {
+        int w = solution->LocationLeft.W, h = solution->LocationLeft.H;
+        CCLOG("accurateNumberLeft (%d, %d) %d", w, h, this->numberMatrix[h][w]);
     }
 
     // get left accurate number
@@ -93,12 +126,6 @@ AccurateNumber *GameEngine::calculateSolution(SolutionStep *solution) {
     accurateNumberLeft->value = 0;
     accurateNumberLeft->divider = 1;
     accurateNumberLeft->wrong = false;
-
-    // check operator
-    if (solution->Operator != '+' && solution->Operator != '-' && solution->Operator != '*' && solution->Operator != '/') {
-        accurateNumber->wrong = true;
-        return accurateNumber;
-    }
 
     int leftW = solution->LocationLeft.W, leftH = solution->LocationLeft.H;
     if (solution->IsValueLeft && leftW >= 0 && leftW < MATRIX_WIDTH && leftH >= 0 && leftH < MATRIX_HEIGHT && \
@@ -118,14 +145,21 @@ AccurateNumber *GameEngine::calculateSolution(SolutionStep *solution) {
         this->selectedBlocks[this->selectedLen].W = leftW;
         this->selectedLen++;
         accurateNumberLeft->value = this->numberMatrix[leftH][leftW];
-    } else if (!(solution->IsValueLeft) && solution != NULL) {
-        accurateNumberLeft = this->calculateSolution(solution);
+    } else if (!(solution->IsValueLeft) && solution->SolutionStepLeft != NULL) {
+        accurateNumberLeft = this->calculateSolution(solution->SolutionStepLeft);
     } else {
         accurateNumberLeft->wrong = true;
     }
     if (accurateNumberLeft->wrong) {
         accurateNumber->wrong = true;
         return accurateNumber;
+    }
+
+    CCLOG("accurateNumberLeft %d %d", accurateNumberLeft->value, accurateNumberLeft->divider);
+
+    if (solution->IsValueRight) {
+        int w = solution->LocationRight.W, h = solution->LocationRight.H;
+        CCLOG("accurateNumberRight %d", this->numberMatrix[h][w]);
     }
 
     // get right accurate number
@@ -152,8 +186,8 @@ AccurateNumber *GameEngine::calculateSolution(SolutionStep *solution) {
         this->selectedBlocks[this->selectedLen].W = rightW;
         this->selectedLen++;
         accurateNumberRight->value = this->numberMatrix[rightH][rightW];
-    } else if (!(solution->IsValueRight) && solution != NULL) {
-        accurateNumberRight = this->calculateSolution(solution);
+    } else if (!(solution->IsValueRight) && solution->SolutionStepRight != NULL) {
+        accurateNumberRight = this->calculateSolution(solution->SolutionStepRight);
     } else {
         accurateNumberRight->wrong = true;
     }
@@ -162,8 +196,13 @@ AccurateNumber *GameEngine::calculateSolution(SolutionStep *solution) {
         return accurateNumber;
     }
 
+    CCLOG("accurateNumberRight %d %d", accurateNumberRight->value, accurateNumberRight->divider);
+
     // calculate result
     accurateNumber = this->CalculateFormula(*accurateNumberLeft, solution->Operator, *accurateNumberRight);
+
+    delete accurateNumberLeft;
+    delete accurateNumberRight;
     return accurateNumber;
 }
 

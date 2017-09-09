@@ -49,6 +49,7 @@ protected:
     int selectedLen;
     AccurateNumber *calculateSolution(SolutionStep *solution);
     BlockTransfer *sortMatrix();
+    void printSolution(SolutionStep *solution, int layer);
 
 public:
     void InitNumberMatrix();

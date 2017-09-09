@@ -158,8 +158,8 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
             if (!numberUsed[j] && (inputSteps[i]->NumberLeft.value * accurateNumbers[j].divider == inputSteps[i]->NumberLeft.divider * accurateNumbers[j].value)) {
                 numberUsed[j] = true;
                 solutionStep->IsValueLeft = true;
-                solutionStep->LocationLeft.W = this->selectedBlockIndexes[i].W;
-                solutionStep->LocationLeft.H = this->selectedBlockIndexes[i].H;
+                solutionStep->LocationLeft.W = this->selectedBlockIndexes[j].W;
+                solutionStep->LocationLeft.H = this->selectedBlockIndexes[j].H;
                 matched = true;
                 break;
             }
@@ -188,8 +188,8 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
             if (!numberUsed[j] && (inputSteps[i]->NumberRight.value * accurateNumbers[j].divider == inputSteps[i]->NumberRight.divider * accurateNumbers[j].value)) {
                 numberUsed[j] = true;
                 solutionStep->IsValueRight = true;
-                solutionStep->LocationRight.W = this->selectedBlockIndexes[i].W;
-                solutionStep->LocationRight.H = this->selectedBlockIndexes[i].H;
+                solutionStep->LocationRight.W = this->selectedBlockIndexes[j].W;
+                solutionStep->LocationRight.H = this->selectedBlockIndexes[j].H;
                 matched = true;
                 break;
             }
@@ -219,8 +219,16 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
         }
     }
 
-    if (lastResult.value / lastResult.divider == 24 && lastResult.value % lastResult.divider == 0) {
-        this->CancelSelectBlock();
+    auto resp = gameEngine->PushSolution(solution);
+    CCLOG("game engine get resp");
+    if (resp->isValid) {
+        CCLOG("print transfer");
+        auto transfer = resp->blockTransfer;
+        while(transfer != NULL) {
+            CCLOG("(%d, %d) => (%d, %d)", transfer->OldLocation.W, transfer->OldLocation.H, \
+                transfer->NewLocation.W, transfer->NewLocation.H);
+            transfer = transfer->Next;
+        }
         return true;
     }
     return false;
