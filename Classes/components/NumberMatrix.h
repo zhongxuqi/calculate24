@@ -18,7 +18,7 @@ protected:
     NumberBlock* numberNodeMatrix[MATRIX_HEIGHT][MATRIX_WIDTH];
     void handleSelectBlock();
     void cancelSelectBlock();
-    std::function<void(int[4])> selectListener;
+    std::function<void(AccurateNumber*[4])> selectListener;
 
 public:
     static NumberMatrix* create(float width, float height);
@@ -27,7 +27,7 @@ public:
     virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     void setTouchable(bool isTouchable);
-    void SetOnSelectListener(std::function<void(int[4])> listener);
+    void SetOnSelectListener(std::function<void(AccurateNumber*[4])> listener);
 };
 
 #endif

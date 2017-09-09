@@ -54,6 +54,7 @@ public:
     void InitNumberMatrix();
     int GetNumber(int w, int h);
     Response PostSolution(SolutionStep *solution);
+    AccurateNumber *CalculateFormula(AccurateNumber accurateNumberLeft, char theOp, AccurateNumber accurateNumberRight);
 
     static GameEngine* Instance;
 };

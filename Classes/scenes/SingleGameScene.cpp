@@ -55,9 +55,9 @@ bool SingleGameScene::init() {
     this->numberMatrix->setAnchorPoint(Point(0.5, 0));
     this->numberMatrix->setPosition(visibleSize.width / 2, 20);
     this->numberMatrix->setTouchable(true);
-    this->numberMatrix->SetOnSelectListener([this](int numbers[4]) {
+    this->numberMatrix->SetOnSelectListener([this](AccurateNumber *accurateNumber[4]) {
         this->dialog->setZOrder(1);
-        this->dialog->SetNumbers(numbers);
+        this->dialog->SetNumbers(accurateNumber);
         this->numberMatrix->setTouchable(false);
 
         // add close listener

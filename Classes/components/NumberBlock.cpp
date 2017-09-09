@@ -12,9 +12,9 @@ bool NumberBlock::init() {
     return true;
 }
 
-NumberBlock* NumberBlock::create(float width, int number) {
+NumberBlock* NumberBlock::create(float width, AccurateNumber *accurateNumber) {
     auto numberBlock = NumberBlock::create();
-    numberBlock->number = number;
+    numberBlock->accurateNumber = accurateNumber;
     numberBlock->setContentSize(Size(width, width));
     numberBlock->setIgnoreAnchorPointForPosition(false);
 
@@ -36,17 +36,20 @@ NumberBlock* NumberBlock::create(float width, int number) {
         Vec2(halfStrokeWidth, width - halfStrokeWidth),
     };
     numberBlock->NodeBackground->drawPolygon(numberBlock->points, 4, Color4F(Colors::Transparent), \
-        numberBlock->borderWidth, Color4F(Colors::GetColorsByNumber(numberBlock->number)));
+        numberBlock->borderWidth, Color4F(Colors::GetColorsByNumber(numberBlock->accurateNumber)));
     numberBlock->addChild(numberBlock->NodeBackground, 0);
 
     // add number
     std::stringstream numberStr;
-    numberStr << number;
+    numberStr << numberBlock->accurateNumber->value;
+    if (numberBlock->accurateNumber->divider != 1) {
+        numberStr << '/' << numberBlock->accurateNumber->divider;
+    }
     numberBlock->NodeNumber = Label::createWithTTF(numberStr.str(), "fonts/arial.ttf", width / 2);
     numberBlock->NodeNumber->enableBold();
     numberBlock->NodeNumber->setAnchorPoint(Point(0.5, 0.5));
     numberBlock->NodeNumber->setPosition(width / 2, width / 2);
-    numberBlock->NodeNumber->setTextColor(Colors::GetColorsByNumber(numberBlock->number));
+    numberBlock->NodeNumber->setTextColor(Colors::GetColorsByNumber(numberBlock->accurateNumber));
     numberBlock->addChild(numberBlock->NodeNumber, 0);
 
     // add event listener
@@ -64,13 +67,13 @@ void NumberBlock::SetActiveState(bool isActive) {
     this->NodeBackground->clear();
     this->activeState = isActive;
     if (this->activeState) {
-        this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::GetColorsByNumber(this->number)), \
-            this->borderWidth, Color4F(Colors::GetColorsByNumber(this->number)));
+        this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::GetColorsByNumber(this->accurateNumber)), \
+            this->borderWidth, Color4F(Colors::GetColorsByNumber(this->accurateNumber)));
         this->NodeNumber->setTextColor(Colors::BgColor);
     } else {
         this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::Transparent), this->borderWidth, \
-            Color4F(Colors::GetColorsByNumber(this->number)));
-        this->NodeNumber->setTextColor(Colors::GetColorsByNumber(this->number));
+            Color4F(Colors::GetColorsByNumber(this->accurateNumber)));
+        this->NodeNumber->setTextColor(Colors::GetColorsByNumber(this->accurateNumber));
     }
 }
 
@@ -78,8 +81,8 @@ bool NumberBlock::IsActive() {
     return this->activeState;
 }
 
-int NumberBlock::GetNumber() {
-    return this->number;
+AccurateNumber *NumberBlock::GetNumber() {
+    return this->accurateNumber;
 }
 
 bool NumberBlock::onTouchBegan(Touch *touch, Event *unused_event) {

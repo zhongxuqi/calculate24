@@ -2,6 +2,7 @@
 #define __NUMBER_BLOCK_H__
 
 #include "cocos2d.h"
+#include "../base/GameEngine.h"
 
 class NumberBlock : public cocos2d::Layer {
 protected:
@@ -11,17 +12,17 @@ protected:
     cocos2d::Vec2 *points;
     bool activeState;
     virtual bool init();
-    int number;
+    AccurateNumber *accurateNumber;
     cocos2d::EventListenerTouchOneByOne* eventListener;
     std::function<void(cocos2d::Node*)> clickListener;
     
 
 public:
-    static NumberBlock* create(float width, int number);
+    static NumberBlock* create(float width, AccurateNumber *accurateNumber);
     CREATE_FUNC(NumberBlock);
     void SetActiveState(bool isActive);
     bool IsActive();
-    int GetNumber();
+    AccurateNumber *GetNumber();
     virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);

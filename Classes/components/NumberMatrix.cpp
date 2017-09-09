@@ -24,7 +24,10 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
     numberMatrix->numberBlockInterval = 0.02 * width;
     for (int h=0;h<MATRIX_HEIGHT;h++) {
         for (int w=0;w<MATRIX_WIDTH;w++) {
-            auto numberBlock = NumberBlock::create(numberMatrix->numberBlockSize, gameEngine->GetNumber(w, h));
+            auto accurateNumber = new AccurateNumber{};
+            accurateNumber->value = gameEngine->GetNumber(w, h);
+            accurateNumber->divider = 1;
+            auto numberBlock = NumberBlock::create(numberMatrix->numberBlockSize, accurateNumber);
             numberMatrix->numberNodeMatrix[h][w] = numberBlock;
 
             // add number block
@@ -103,11 +106,11 @@ void NumberMatrix::setTouchable(bool isTouchable) {
 
 void NumberMatrix::handleSelectBlock() {
     if (this->selectListener != NULL && this->selectedLen == SELECTED_MAX) {
-        int numbers[4];
+        auto accurateNumbers = new AccurateNumber*[4];
         for (int i = 0; i < 4; i++) {
-            numbers[i] = this->selectedNumberBlocks[i]->GetNumber();
+            accurateNumbers[i] = this->selectedNumberBlocks[i]->GetNumber();
         }
-        this->selectListener(numbers);
+        this->selectListener(accurateNumbers);
     }
     this->cancelSelectBlock();
 }
@@ -120,6 +123,6 @@ void NumberMatrix::cancelSelectBlock() {
     this->selectedLen = 0;
 }
 
-void NumberMatrix::SetOnSelectListener(std::function<void(int[4])> listener) {
+void NumberMatrix::SetOnSelectListener(std::function<void(AccurateNumber*[4])> listener) {
     this->selectListener = listener;
 }

@@ -77,11 +77,16 @@ void SolutionDialog::addResetBtn() {
     this->resetButton->setAnchorPoint(Point(1, 1));
     this->resetButton->setPosition(Point(width, height));
     this->addChild(this->resetButton, 0);
+
+    // add event
+    this->resetButton->addClickEventListener([this](Ref* ref) {
+        this->solutionBoard->InitNumber(this->accurateNumbers);
+    });
 }
 
-void SolutionDialog::SetNumbers(int numbers[4]) {
+void SolutionDialog::SetNumbers(AccurateNumber *accurateNumbers[4]) {
     for (int i = 0; i < 4; i++) {
-        this->numbers[i] = numbers[i];
+        this->accurateNumbers[i] = accurateNumbers[i];
     }
-    this->solutionBoard->InitNumber(this->numbers);
+    this->solutionBoard->InitNumber(this->accurateNumbers);
 }

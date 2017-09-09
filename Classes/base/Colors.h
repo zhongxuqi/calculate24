@@ -2,6 +2,7 @@
 #define __COLORS_H__
 
 #include "cocos2d.h"
+#include "GameEngine.h"
 
 class Colors {
 public:
@@ -10,7 +11,7 @@ public:
     static cocos2d::Color4B BgColor;
     static cocos2d::Color4B OutNumberColor;
     static cocos2d::Color4B NumberColors[];
-    static cocos2d::Color4B GetColorsByNumber(int);
+    static cocos2d::Color4B GetColorsByNumber(AccurateNumber *accurateNumber);
 };
 
 #endif

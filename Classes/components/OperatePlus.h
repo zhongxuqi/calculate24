@@ -4,8 +4,9 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "NumberBlock.h"
+#include "OperateBtn.h"
 
-class OperatePlus : public cocos2d::Layer {
+class OperatePlus : public OperateBtn {
 protected:
     virtual bool init();
 

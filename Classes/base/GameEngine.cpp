@@ -185,3 +185,32 @@ AccurateNumber GameEngine::calculateSolution(SolutionStep *solution) {
     }
     return accurateNumber;
 }
+
+AccurateNumber *GameEngine::CalculateFormula(AccurateNumber accurateNumberLeft, char theOp, AccurateNumber accurateNumberRight) {
+    auto accurateNumber = new AccurateNumber{};
+    switch (theOp) {
+    case '+':
+        accurateNumber->value = accurateNumberLeft.value * accurateNumberRight.divider + accurateNumberRight.value * accurateNumberLeft.divider;
+        accurateNumber->divider = accurateNumberLeft.divider * accurateNumberRight.divider;
+        break;
+    case '-':
+        accurateNumber->value = accurateNumberLeft.value * accurateNumberRight.divider - accurateNumberRight.value * accurateNumberLeft.divider;
+        accurateNumber->divider = accurateNumberLeft.divider * accurateNumberRight.divider;
+        break;
+    case '*':
+        accurateNumber->value = accurateNumberLeft.value * accurateNumberRight.value;
+        accurateNumber->divider = accurateNumberLeft.divider * accurateNumberRight.divider;
+        break;
+    case '/':
+        accurateNumber->value = accurateNumberLeft.value * accurateNumberRight.divider;
+        accurateNumber->divider = accurateNumberLeft.divider * accurateNumberRight.value;
+        break;
+    default:
+        accurateNumber->wrong = true;
+    }
+    if (accurateNumber->value % accurateNumber->divider == 0) {
+        accurateNumber->value = accurateNumber->value / accurateNumber->divider;
+        accurateNumber->divider = 1;
+    }
+    return accurateNumber;
+}
