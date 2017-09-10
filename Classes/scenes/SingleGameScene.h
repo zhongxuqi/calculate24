@@ -6,6 +6,8 @@
 #include "../components/SolutionDialog.h"
 #include "../components/ScoreBar.h"
 #include "../components/TimeBar.h"
+#include "../components/LevelBar.h"
+#include "../components/TargetBar.h"
 
 class SingleGameScene : public cocos2d::Scene {
 protected:
@@ -13,6 +15,8 @@ protected:
     SolutionDialog* dialog;
     ScoreBar* scoreBar;
     TimeBar *timeBar;
+    LevelBar *levelBar;
+    TargetBar *targetBar;
     void updateCustom(float dt);
 
 public:

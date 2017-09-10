@@ -8,6 +8,7 @@ GameEngine* GameEngine::Instance = new GameEngine();
 
 GameEngine::GameEngine() {
     this->isEnd = true;
+    this->level = 1;
 }
 
 void GameEngine::initNumberMatrix() {
@@ -287,8 +288,9 @@ int GameEngine::GetRoundTarget() {
 
 void GameEngine::StartGame() {
     this->initNumberMatrix();
-    this->isEnd = true;
+    this->isEnd = false;
     this->startTime = TimeUtils::getCurrentTime();
+    this->roundTarget = 8;
 }
 
 void GameEngine::TimeTick() {
@@ -297,4 +299,8 @@ void GameEngine::TimeTick() {
 
 long long GameEngine::GetStartTime() {
     return this->startTime;
+}
+
+int GameEngine::GetLevel() {
+    return this->level;
 }

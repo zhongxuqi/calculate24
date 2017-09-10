@@ -44,11 +44,27 @@ bool SingleGameScene::init() {
     this->scoreBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
     this->addChild(this->scoreBar, 0);
 
+    // add level bar
+    this->levelBar = LevelBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
+    auto levelBarSize = this->levelBar->getContentSize();
+    this->levelBar->setAnchorPoint(Point(0.5, 1));
+    this->levelBar->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - 20);
+    this->addChild(this->levelBar, 0);
+    this->levelBar->SetLevel(gameEngine->GetLevel());
+
+    // add target bar
+    this->targetBar = TargetBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
+    auto targetBarSize = this->targetBar->getContentSize();
+    this->targetBar->setAnchorPoint(Point(1, 1));
+    this->targetBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(this->targetBar, 0);
+    this->targetBar->SetTarget(gameEngine->GetRoundTarget());
+
     // add time bar
-    this->timeBar = TimeBar::create(visibleSize.width - scoreBarSize.width - 60, visibleSize.height / 18);
+    this->timeBar = TimeBar::create(visibleSize.width - 40, visibleSize.height / 18);
     auto timeBarSize = this->timeBar->getContentSize();
-    this->timeBar->setAnchorPoint(Point(1, 1));
-    this->timeBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->timeBar->setAnchorPoint(Point(0.5, 1));
+    this->timeBar->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - scoreBarSize.height - 40);
     this->addChild(this->timeBar, 0);
 
     // add dialog

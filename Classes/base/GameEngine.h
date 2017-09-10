@@ -56,6 +56,7 @@ protected:
     // game info
     int score;
     int roundTarget;
+    int level;
     long long startTime;
     bool isEnd;
 
@@ -69,6 +70,7 @@ public:
     void StartGame();
     void TimeTick();
     long long GetStartTime();
+    int GetLevel();
 };
 
 #endif
