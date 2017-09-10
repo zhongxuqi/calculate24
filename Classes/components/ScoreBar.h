@@ -6,13 +6,16 @@
 class ScoreBar: public cocos2d::Layer {
 protected:
     virtual bool init();
+    int score;
+    cocos2d::Label *scoreLabel;
 
 public:
     static ScoreBar* create(float width, float height);
     CREATE_FUNC(ScoreBar);
     ScoreBar();
     cocos2d::Layer* const ContentLayer;
-    void SetScore(cocos2d::Label* score);
+    void SetScore(int score);
+    int GetScore();
 };
 
 #endif

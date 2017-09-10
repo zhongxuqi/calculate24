@@ -1,7 +1,6 @@
 #include "SimpleAudioEngine.h"
 #include "SingleGameScene.h"
 #include "../components/BgGameDefault.h"
-#include "../components/ScoreBar.h"
 #include "../components/TimeBar.h"
 #include "../components/SolutionDialog.h"
 #include "../components/SolutionBoard.h"
@@ -31,11 +30,11 @@ bool SingleGameScene::init() {
     this->addChild(LayerBgGameDefault, 0);
 
     // add user score
-    auto scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto scoreBarSize = scoreBar->getContentSize();
-    scoreBar->setAnchorPoint(Point(0, 1));
-    scoreBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
-    this->addChild(scoreBar, 0);
+    this->scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
+    auto scoreBarSize = this->scoreBar->getContentSize();
+    this->scoreBar->setAnchorPoint(Point(0, 1));
+    this->scoreBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
+    this->addChild(this->scoreBar, 0);
 
     // add time bar
     auto timeBar = TimeBar::create(visibleSize.width - scoreBarSize.width - 60, visibleSize.height / 18);
@@ -54,6 +53,7 @@ bool SingleGameScene::init() {
         if (this->numberMatrix->PushSolution(inputSteps)) {
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
+            this->scoreBar->SetScore(this->scoreBar->GetScore() + 1);
         }
     });
 

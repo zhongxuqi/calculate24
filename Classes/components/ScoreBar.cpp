@@ -13,14 +13,19 @@ bool ScoreBar::init() {
     if (!Layer::init()) {
         return false;
     }
+    this->score = 0;
     return true;
 }
 
-void ScoreBar::SetScore(Label* score) {
-    auto contentSize = this->ContentLayer->getContentSize();
-    score->setAnchorPoint(Point(1, 0.5));
-    score->setPosition(Point(contentSize.width - 20, contentSize.height * 0.5));
-    this->ContentLayer->addChild(score, 0);
+void ScoreBar::SetScore(int score) {
+    this->score = score;
+    std::stringstream numberStr;
+    numberStr << this->score;
+    this->scoreLabel->setString(numberStr.str());
+}
+
+int ScoreBar::GetScore() {
+    return this->score;
 }
 
 ScoreBar* ScoreBar::create(float width, float height) {
@@ -46,6 +51,12 @@ ScoreBar* ScoreBar::create(float width, float height) {
     scoreBar->ContentLayer->setPosition(Point(width, height /2));
     scoreBar->addChild(scoreBar->ContentLayer, 0);
 
-    scoreBar->SetScore(Label::createWithTTF("100", "fonts/arial.ttf", height / 2));
+    // add score text
+    scoreBar->scoreLabel = Label::createWithTTF("0", "fonts/arial.ttf", height / 2);
+    scoreBar->scoreLabel->setAnchorPoint(Point(1, 0.5));
+    auto contentSize = scoreBar->ContentLayer->getContentSize();
+    scoreBar->scoreLabel->setPosition(Point(contentSize.width - 20, contentSize.height * 0.5));
+    scoreBar->ContentLayer->addChild(scoreBar->scoreLabel, 0);
+
     return scoreBar;
 }
