@@ -15,7 +15,7 @@ protected:
     AccurateNumber *accurateNumber;
     cocos2d::EventListenerTouchOneByOne* eventListener;
     std::function<void(cocos2d::Node*)> clickListener;
-    
+    bool visible;
 
 public:
     static NumberBlock* create(float width, AccurateNumber *accurateNumber);
@@ -23,6 +23,7 @@ public:
     void SetActiveState(bool isActive);
     bool IsActive();
     AccurateNumber *GetNumber();
+    void SetNumber(AccurateNumber *accurateNumber);
     virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);

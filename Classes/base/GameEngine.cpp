@@ -88,8 +88,6 @@ BlockTransfer* GameEngine::sortMatrix() {
                             curr->Next->Next = NULL;
                             curr = curr->Next;
                         }
-                        CCLOG("transfer: (%d, %d) => (%d, %d)", curr->OldLocation.H, curr->OldLocation.W, \
-                        curr->NewLocation.H, curr->NewLocation.W);
                         break;
                     }
                 }

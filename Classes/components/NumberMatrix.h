@@ -14,11 +14,12 @@ protected:
     int selectedLen;
     float numberBlockSize;
     float numberBlockInterval;
-    void handleTouch(cocos2d::Touch *touch);
+    bool handleTouch(cocos2d::Touch *touch);
     cocos2d::EventListenerTouchOneByOne* eventListener;
     NumberBlock* numberNodeMatrix[MATRIX_HEIGHT][MATRIX_WIDTH];
     void handleSelectBlock();
     std::function<void(AccurateNumber*[4])> selectListener;
+    void handleTransfer(BlockTransfer *transfer);
 
 public:
     static NumberMatrix* create(float width, float height);

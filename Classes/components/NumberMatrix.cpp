@@ -51,8 +51,7 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
 }
 
 bool NumberMatrix::onTouchBegan(Touch *touch, Event *unused_event) {
-    this->handleTouch(touch);
-    return true;
+    return this->handleTouch(touch);
 }
 
 void NumberMatrix::onTouchMoved(Touch *touch, Event *unused_event) {
@@ -63,16 +62,17 @@ void NumberMatrix::onTouchEnded(Touch *touch, Event *unused_event) {
     this->handleSelectBlock();
 }
 
-void NumberMatrix::handleTouch(Touch *touch) {
+bool NumberMatrix::handleTouch(Touch *touch) {
     int selectedLen = this->selectedLen;
     if (selectedLen >= SELECTED_MAX) {
-        return;
+        return false;
     }
     float locationX = touch->getLocation().x - (this->getPosition().x - this->getAnchorPoint().x * this->getContentSize().width);
     float locationY = touch->getLocation().y - (this->getPosition().y - this->getAnchorPoint().y * this->getContentSize().height);
     int w = (int)(locationX / (this->numberBlockSize + this->numberBlockInterval));
     int h = (int)(locationY / (this->numberBlockSize + this->numberBlockInterval));
-    if (w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT && !this->numberNodeMatrix[h][w]->IsActive()) {
+    if (w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT && !this->numberNodeMatrix[h][w]->IsActive() && \
+    this->numberNodeMatrix[h][w]->isVisible()) {
 
         // check the block is continuous
         if (selectedLen > 0) {
@@ -84,7 +84,7 @@ void NumberMatrix::handleTouch(Touch *touch) {
                 }
             }
             if (!isLegel) {
-                return;
+                return false;
             }
         }
         this->selectedLen = selectedLen + 1;
@@ -93,7 +93,9 @@ void NumberMatrix::handleTouch(Touch *touch) {
         this->selectedBlockIndexes[selectedLen].W = w;
         this->selectedBlockIndexes[selectedLen].H = h;
         this->numberNodeMatrix[h][w]->SetActiveState(true);
+        return true;
     }
+    return false;
 }
 
 void NumberMatrix::setTouchable(bool isTouchable) {
@@ -220,16 +222,27 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
     }
 
     auto resp = gameEngine->PushSolution(solution);
-    CCLOG("game engine get resp");
     if (resp->isValid) {
-        CCLOG("print transfer");
-        auto transfer = resp->blockTransfer;
-        while(transfer != NULL) {
-            CCLOG("(%d, %d) => (%d, %d)", transfer->OldLocation.W, transfer->OldLocation.H, \
-                transfer->NewLocation.W, transfer->NewLocation.H);
-            transfer = transfer->Next;
-        }
+        this->handleTransfer(resp->blockTransfer);
         return true;
     }
     return false;
+}
+
+void NumberMatrix::handleTransfer(BlockTransfer *transfer) {
+    this->CancelSelectBlock();
+    auto cursor = transfer;
+    while (cursor != NULL) {
+        if (cursor->OldLocation.H >= 0 && cursor->OldLocation.H < MATRIX_HEIGHT && \
+            cursor->OldLocation.W >= 0 && cursor->OldLocation.W < MATRIX_WIDTH && \
+            cursor->NewLocation.H >= 0 && cursor->NewLocation.H < MATRIX_HEIGHT && \
+            cursor->NewLocation.W >= 0 && cursor->NewLocation.W < MATRIX_WIDTH) {
+            int oldH = cursor->OldLocation.H, oldW = cursor->OldLocation.W;
+            int newH = cursor->NewLocation.H, newW = cursor->NewLocation.W;
+            this->numberNodeMatrix[oldH][oldW]->setVisible(false);
+            this->numberNodeMatrix[newH][newW]->SetNumber(this->numberNodeMatrix[oldH][oldW]->GetNumber());
+            this->numberNodeMatrix[newH][newW]->setVisible(true);
+        }
+        cursor = cursor->Next;
+    }
 }

@@ -9,12 +9,15 @@ bool NumberBlock::init() {
         return false;
     }
     this->activeState = false;
+    this->visible = true;
     return true;
 }
 
 NumberBlock* NumberBlock::create(float width, AccurateNumber *accurateNumber) {
     auto numberBlock = NumberBlock::create();
-    numberBlock->accurateNumber = accurateNumber;
+    numberBlock->accurateNumber = new AccurateNumber{};
+    numberBlock->accurateNumber->value = accurateNumber->value;
+    numberBlock->accurateNumber->divider = accurateNumber->divider;
     numberBlock->setContentSize(Size(width, width));
     numberBlock->setIgnoreAnchorPointForPosition(false);
 
@@ -83,6 +86,24 @@ bool NumberBlock::IsActive() {
 
 AccurateNumber *NumberBlock::GetNumber() {
     return this->accurateNumber;
+}
+
+void NumberBlock::SetNumber(AccurateNumber *accurateNumber) {
+    if (this->accurateNumber != NULL) {
+        delete this->accurateNumber;
+    }
+    this->accurateNumber = new AccurateNumber{};
+    this->accurateNumber->value = accurateNumber->value;
+    this->accurateNumber->divider = accurateNumber->divider;
+    std::stringstream numberStr;
+    numberStr << this->accurateNumber->value;
+    if (this->accurateNumber->divider != 1) {
+        numberStr << '/' << this->accurateNumber->divider;
+    }
+    this->NodeNumber->setString(numberStr.str());
+    this->NodeNumber->setTextColor(Colors::GetColorsByNumber(this->accurateNumber));
+    this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::Transparent), this->borderWidth, \
+    Color4F(Colors::GetColorsByNumber(this->accurateNumber)));
 }
 
 bool NumberBlock::onTouchBegan(Touch *touch, Event *unused_event) {
