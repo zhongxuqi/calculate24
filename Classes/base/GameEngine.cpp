@@ -71,6 +71,7 @@ BlockTransfer* GameEngine::sortMatrix() {
                         this->numberMatrix[ht][w] = 0;
 
                         // add transfer to chain
+                        CCLOG("Transfer (%d, %d) => (%d, %d)", ht, w, h, w);
                         if (head == NULL) {
                             head = new BlockTransfer{};
                             head->OldLocation.H = ht;
@@ -90,6 +91,48 @@ BlockTransfer* GameEngine::sortMatrix() {
                         }
                         break;
                     }
+                }
+            }
+        }
+    }
+    for (int w = 0; w < MATRIX_WIDTH - 1; w++) {
+        if (this->numberMatrix[0][w] <= 0) {
+            int wt;
+            bool hasFind = false;
+            for (wt = w + 1; wt < MATRIX_WIDTH; wt++) {
+                if (this->numberMatrix[0][wt] > 0) {
+                    hasFind = true;
+                    break;
+                }
+            }
+            if (!hasFind) {
+                break;
+            }
+            for (int h = 0; h < MATRIX_HEIGHT; h++) {
+                if (this->numberMatrix[h][wt] <= 0) {
+                    break;
+                }
+                this->numberMatrix[h][w] = this->numberMatrix[h][wt];
+                this->numberMatrix[h][wt] = 0;
+
+                // add transfer to chain
+                CCLOG("Transfer (%d, %d) => (%d, %d)", h, wt, h, w);
+                if (head == NULL) {
+                    head = new BlockTransfer{};
+                    head->OldLocation.H = h;
+                    head->OldLocation.W = wt;
+                    head->NewLocation.H = h;
+                    head->NewLocation.W = w;
+                    head->Next = NULL;
+                    curr = head;
+                } else {
+                    curr->Next = new BlockTransfer{};
+                    curr->Next->OldLocation.H = h;
+                    curr->Next->OldLocation.W = wt;
+                    curr->Next->NewLocation.H = h;
+                    curr->Next->NewLocation.W = w;
+                    curr->Next->Next = NULL;
+                    curr = curr->Next;
                 }
             }
         }

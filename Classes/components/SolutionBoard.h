@@ -36,6 +36,7 @@ protected:
     NumberBlock* numberBlocks[4];
     float numberSize;
     float operateSize;
+    float equalSize;
     int currLine;
     int currIndex;
     bool emptyBlock[4];

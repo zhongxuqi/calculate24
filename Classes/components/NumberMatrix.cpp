@@ -230,6 +230,13 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
 }
 
 void NumberMatrix::handleTransfer(BlockTransfer *transfer) {
+    // clear selected number block
+    for (int i = 0; i < SELECTED_MAX; i++) {
+        if (this->selectedBlockIndexes[i].H >= 0 && this->selectedBlockIndexes[i].H < MATRIX_HEIGHT && \
+        this->selectedBlockIndexes[i].W >= 0 && this->selectedBlockIndexes[i].W < MATRIX_WIDTH) {
+            this->numberNodeMatrix[this->selectedBlockIndexes[i].H][this->selectedBlockIndexes[i].W]->setVisible(false);
+        }
+    }
     this->CancelSelectBlock();
     auto cursor = transfer;
     while (cursor != NULL) {

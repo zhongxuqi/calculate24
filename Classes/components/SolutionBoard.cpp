@@ -25,45 +25,47 @@ SolutionBoard* SolutionBoard::create(float width, float height) {
 
     // add formula
     float leftWidth = width * 14 / 17, showProp = 0.7;
+    solutionBoard->numberSize = leftWidth * 3 / 14 * showProp;
+    solutionBoard->operateSize = leftWidth * 3 / 14 * showProp;
+    solutionBoard->equalSize = leftWidth * 2 / 14 * showProp;
     for (int i = 0; i < 3; i++) {
         solutionBoard->numberLefts[i] = Scale9Sprite::create("res/IconFrame.png", Rect(0, 0, 76, 76), Rect(20, 20, 36, 36));
-        solutionBoard->numberLefts[i]->setContentSize(Size(leftWidth * 3 / 14 * showProp, leftWidth * 3 / 14 * showProp));
+        solutionBoard->numberLefts[i]->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
         solutionBoard->numberLefts[i]->setAnchorPoint(Point(0.5, 0.5));
         solutionBoard->numberLefts[i]->setPosition(Point(leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
         solutionBoard->addChild(solutionBoard->numberLefts[i], 0);
     
         solutionBoard->operators[i] = Scale9Sprite::create("res/IconFrame_Circle.png", Rect(0, 0, 118, 118), Rect(40, 40, 38, 36));
-        solutionBoard->operators[i]->setContentSize(Size(leftWidth * 3 / 14 * showProp, leftWidth * 3 / 14 * showProp));
+        solutionBoard->operators[i]->setContentSize(Size(solutionBoard->operateSize, solutionBoard->operateSize));
         solutionBoard->operators[i]->setAnchorPoint(Point(0.5, 0.5));
         solutionBoard->operators[i]->setPosition(Point(leftWidth * 3 / 14 + leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
         solutionBoard->addChild(solutionBoard->operators[i], 0);
     
         solutionBoard->numberRights[i] = Scale9Sprite::create("res/IconFrame.png", Rect(0, 0, 76, 76), Rect(20, 20, 36, 36));
-        solutionBoard->numberRights[i]->setContentSize(Size(leftWidth * 3 / 14 * showProp, leftWidth * 3 / 14 * showProp));
+        solutionBoard->numberRights[i]->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
         solutionBoard->numberRights[i]->setAnchorPoint(Point(0.5, 0.5));
         solutionBoard->numberRights[i]->setPosition(Point(leftWidth * 6 / 14 + leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
         solutionBoard->addChild(solutionBoard->numberRights[i], 0);
     
-        auto equal = Label::createWithTTF("=", "fonts/arial.ttf", leftWidth * 2 / 14 * showProp);
+        auto equal = Label::createWithTTF("=", "fonts/arial.ttf", solutionBoard->equalSize);
         equal->setAnchorPoint(Point(0.5, 0.5));
         equal->setPosition(Point(leftWidth * 9 / 14 + leftWidth * 2 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
         solutionBoard->addChild(equal, 0);
     
         solutionBoard->numberResults[i] = Scale9Sprite::create("res/IconFrame.png", Rect(0, 0, 76, 76), Rect(20, 20, 36, 36));
-        solutionBoard->numberResults[i]->setContentSize(Size(leftWidth * 3 / 14 * showProp, leftWidth * 3 / 14 * showProp));
+        solutionBoard->numberResults[i]->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
         solutionBoard->numberResults[i]->setAnchorPoint(Point(0.5, 0.5));
         solutionBoard->numberResults[i]->setPosition(Point(leftWidth * 11 / 14 + leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
         solutionBoard->addChild(solutionBoard->numberResults[i], 0);
     }
 
-    solutionBoard->numberSize = solutionBoard->numberLefts[0]->getContentSize().width;
-    solutionBoard->operateSize = solutionBoard->operators[0]->getContentSize().width;
 
     // add number frames
     for (int i = 0; i < 4; i++) {
         solutionBoard->numberFrames[i] = Button::create("res/IconFrame.png", "res/IconFrame.png");
-        solutionBoard->numberFrames[i]->setCapInsets(Rect(20, 20, 36, 36));
         solutionBoard->numberFrames[i]->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
+        solutionBoard->numberFrames[i]->setScale9Enabled(true);
+        // solutionBoard->numberFrames[i]->setCapInsets(Rect(20, 20, 36, 36));
         solutionBoard->numberFrames[i]->setAnchorPoint(Point(0.5, 0.5));
         solutionBoard->numberFrames[i]->setPosition(Point(leftWidth * i / 4 + leftWidth / 4 / 2, height / 4 / 2));
         solutionBoard->addChild(solutionBoard->numberFrames[i], 0);
