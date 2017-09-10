@@ -1,6 +1,7 @@
 #include "SimpleAudioEngine.h"
 #include "NumberMatrix.h"
 #include "../base/Colors.h"
+#include "NumberBlock.h"
 
 USING_NS_CC;
 

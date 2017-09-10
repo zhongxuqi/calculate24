@@ -52,11 +52,19 @@ SolutionBoard* SolutionBoard::create(float width, float height) {
         equal->setPosition(Point(leftWidth * 9 / 14 + leftWidth * 2 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
         solutionBoard->addChild(equal, 0);
     
-        solutionBoard->numberResults[i] = Scale9Sprite::create("res/IconFrame.png", Rect(0, 0, 76, 76), Rect(20, 20, 36, 36));
-        solutionBoard->numberResults[i]->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
-        solutionBoard->numberResults[i]->setAnchorPoint(Point(0.5, 0.5));
-        solutionBoard->numberResults[i]->setPosition(Point(leftWidth * 11 / 14 + leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
-        solutionBoard->addChild(solutionBoard->numberResults[i], 0);
+        if (i < 2) {
+            solutionBoard->numberResults[i] = Scale9Sprite::create("res/IconFrame.png", Rect(0, 0, 76, 76), Rect(20, 20, 36, 36));
+            solutionBoard->numberResults[i]->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
+            solutionBoard->numberResults[i]->setAnchorPoint(Point(0.5, 0.5));
+            solutionBoard->numberResults[i]->setPosition(Point(leftWidth * 11 / 14 + leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
+            solutionBoard->addChild(solutionBoard->numberResults[i], 0);
+        } else {
+            solutionBoard->number24BlockResult = Number24Block::create(solutionBoard->numberSize);
+            solutionBoard->number24BlockResult->setContentSize(Size(solutionBoard->numberSize, solutionBoard->numberSize));
+            solutionBoard->number24BlockResult->setAnchorPoint(Point(0.5, 0.5));
+            solutionBoard->number24BlockResult->setPosition(Point(leftWidth * 11 / 14 + leftWidth * 3 / 14 / 2, (3 - i) * height / 4 + height / 4 / 2));
+            solutionBoard->addChild(solutionBoard->number24BlockResult, 0);
+        }
     }
 
 
@@ -119,9 +127,13 @@ void SolutionBoard::InitNumber(AccurateNumber *accurateNumbers[4]) {
             this->removeChild(this->numberBlockRights[i]);
             this->numberBlockRights[i] = NULL;
         }
-        if (this->numberBlockResults[i] != NULL) {
-            this->removeChild(this->numberBlockResults[i]);
-            this->numberBlockResults[i] = NULL;
+        if (i < 2) {
+            if (this->numberBlockResults[i] != NULL) {
+                this->removeChild(this->numberBlockResults[i]);
+                this->numberBlockResults[i] = NULL;
+            }
+        } else {
+            this->number24BlockResult->ResetColor();
         }
     }
     for (int i = 0; i < 4; i++) {
@@ -236,12 +248,16 @@ void SolutionBoard::calculateLine() {
     this->operatorOuts[this->currLine]->GetOperator(), *(this->numberBlockRights[this->currLine]->GetNumber()));
 
     // add number result
-    this->numberBlockResults[this->currLine] = NumberBlock::create(numberSize, accurateNumber);
-    this->numberBlockResults[this->currLine]->setAnchorPoint(Point(0.5, 0.5));
-    this->numberBlockResults[this->currLine]->setPosition(this->numberResults[this->currLine]->getPosition());
-    this->numberBlockResults[this->currLine]->SetActiveState(true);
-    this->addChild(this->numberBlockResults[this->currLine], 0);
-    this->numberBlockResults[this->currLine]->runAction(FadeIn::create(this->duration));
+    if (this->currLine < 2) {
+        this->numberBlockResults[this->currLine] = NumberBlock::create(numberSize, accurateNumber);
+        this->numberBlockResults[this->currLine]->setAnchorPoint(Point(0.5, 0.5));
+        this->numberBlockResults[this->currLine]->setPosition(this->numberResults[this->currLine]->getPosition());
+        this->numberBlockResults[this->currLine]->SetActiveState(true);
+        this->addChild(this->numberBlockResults[this->currLine], 0);
+        this->numberBlockResults[this->currLine]->runAction(FadeIn::create(this->duration));
+    } else {
+        this->number24BlockResult->CheckNumberResult(accurateNumber);
+    }
 
     // add number
     if (this->currLine < 2) {
@@ -268,9 +284,11 @@ void SolutionBoard::GoBack() {
     case 0:
         if (this->currLine == 0) {
             return;
+        } else if (this->currLine == 3) {
+            this->number24BlockResult->ResetColor();
         }
         this->currLine--;
-        if (this->numberBlockResults[this->currLine] != NULL) {
+        if (this->currLine < 2 && this->numberBlockResults[this->currLine] != NULL) {
             auto resultBlockNumber = this->numberBlockResults[this->currLine]->GetNumber();
             for (int i = 0; i < SELECTED_MAX; i++) {
                 if (this->numberBlocks[i] != NULL) {

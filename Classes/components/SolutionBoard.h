@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "ui/CocosGUI.h"
 #include "NumberBlock.h"
+#include "Number24Block.h"
 #include "OperatePlus.h"
 #include "OperateMinus.h"
 #include "OperateMult.h"
@@ -26,8 +27,9 @@ protected:
     OperateBtn* operatorOuts[3];
     cocos2d::ui::Scale9Sprite* numberRights[3];
     NumberBlock* numberBlockRights[3];
-    cocos2d::ui::Scale9Sprite* numberResults[3];
-    NumberBlock* numberBlockResults[3];
+    cocos2d::ui::Scale9Sprite* numberResults[2];
+    NumberBlock* numberBlockResults[2];
+    Number24Block* number24BlockResult;
     cocos2d::ui::Button* numberFrames[SELECTED_MAX];
     OperatePlus* operatePlusBtn;
     OperateMinus* operateMinusBtn;
