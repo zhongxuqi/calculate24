@@ -249,6 +249,11 @@ void NumberMatrix::handleTransfer(BlockTransfer *transfer) {
             this->numberNodeMatrix[oldH][oldW]->setVisible(false);
             this->numberNodeMatrix[newH][newW]->SetNumber(this->numberNodeMatrix[oldH][oldW]->GetNumber());
             this->numberNodeMatrix[newH][newW]->setVisible(true);
+
+            auto originPosition = this->numberNodeMatrix[oldH][oldW]->getPosition();
+            auto targetPosition = this->numberNodeMatrix[newH][newW]->getPosition();
+            this->numberNodeMatrix[newH][newW]->setPosition(originPosition);
+            this->numberNodeMatrix[newH][newW]->runAction(MoveTo::create(this->duration, targetPosition));
         }
         cursor = cursor->Next;
     }

@@ -25,6 +25,7 @@ SolutionDialog* SolutionDialog::create(float width, float height) {
     bgDialog->setAnchorPoint(Point(0, 0));
     solutionDialog->addChild(bgDialog, 0);
 
+    solutionDialog->addCloseBtn();
     solutionDialog->addBackBtn();
     solutionDialog->addResetBtn();
 
@@ -37,10 +38,34 @@ SolutionDialog* SolutionDialog::create(float width, float height) {
 }
 
 void SolutionDialog::SetOnCloseListener(std::function<void(Ref*)> listener) {
-    this->backButton->addClickEventListener(listener);
+    this->closeButton->addClickEventListener(listener);
+}
+
+void SolutionDialog::onBackListener(cocos2d::Ref* pRef) {
+    this->solutionBoard->GoBack();
+}
+
+void SolutionDialog::addCloseBtn() {
+    float height = this->getContentSize().height;
+    this->closeButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
+    this->closeButton->setScale9Enabled(true);
+    this->closeButton->setCapInsets(Rect(10, 10, 88, 79));
+    this->closeButton->setContentSize(Size(height * 1.5 / 10, height / 10));
+
+    // add close icon
+    auto closeIcon = Sprite::create("res/IconClose.png");
+    closeIcon->setScale(this->closeButton->getContentSize().height * 0.6 / closeIcon->getContentSize().height);
+    closeIcon->setAnchorPoint(Point(0.5, 0.5));
+    closeIcon->setPosition(Point(this->closeButton->getContentSize().width / 2, this->closeButton->getContentSize().height / 2));
+    this->closeButton->addChild(closeIcon, 0);
+
+    this->closeButton->setAnchorPoint(Point(0, 1));
+    this->closeButton->setPosition(Point(0, height));
+    this->addChild(this->closeButton, 0);
 }
 
 void SolutionDialog::addBackBtn() {
+    float width = this->getContentSize().width;
     float height = this->getContentSize().height;
     this->backButton = Button::create("res/BgDialog.png", "res/BgDialog_Pressed.png");
     this->backButton->setScale9Enabled(true);
@@ -54,9 +79,10 @@ void SolutionDialog::addBackBtn() {
     backIcon->setPosition(Point(this->backButton->getContentSize().width / 2, this->backButton->getContentSize().height / 2));
     this->backButton->addChild(backIcon, 0);
 
-    this->backButton->setAnchorPoint(Point(0, 1));
-    this->backButton->setPosition(Point(0, height));
+    this->backButton->setAnchorPoint(Point(1, 1));
+    this->backButton->setPosition(Point(width, height));
     this->addChild(this->backButton, 0);
+    this->backButton->addClickEventListener(CC_CALLBACK_1(SolutionDialog::onBackListener, this));
 }
 
 void SolutionDialog::addResetBtn() {
@@ -74,8 +100,8 @@ void SolutionDialog::addResetBtn() {
     resetIcon->setPosition(Point(this->resetButton->getContentSize().width / 2, this->resetButton->getContentSize().height / 2));
     this->resetButton->addChild(resetIcon, 0);
 
-    this->resetButton->setAnchorPoint(Point(1, 1));
-    this->resetButton->setPosition(Point(width, height));
+    this->resetButton->setAnchorPoint(Point(0.5, 1));
+    this->resetButton->setPosition(Point(width / 2, height));
     this->addChild(this->resetButton, 0);
 
     // add event

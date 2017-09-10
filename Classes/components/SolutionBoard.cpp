@@ -106,22 +106,6 @@ SolutionBoard* SolutionBoard::create(float width, float height) {
 }
 
 void SolutionBoard::InitNumber(AccurateNumber *accurateNumbers[4]) {
-    for (int i = 0; i < 4; i++) {
-        if (this->numberBlocks[i] != NULL) {
-            this->removeChild(this->numberBlocks[i]);
-        }
-
-        this->numberBlocks[i] = NumberBlock::create(this->numberFrames[i]->getContentSize().width, accurateNumbers[i]);
-        this->numberBlocks[i]->setAnchorPoint(Point(0.5, 0.5));
-        this->numberBlocks[i]->setPosition(this->numberFrames[i]->getPosition());
-        this->numberBlocks[i]->SetActiveState(true);
-        this->addChild(this->numberBlocks[i], 0);
-    }
-    this->currLine = 0;
-    this->currIndex = 0;
-    for (int i = 0; i < 4; i++) {
-        this->emptyBlock[i] = false;
-    }
     for (int i = 0; i < 3; i++) {
         if (this->numberBlockLefts[i] != NULL) {
             this->removeChild(this->numberBlockLefts[i]);
@@ -140,6 +124,19 @@ void SolutionBoard::InitNumber(AccurateNumber *accurateNumbers[4]) {
             this->numberBlockResults[i] = NULL;
         }
     }
+    for (int i = 0; i < 4; i++) {
+        if (this->numberBlocks[i] != NULL) {
+            this->removeChild(this->numberBlocks[i]);
+        }
+
+        this->numberBlocks[i] = NumberBlock::create(this->numberFrames[i]->getContentSize().width, accurateNumbers[i]);
+        this->numberBlocks[i]->setAnchorPoint(Point(0.5, 0.5));
+        this->numberBlocks[i]->setPosition(this->numberFrames[i]->getPosition());
+        this->numberBlocks[i]->SetActiveState(true);
+        this->addChild(this->numberBlocks[i], 0);
+    }
+    this->currLine = 0;
+    this->currIndex = 0;
 }
 
 Vec2 SolutionBoard::getTargetLocation() {
@@ -166,7 +163,7 @@ void SolutionBoard::onNumberClickListener(Ref *pRef) {
             auto numberBlock = this->numberBlocks[i];
             this->numberBlocks[i] = NULL;
             if (numberBlock != NULL) {
-                numberBlock->setPosition(this->getTargetLocation());
+                numberBlock->runAction(MoveTo::create(this->duration, this->getTargetLocation()));
                 switch (this->currIndex) {
                 case 0:
                     this->numberBlockLefts[this->currLine] = numberBlock;
@@ -188,18 +185,24 @@ void SolutionBoard::onOperatorClickListener(Ref *pRef) {
     if (this->currIndex % 2 == 0) {
         return;
     }
+    Vec2 originPosition;
     if (pRef == this->operatePlusBtn->GetRef()) {
         this->operatorOuts[this->currLine] = OperatePlus::create(this->operateSize);
+        originPosition = this->operatePlusBtn->getPosition();
     } else if (pRef == this->operateMinusBtn->GetRef()) {
         this->operatorOuts[this->currLine] = OperateMinus::create(this->operateSize);
+        originPosition = this->operateMinusBtn->getPosition();
     } else if (pRef == this->operateMultBtn->GetRef()) {
         this->operatorOuts[this->currLine] = OperateMult::create(this->operateSize);
+        originPosition = this->operateMultBtn->getPosition();
     } else if (pRef == this->operateDivBtn->GetRef()) {
         this->operatorOuts[this->currLine] = OperateDiv::create(this->operateSize);
+        originPosition = this->operateDivBtn->getPosition();
     }
     this->operatorOuts[this->currLine]->setAnchorPoint(Point(0.5, 0.5));
-    this->operatorOuts[this->currLine]->setPosition(this->getTargetLocation());
+    this->operatorOuts[this->currLine]->setPosition(originPosition);
     this->addChild(this->operatorOuts[this->currLine], 0);
+    this->operatorOuts[this->currLine]->runAction(MoveTo::create(this->duration, this->getTargetLocation()));
     this->cursorToNext();
 }
 
@@ -222,7 +225,6 @@ void SolutionBoard::cursorToNext() {
         }
     }
     if (this->currLine > 2 && this->onFinishListener != NULL) {
-        CCLOG("onFinishListener");
         this->onFinishListener(this->inputSteps);
     }
 }
@@ -239,6 +241,7 @@ void SolutionBoard::calculateLine() {
     this->numberBlockResults[this->currLine]->setPosition(this->numberResults[this->currLine]->getPosition());
     this->numberBlockResults[this->currLine]->SetActiveState(true);
     this->addChild(this->numberBlockResults[this->currLine], 0);
+    this->numberBlockResults[this->currLine]->runAction(FadeIn::create(this->duration));
 
     // add number
     if (this->currLine < 2) {
@@ -258,6 +261,76 @@ void SolutionBoard::calculateLine() {
     this->inputSteps[this->currLine]->OperatorTxt = this->operatorOuts[this->currLine]->GetOperator();
     this->inputSteps[this->currLine]->NumberRight = *accurateNumberRight;
     this->inputSteps[this->currLine]->NumberResult = *accurateNumber;
+}
+
+void SolutionBoard::GoBack() {
+    switch (this->currIndex) {
+    case 0:
+        if (this->currLine == 0) {
+            return;
+        }
+        this->currLine--;
+        if (this->numberBlockResults[this->currLine] != NULL) {
+            auto resultBlockNumber = this->numberBlockResults[this->currLine]->GetNumber();
+            for (int i = 0; i < SELECTED_MAX; i++) {
+                if (this->numberBlocks[i] != NULL) {
+                    auto blockNumber = this->numberBlocks[i]->GetNumber();
+                    if (blockNumber->value * resultBlockNumber->divider == blockNumber->divider * resultBlockNumber->value) {
+                        this->removeChild(this->numberBlocks[i]);
+                        this->numberBlocks[i] = NULL;
+                        break;
+                    }
+                }
+            }
+            this->removeChild(this->numberBlockResults[this->currLine]);
+            this->numberBlockResults[this->currLine] = NULL;
+        }
+        for (int i = 0; i < SELECTED_MAX; i++) {
+            if (this->numberBlocks[i] == NULL) {
+                this->numberBlockRights[this->currLine]->runAction(MoveTo::create(this->duration, this->numberFrames[i]->getPosition()));
+                this->numberBlocks[i] = this->numberBlockRights[this->currLine];
+                this->numberBlockRights[this->currLine] = NULL;
+                this->currIndex = 2;
+                break;
+            }
+        }
+        break;
+    case 1:
+        for (int i = 0; i < SELECTED_MAX; i++) {
+            if (this->numberBlocks[i] == NULL) {
+                this->numberBlockLefts[this->currLine]->runAction(MoveTo::create(this->duration, this->numberFrames[i]->getPosition()));
+                this->numberBlocks[i] = this->numberBlockLefts[this->currLine];
+                this->numberBlockLefts[this->currLine] = NULL;
+                this->currIndex--;
+                break;
+            }
+        }
+        break;
+    case 2:
+        auto currLine = this->currLine;
+        auto callFunc = CallFunc::create([this, currLine]() {
+            auto operatorOut = this->operatorOuts[currLine];
+            if (operatorOut != NULL) {
+                this->removeChild(operatorOut);
+            }
+        });
+        switch (this->operatorOuts[currLine]->GetOperator()) {
+        case '+':
+            this->operatorOuts[currLine]->runAction(Sequence::create(MoveTo::create(this->duration, this->operatePlusBtn->getPosition()), callFunc, NULL));
+            break;
+        case '-':
+            this->operatorOuts[currLine]->runAction(Sequence::create(MoveTo::create(this->duration, this->operateMinusBtn->getPosition()), callFunc, NULL));
+            break;
+        case '*':
+            this->operatorOuts[currLine]->runAction(Sequence::create(MoveTo::create(this->duration, this->operateMultBtn->getPosition()), callFunc, NULL));
+            break;
+        case '/':
+            this->operatorOuts[currLine]->runAction(Sequence::create(MoveTo::create(this->duration, this->operateDivBtn->getPosition()), callFunc, NULL));
+            break;
+        }
+        this->currIndex--;
+        break;
+    }
 }
 
 void SolutionBoard::SetOnFinishListener(std::function<void(InputStep*[3])> listener) {

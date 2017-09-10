@@ -11,12 +11,15 @@ protected:
     virtual bool init();
     int number[SELECTED_MAX];
     std::function<void(void)> closeListener;
+    cocos2d::ui::Button* closeButton;
     cocos2d::ui::Button* backButton;
     cocos2d::ui::Button* resetButton;
+    void addCloseBtn();
     void addBackBtn();
     void addResetBtn();
     SolutionBoard* solutionBoard;
     AccurateNumber *accurateNumbers[4];
+    void onBackListener(cocos2d::Ref* pRef);
 
 public:
     void SetNumbers(AccurateNumber*[4]);

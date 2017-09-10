@@ -8,6 +8,7 @@
 
 class NumberMatrix : public cocos2d::Layer {
 protected:
+    const float duration = 0.3;
     virtual bool init();
     BlockLocation selectedBlockIndexes[SELECTED_MAX];
     NumberBlock* selectedNumberBlocks[SELECTED_MAX];

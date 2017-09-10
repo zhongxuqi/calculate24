@@ -28,18 +28,17 @@ protected:
     NumberBlock* numberBlockRights[3];
     cocos2d::ui::Scale9Sprite* numberResults[3];
     NumberBlock* numberBlockResults[3];
-    cocos2d::ui::Button* numberFrames[4];
+    cocos2d::ui::Button* numberFrames[SELECTED_MAX];
     OperatePlus* operatePlusBtn;
     OperateMinus* operateMinusBtn;
     OperateMult* operateMultBtn;
     OperateDiv* operateDivBtn;
-    NumberBlock* numberBlocks[4];
+    NumberBlock* numberBlocks[SELECTED_MAX];
     float numberSize;
     float operateSize;
     float equalSize;
     int currLine;
     int currIndex;
-    bool emptyBlock[4];
     cocos2d::Vec2 getTargetLocation();
     void onNumberClickListener(cocos2d::Ref *pRef);
     void onOperatorClickListener(cocos2d::Ref *pRef);
@@ -48,12 +47,14 @@ protected:
     void calculateLine();
     InputStep *inputSteps[3];
     std::function<void(InputStep*[3])> onFinishListener;
+    const float duration = 0.3;
 
 public:
     void InitNumber(AccurateNumber *accurateNumbers[4]);
     static SolutionBoard* create(float width, float height);
     CREATE_FUNC(SolutionBoard);
     void SetOnFinishListener(std::function<void(InputStep*[3])> listener);
+    void GoBack();
 };
 
 #endif
