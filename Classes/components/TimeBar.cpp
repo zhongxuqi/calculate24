@@ -1,6 +1,5 @@
 #include "SimpleAudioEngine.h"
 #include "TimeBar.h"
-#include "ui/CocosGUI.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -25,16 +24,27 @@ TimeBar* TimeBar::create(float width, float height) {
     timeBar->addChild(clockIcon, 0);
 
     // add loading bar
-    auto loadingBar = LoadingBar::create();
-    loadingBar->loadTexture("res/LoadingBar_Green.png");
-    loadingBar->setDirection(LoadingBar::Direction::RIGHT);
-    loadingBar->setPercent(100);
-    loadingBar->setScale9Enabled(true);
-    loadingBar->setCapInsets(Rect(20, 8, 63, 4));
-    loadingBar->setAnchorPoint(Point(0, 0.5));
-    loadingBar->setContentSize(Size(width - height - 20, height / 2));
-    loadingBar->setPosition(Point(height + 20, height / 2));
-    timeBar->addChild(loadingBar, 0);
+    timeBar->loadingBar = LoadingBar::create();
+    timeBar->loadingBar->loadTexture("res/LoadingBar_Green.png");
+    timeBar->loadingBar->setDirection(LoadingBar::Direction::LEFT);
+    timeBar->loadingBar->setPercent(100);
+    timeBar->loadingBar->setScale9Enabled(true);
+    timeBar->loadingBar->setCapInsets(Rect(20, 8, 63, 4));
+    timeBar->loadingBar->setAnchorPoint(Point(0, 0.5));
+    timeBar->loadingBar->setContentSize(Size(width - height - 20, height / 2));
+    timeBar->loadingBar->setPosition(Point(height + 20, height / 2));
+    timeBar->addChild(timeBar->loadingBar, 0);
 
     return timeBar;
+}
+
+void TimeBar::SetPercent(float percent) {
+    if (percent < 20) {
+        this->loadingBar->loadTexture("res/LoadingBar_Red.png");
+    } else if (percent < 50) {
+        this->loadingBar->loadTexture("res/LoadingBar_Yellow.png");
+    } else {
+        this->loadingBar->loadTexture("res/LoadingBar_Green.png");
+    }
+    this->loadingBar->setPercent(percent);
 }

@@ -1,11 +1,14 @@
 #include "SimpleAudioEngine.h"
 #include "SingleGameScene.h"
 #include "../components/BgGameDefault.h"
-#include "../components/TimeBar.h"
 #include "../components/SolutionDialog.h"
 #include "../components/SolutionBoard.h"
+#include "../base/GameEngine.h"
+#include "../utils/TimeUtils.h"
 
 USING_NS_CC;
+
+GameEngine* const gameEngine = GameEngine::Instance;
 
 Scene* SingleGameScene::createScene() {
     return SingleGameScene::create();
@@ -15,6 +18,11 @@ bool SingleGameScene::init() {
     if (!Scene::init()) {
         return false;
     }
+
+    gameEngine->StartGame();
+
+    // setup schedule
+    schedule(schedule_selector(SingleGameScene::updateCustom), 0.1f, kRepeatForever, 0);
 
     // add event
     auto listener = EventListenerKeyboard::create();
@@ -37,11 +45,11 @@ bool SingleGameScene::init() {
     this->addChild(this->scoreBar, 0);
 
     // add time bar
-    auto timeBar = TimeBar::create(visibleSize.width - scoreBarSize.width - 60, visibleSize.height / 18);
-    auto timeBarSize = timeBar->getContentSize();
-    timeBar->setAnchorPoint(Point(1, 1));
-    timeBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
-    this->addChild(timeBar, 0);
+    this->timeBar = TimeBar::create(visibleSize.width - scoreBarSize.width - 60, visibleSize.height / 18);
+    auto timeBarSize = this->timeBar->getContentSize();
+    this->timeBar->setAnchorPoint(Point(1, 1));
+    this->timeBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(this->timeBar, 0);
 
     // add dialog
     this->dialog = SolutionDialog::create(visibleSize.width - 40, visibleSize.width - 40);
@@ -77,6 +85,19 @@ bool SingleGameScene::init() {
     this->addChild(this->numberMatrix, 0);
 
     return true;
+}
+
+void SingleGameScene::updateCustom(float dt) {
+    gameEngine->TimeTick();
+    auto startTime = gameEngine->GetStartTime();
+    auto currTime = TimeUtils::getCurrentTime();
+    if (currTime - startTime > ROUND_TIME) {
+        this->timeBar->SetPercent(0);
+    } else if (currTime < startTime) {
+        this->timeBar->SetPercent(100);
+    } else {
+        this->timeBar->SetPercent(100.0 * (ROUND_TIME + startTime - currTime) / ROUND_TIME);
+    }
 }
 
 void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {

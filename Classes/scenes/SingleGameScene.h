@@ -5,12 +5,15 @@
 #include "../components/NumberMatrix.h"
 #include "../components/SolutionDialog.h"
 #include "../components/ScoreBar.h"
+#include "../components/TimeBar.h"
 
 class SingleGameScene : public cocos2d::Scene {
 protected:
     NumberMatrix* numberMatrix;
     SolutionDialog* dialog;
     ScoreBar* scoreBar;
+    TimeBar *timeBar;
+    void updateCustom(float dt);
 
 public:
     static cocos2d::Scene* createScene();

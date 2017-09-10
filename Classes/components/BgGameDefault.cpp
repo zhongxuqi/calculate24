@@ -14,6 +14,6 @@ bool BgGameDefault::init() {
 BgGameDefault* BgGameDefault::create(float width, float height) {
     auto bgGameDefault = BgGameDefault::create();
     bgGameDefault->initWithColor(Colors::BgColor);
-    bgGameDefault->setContentSize(CCSizeMake(width, height));
+    bgGameDefault->setContentSize(Size(width, height));
     return bgGameDefault;
 }

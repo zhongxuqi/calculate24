@@ -8,6 +8,7 @@ const int NUMBER_MAX = 13;
 const int MATRIX_WIDTH = 8;
 const int MATRIX_HEIGHT = 10;
 const int NUMBER_DISABLE = -1;
+const int ROUND_TIME = 20000;
 
 struct BlockLocation {
     int W;
@@ -50,14 +51,24 @@ protected:
     AccurateNumber *calculateSolution(SolutionStep *solution);
     BlockTransfer *sortMatrix();
     void printSolution(SolutionStep *solution, int layer);
+    void initNumberMatrix();
+
+    // game info
+    int score;
+    int roundTarget;
+    long long startTime;
+    bool isEnd;
 
 public:
-    void InitNumberMatrix();
     int GetNumber(int w, int h);
     Response *PushSolution(SolutionStep *solution);
     AccurateNumber *CalculateFormula(AccurateNumber accurateNumberLeft, char theOp, AccurateNumber accurateNumberRight);
-
+    int GetScore();
+    int GetRoundTarget();
     static GameEngine* Instance;
+    void StartGame();
+    void TimeTick();
+    long long GetStartTime();
 };
 
 #endif

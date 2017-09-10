@@ -1,15 +1,16 @@
 #include "GameEngine.h"
 #include "Colors.h"
+#include "../utils/TimeUtils.h"
 
 USING_NS_CC;
 
 GameEngine* GameEngine::Instance = new GameEngine();
 
 GameEngine::GameEngine() {
-    
+    this->isEnd = true;
 }
 
-void GameEngine::InitNumberMatrix() {
+void GameEngine::initNumberMatrix() {
     for (int i=0;i<MATRIX_HEIGHT;i++) {
         for (int j=0;j<MATRIX_WIDTH;j++) {
             this->numberMatrix[i][j] = cocos2d::RandomHelper::random_int(1, NUMBER_MAX);
@@ -274,4 +275,26 @@ AccurateNumber *GameEngine::CalculateFormula(AccurateNumber accurateNumberLeft, 
         accurateNumber->divider = 1;
     }
     return accurateNumber;
+}
+
+int GameEngine::GetScore() {
+    return this->score;
+}
+
+int GameEngine::GetRoundTarget() {
+    return this->roundTarget;
+}
+
+void GameEngine::StartGame() {
+    this->initNumberMatrix();
+    this->isEnd = true;
+    this->startTime = TimeUtils::getCurrentTime();
+}
+
+void GameEngine::TimeTick() {
+    
+}
+
+long long GameEngine::GetStartTime() {
+    return this->startTime;
 }

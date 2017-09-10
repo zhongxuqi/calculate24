@@ -21,7 +21,7 @@ BgMain* BgMain::create(float width, float height) {
         auto color = Colors::NumberColors[i];
         color.a = 80;
         auto block = LayerColor::create(color);
-        block->setContentSize(CCSizeMake(width / PROP_BLOCK_SIZE, width / PROP_BLOCK_SIZE));
+        block->setContentSize(Size(width / PROP_BLOCK_SIZE, width / PROP_BLOCK_SIZE));
         block->setPosition(width * RandomHelper::random_real(0.0, 1.0), height * RandomHelper::random_real(0.0, 1.0));
         block->setRotation(360 * RandomHelper::random_real(0.0, 1.0));
         block->setAnchorPoint(Vec2(0.5, 0.5));

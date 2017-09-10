@@ -10,7 +10,6 @@ bool NumberMatrix::init() {
     if (!Layer::init()) {
         return false;
     }
-    gameEngine->InitNumberMatrix();
     this->selectedLen = 0;
     return true;
 }
