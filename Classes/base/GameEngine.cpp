@@ -291,6 +291,10 @@ void GameEngine::StartGame() {
     this->isEnd = false;
     this->startTime = TimeUtils::getCurrentTime();
     this->roundTarget = 8;
+    auto listener = this->onStartListener;
+    if (listener != NULL) {
+        listener();
+    }
 }
 
 void GameEngine::TimeTick() {
@@ -303,4 +307,8 @@ long long GameEngine::GetStartTime() {
 
 int GameEngine::GetLevel() {
     return this->level;
+}
+
+void GameEngine::SetOnStartListener(std::function<void()> listener) {
+    this->onStartListener = listener;
 }

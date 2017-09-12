@@ -8,7 +8,7 @@ const int NUMBER_MAX = 13;
 const int MATRIX_WIDTH = 8;
 const int MATRIX_HEIGHT = 10;
 const int NUMBER_DISABLE = -1;
-const int ROUND_TIME = 20000;
+const int ROUND_TIME = 180000;
 
 struct BlockLocation {
     int W;
@@ -59,6 +59,7 @@ protected:
     int level;
     long long startTime;
     bool isEnd;
+    std::function<void()> onStartListener;
 
 public:
     int GetNumber(int w, int h);
@@ -71,6 +72,7 @@ public:
     void TimeTick();
     long long GetStartTime();
     int GetLevel();
+    void SetOnStartListener(std::function<void()> listener);
 };
 
 #endif

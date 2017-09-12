@@ -21,6 +21,7 @@ protected:
     void handleSelectBlock();
     std::function<void(AccurateNumber*[4])> selectListener;
     void handleTransfer(BlockTransfer *transfer);
+    void startGame();
 
 public:
     static NumberMatrix* create(float width, float height);

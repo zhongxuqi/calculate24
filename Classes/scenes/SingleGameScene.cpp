@@ -19,8 +19,6 @@ bool SingleGameScene::init() {
         return false;
     }
 
-    gameEngine->StartGame();
-
     // setup schedule
     schedule(schedule_selector(SingleGameScene::updateCustom), 0.1f, kRepeatForever, 0);
 
@@ -99,6 +97,9 @@ bool SingleGameScene::init() {
         });
     });
     this->addChild(this->numberMatrix, 0);
+
+    // start game
+    gameEngine->StartGame();
 
     return true;
 }

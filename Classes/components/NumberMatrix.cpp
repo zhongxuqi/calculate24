@@ -11,6 +11,7 @@ bool NumberMatrix::init() {
         return false;
     }
     this->selectedLen = 0;
+    gameEngine->SetOnStartListener(CC_CALLBACK_0(NumberMatrix::startGame, this));
     return true;
 }
 
@@ -18,24 +19,6 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
     auto numberMatrix = NumberMatrix::create();
     numberMatrix->setContentSize(Size(width, height));
     numberMatrix->setIgnoreAnchorPointForPosition(false);
-
-    numberMatrix->numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * width / MATRIX_WIDTH;
-    numberMatrix->numberBlockInterval = 0.02 * width;
-    for (int h=0;h<MATRIX_HEIGHT;h++) {
-        for (int w=0;w<MATRIX_WIDTH;w++) {
-            auto accurateNumber = new AccurateNumber{};
-            accurateNumber->value = gameEngine->GetNumber(w, h);
-            accurateNumber->divider = 1;
-            auto numberBlock = NumberBlock::create(numberMatrix->numberBlockSize, accurateNumber);
-            numberMatrix->numberNodeMatrix[h][w] = numberBlock;
-
-            // add number block
-            numberBlock->setAnchorPoint(Point(0, 0));
-            numberBlock->setPosition(w * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize), \
-                h * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize));
-            numberMatrix->addChild(numberBlock, 0);
-        }
-    }
 
     // set touchable
     numberMatrix->eventListener = EventListenerTouchOneByOne::create();
@@ -47,6 +30,29 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
     numberMatrix->setTouchable(true);
 
     return numberMatrix;
+}
+
+void NumberMatrix::startGame() {
+    auto layerSize = this->getContentSize();
+    this->numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * layerSize.width / MATRIX_WIDTH;
+    this->numberBlockInterval = 0.02 * layerSize.width;
+    for (int h=0;h<MATRIX_HEIGHT;h++) {
+        for (int w=0;w<MATRIX_WIDTH;w++) {
+            auto accurateNumber = new AccurateNumber{};
+            accurateNumber->value = gameEngine->GetNumber(w, h);
+            accurateNumber->divider = 1;
+            auto numberBlock = NumberBlock::create(this->numberBlockSize, accurateNumber);
+            this->numberNodeMatrix[h][w] = numberBlock;
+
+            // add number block
+            numberBlock->setAnchorPoint(Point(0, 0));
+            auto targetPosition = Point(w * (this->numberBlockInterval + this->numberBlockSize), \
+                h * (this->numberBlockInterval + this->numberBlockSize));
+            numberBlock->setPosition(w * (this->numberBlockInterval + this->numberBlockSize), layerSize.height);
+            this->addChild(numberBlock, 0);
+            numberBlock->runAction(MoveTo::create(this->duration, targetPosition));
+        }
+    }
 }
 
 bool NumberMatrix::onTouchBegan(Touch *touch, Event *unused_event) {
@@ -70,8 +76,8 @@ bool NumberMatrix::handleTouch(Touch *touch) {
     float locationY = touch->getLocation().y - (this->getPosition().y - this->getAnchorPoint().y * this->getContentSize().height);
     int w = (int)(locationX / (this->numberBlockSize + this->numberBlockInterval));
     int h = (int)(locationY / (this->numberBlockSize + this->numberBlockInterval));
-    if (w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT && !this->numberNodeMatrix[h][w]->IsActive() && \
-    this->numberNodeMatrix[h][w]->isVisible()) {
+    if (w >= 0 && w < MATRIX_WIDTH && h >= 0 && h < MATRIX_HEIGHT && this->numberNodeMatrix[h][w] != NULL && \
+    !this->numberNodeMatrix[h][w]->IsActive() && this->numberNodeMatrix[h][w]->isVisible()) {
 
         // check the block is continuous
         if (selectedLen > 0) {
