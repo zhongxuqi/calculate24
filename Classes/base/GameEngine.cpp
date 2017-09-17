@@ -46,6 +46,9 @@ Response *GameEngine::PushSolution(SolutionStep *solution) {
     auto resp = new Response{};
     resp->isValid = false;
     printSolution(solution, 0);
+    if (this->isEnd) {
+        return resp;
+    }
     this->selectedLen = 0;
     auto calculateResult = this->calculateSolution(solution);
     if (calculateResult->wrong || calculateResult->value / calculateResult->divider != 24 || calculateResult->value % calculateResult->divider != 0) {
@@ -289,20 +292,34 @@ int GameEngine::GetRoundTarget() {
 void GameEngine::StartGame() {
     this->initNumberMatrix();
     this->isEnd = false;
-    this->startTime = TimeUtils::getCurrentTime();
-    this->roundTarget = 8;
     auto listener = this->onStartListener;
+    this->level = 0;
+    this->roundTarget = 0;
+    this->levelUp();
     if (listener != NULL) {
         listener();
     }
 }
 
-void GameEngine::TimeTick() {
-    
+void GameEngine::levelUp() {
+    this->tick = TOTAL_TICK;
+    this->level++;
+    this->roundTarget = 8;
 }
 
-long long GameEngine::GetStartTime() {
-    return this->startTime;
+void GameEngine::TimeTick() {
+    this->tick--;
+    if (this->tick <= 0) {
+        this->isEnd = true;
+        auto listener = this->onEndListener;
+        if (listener != NULL) {
+            listener();
+        }
+    }
+}
+
+long GameEngine::GetTick() {
+    return this->tick;
 }
 
 int GameEngine::GetLevel() {
@@ -311,4 +328,8 @@ int GameEngine::GetLevel() {
 
 void GameEngine::SetOnStartListener(std::function<void()> listener) {
     this->onStartListener = listener;
+}
+
+void GameEngine::SetOnEndListener(std::function<void()> listener) {
+    this->onEndListener = listener;
 }

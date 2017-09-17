@@ -7,6 +7,7 @@
 class Colors {
 public:
     static cocos2d::Color4B Transparent;
+    static cocos2d::Color4B HalfTransparent;
     static cocos2d::Color4B White;
     static cocos2d::Color4B BgColor;
     static cocos2d::Color4B OutNumberColor;

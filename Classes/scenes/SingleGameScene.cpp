@@ -20,7 +20,7 @@ bool SingleGameScene::init() {
     }
 
     // setup schedule
-    schedule(schedule_selector(SingleGameScene::updateCustom), 0.1f, kRepeatForever, 0);
+    schedule(schedule_selector(SingleGameScene::updateCustom), 1.0f, kRepeatForever, 0);
 
     // add event
     auto listener = EventListenerKeyboard::create();
@@ -48,7 +48,6 @@ bool SingleGameScene::init() {
     this->levelBar->setAnchorPoint(Point(0.5, 1));
     this->levelBar->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - 20);
     this->addChild(this->levelBar, 0);
-    this->levelBar->SetLevel(gameEngine->GetLevel());
 
     // add target bar
     this->targetBar = TargetBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
@@ -56,7 +55,6 @@ bool SingleGameScene::init() {
     this->targetBar->setAnchorPoint(Point(1, 1));
     this->targetBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
     this->addChild(this->targetBar, 0);
-    this->targetBar->SetTarget(gameEngine->GetRoundTarget());
 
     // add time bar
     this->timeBar = TimeBar::create(visibleSize.width - 40, visibleSize.height / 18);
@@ -79,6 +77,13 @@ bool SingleGameScene::init() {
         }
     });
 
+    // add game over dialog
+    this->gameOverDialog = GameOverDialog::create(visibleSize.width, visibleSize.height);
+    this->gameOverDialog->setAnchorPoint(Point(0.5, 0.5));
+    this->gameOverDialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(this->gameOverDialog, -1);
+    this->gameOverDialog->setZOrder(-1);
+
     // add number matrix
     this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height * 0.7);
     this->numberMatrix->setAnchorPoint(Point(0.5, 0));
@@ -100,21 +105,19 @@ bool SingleGameScene::init() {
 
     // start game
     gameEngine->StartGame();
+    this->levelBar->SetLevel(gameEngine->GetLevel());
+    this->targetBar->SetTarget(gameEngine->GetRoundTarget());
+    gameEngine->SetOnEndListener([this]() {
+        this->gameOverDialog->setZOrder(1);
+        this->numberMatrix->setTouchable(false);
+    });
 
     return true;
 }
 
 void SingleGameScene::updateCustom(float dt) {
     gameEngine->TimeTick();
-    auto startTime = gameEngine->GetStartTime();
-    auto currTime = TimeUtils::getCurrentTime();
-    if (currTime - startTime > ROUND_TIME) {
-        this->timeBar->SetPercent(0);
-    } else if (currTime < startTime) {
-        this->timeBar->SetPercent(100);
-    } else {
-        this->timeBar->SetPercent(100.0 * (ROUND_TIME + startTime - currTime) / ROUND_TIME);
-    }
+    this->timeBar->SetPercent(100.0 * gameEngine->GetTick() / TOTAL_TICK);
 }
 
 void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {

@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "../components/NumberMatrix.h"
 #include "../components/SolutionDialog.h"
+#include "../components/GameOverDialog.h"
 #include "../components/ScoreBar.h"
 #include "../components/TimeBar.h"
 #include "../components/LevelBar.h"
@@ -13,6 +14,7 @@ class SingleGameScene : public cocos2d::Scene {
 protected:
     NumberMatrix* numberMatrix;
     SolutionDialog* dialog;
+    GameOverDialog* gameOverDialog;
     ScoreBar* scoreBar;
     TimeBar *timeBar;
     LevelBar *levelBar;
