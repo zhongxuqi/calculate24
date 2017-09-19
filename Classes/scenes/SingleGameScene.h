@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "../components/NumberMatrix.h"
 #include "../components/SolutionDialog.h"
-#include "../components/GameOverDialog.h"
+#include "../components/GameDialog.h"
 #include "../components/ScoreBar.h"
 #include "../components/TimeBar.h"
 #include "../components/LevelBar.h"
@@ -14,7 +14,7 @@ class SingleGameScene : public cocos2d::Scene {
 protected:
     NumberMatrix* numberMatrix;
     SolutionDialog* dialog;
-    GameOverDialog* gameOverDialog;
+    GameDialog* gameDialog;
     ScoreBar* scoreBar;
     TimeBar *timeBar;
     LevelBar *levelBar;
@@ -22,11 +22,10 @@ protected:
     void updateCustom(float dt);
 
 public:
-    static cocos2d::Scene* createScene();
+    virtual bool initWithPhysics();
 
-    virtual bool init();
-    
     // implement the "static create()" method manually
+    static SingleGameScene *createWithPhysics(); 
     CREATE_FUNC(SingleGameScene);
 
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);

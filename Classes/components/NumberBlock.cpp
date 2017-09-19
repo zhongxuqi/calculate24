@@ -15,10 +15,16 @@ bool NumberBlock::init() {
 }
 
 NumberBlock* NumberBlock::create(float width, AccurateNumber *accurateNumber) {
+    auto theNumber = accurateNumber;
+    if (theNumber == NULL) {
+        theNumber = new AccurateNumber();
+        theNumber->value = 0;
+        theNumber->divider = 1;
+    }
     auto numberBlock = NumberBlock::create();
     numberBlock->accurateNumber = new AccurateNumber{};
-    numberBlock->accurateNumber->value = accurateNumber->value;
-    numberBlock->accurateNumber->divider = accurateNumber->divider;
+    numberBlock->accurateNumber->value = theNumber->value;
+    numberBlock->accurateNumber->divider = theNumber->divider;
     numberBlock->setContentSize(Size(width, width));
     numberBlock->setIgnoreAnchorPointForPosition(false);
 

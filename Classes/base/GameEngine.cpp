@@ -8,7 +8,7 @@ GameEngine* GameEngine::Instance = new GameEngine();
 
 GameEngine::GameEngine() {
     this->isEnd = true;
-    this->level = 1;
+    this->level = 20;
 }
 
 void GameEngine::initNumberMatrix() {
@@ -62,6 +62,7 @@ Response *GameEngine::PushSolution(SolutionStep *solution) {
     }
     resp->isValid = true;
     resp->blockTransfer = this->sortMatrix();
+    this->score++;
     return resp;
 }
 
@@ -295,6 +296,7 @@ void GameEngine::StartGame() {
     auto listener = this->onStartListener;
     this->level = 0;
     this->roundTarget = 0;
+    this->score = 0;
     this->levelUp();
     if (listener != NULL) {
         listener();
@@ -304,16 +306,25 @@ void GameEngine::StartGame() {
 void GameEngine::levelUp() {
     this->tick = TOTAL_TICK;
     this->level++;
-    this->roundTarget = 8;
+    this->roundTarget++;
 }
 
 void GameEngine::TimeTick() {
     this->tick--;
     if (this->tick <= 0) {
-        this->isEnd = true;
-        auto listener = this->onEndListener;
-        if (listener != NULL) {
-            listener();
+        if (this->score >= this->roundTarget) {
+            this->levelUp();
+            this->initNumberMatrix();
+            auto listener = this->onStartListener;
+            if (listener != NULL) {
+                listener();
+            }
+        } else {
+            this->isEnd = true;
+            auto listener = this->onEndListener;
+            if (listener != NULL) {
+                listener();
+            }
         }
     }
 }

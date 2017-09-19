@@ -53,7 +53,7 @@ bool MainScene::init() {
     btnNormalMode->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.3 + 60);
     this->addChild(btnNormalMode, 0);
     btnNormalMode->SetOnClickListener([](Ref* pRef) {
-        Director::getInstance()->pushScene(SingleGameScene::create());
+        Director::getInstance()->pushScene(SingleGameScene::createWithPhysics());
     });
 
     // add online battle btn

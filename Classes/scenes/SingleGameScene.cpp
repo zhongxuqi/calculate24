@@ -10,12 +10,19 @@ USING_NS_CC;
 
 GameEngine* const gameEngine = GameEngine::Instance;
 
-Scene* SingleGameScene::createScene() {
-    return SingleGameScene::create();
+SingleGameScene* SingleGameScene::createWithPhysics() {
+    SingleGameScene *ret = new (std::nothrow) SingleGameScene();
+    if (ret && ret->initWithPhysics()) {
+        ret->autorelease();
+        return ret;
+    } else {
+        CC_SAFE_DELETE(ret);
+        return nullptr;
+    }
 }
 
-bool SingleGameScene::init() {
-    if (!Scene::init()) {
+bool SingleGameScene::initWithPhysics() {
+    if (!Scene::initWithPhysics()) {
         return false;
     }
 
@@ -73,19 +80,19 @@ bool SingleGameScene::init() {
         if (this->numberMatrix->PushSolution(inputSteps)) {
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
-            this->scoreBar->SetScore(this->scoreBar->GetScore() + 1);
+            this->scoreBar->SetScore(gameEngine->GetScore());
         }
     });
 
     // add game over dialog
-    this->gameOverDialog = GameOverDialog::create(visibleSize.width, visibleSize.height);
-    this->gameOverDialog->setAnchorPoint(Point(0.5, 0.5));
-    this->gameOverDialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
-    this->addChild(this->gameOverDialog, -1);
-    this->gameOverDialog->setZOrder(-1);
+    this->gameDialog = GameDialog::create(visibleSize.width, visibleSize.height);
+    this->gameDialog->setAnchorPoint(Point(0.5, 0.5));
+    this->gameDialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+    this->addChild(this->gameDialog, -1);
+    this->gameDialog->setZOrder(-1);
 
     // add number matrix
-    this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height * 0.7);
+    this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height - scoreBarSize.height - timeBarSize.height);
     this->numberMatrix->setAnchorPoint(Point(0.5, 0));
     this->numberMatrix->setPosition(visibleSize.width / 2, 20);
     this->numberMatrix->setTouchable(true);
@@ -104,12 +111,18 @@ bool SingleGameScene::init() {
     this->addChild(this->numberMatrix, 0);
 
     // start game
+    gameEngine->SetOnStartListener([this]() {
+        this->numberMatrix->StartGame();
+        this->levelBar->SetLevel(gameEngine->GetLevel());
+        this->targetBar->SetTarget(gameEngine->GetRoundTarget());
+        this->scoreBar->SetScore(gameEngine->GetScore());
+    });
     gameEngine->StartGame();
-    this->levelBar->SetLevel(gameEngine->GetLevel());
-    this->targetBar->SetTarget(gameEngine->GetRoundTarget());
     gameEngine->SetOnEndListener([this]() {
-        this->gameOverDialog->setZOrder(1);
+        this->gameDialog->SetScore(gameEngine->GetScore());
+        this->gameDialog->setZOrder(1);
         this->numberMatrix->setTouchable(false);
+        this->dialog->setZOrder(-1);
     });
 
     return true;

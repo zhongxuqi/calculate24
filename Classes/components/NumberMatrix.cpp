@@ -11,7 +11,6 @@ bool NumberMatrix::init() {
         return false;
     }
     this->selectedLen = 0;
-    gameEngine->SetOnStartListener(CC_CALLBACK_0(NumberMatrix::startGame, this));
     return true;
 }
 
@@ -29,20 +28,33 @@ NumberMatrix* NumberMatrix::create(float width, float height) {
     numberMatrix->_eventDispatcher->addEventListenerWithSceneGraphPriority(numberMatrix->eventListener, numberMatrix);
     numberMatrix->setTouchable(true);
 
+    // add number blocks
+    numberMatrix->numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * width / MATRIX_WIDTH;
+    numberMatrix->numberBlockInterval = 0.02 * width;
+    for (int h=0;h<MATRIX_HEIGHT;h++) {
+        for (int w=0;w<MATRIX_WIDTH;w++) {
+            auto numberBlock = NumberBlock::create(numberMatrix->numberBlockSize, NULL);
+            numberMatrix->numberNodeMatrix[h][w] = numberBlock;
+            numberBlock->setAnchorPoint(Point(0, 0));
+            numberBlock->setPosition(Point(w * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize), \
+                h * (numberMatrix->numberBlockInterval + numberMatrix->numberBlockSize)));
+            numberMatrix->addChild(numberBlock, 0);
+        }
+    }
+
     return numberMatrix;
 }
 
-void NumberMatrix::startGame() {
+void NumberMatrix::StartGame() {
     auto layerSize = this->getContentSize();
-    this->numberBlockSize = (1 - (MATRIX_WIDTH - 1) * 0.02) * layerSize.width / MATRIX_WIDTH;
-    this->numberBlockInterval = 0.02 * layerSize.width;
     for (int h=0;h<MATRIX_HEIGHT;h++) {
         for (int w=0;w<MATRIX_WIDTH;w++) {
             auto accurateNumber = new AccurateNumber{};
             accurateNumber->value = gameEngine->GetNumber(w, h);
             accurateNumber->divider = 1;
-            auto numberBlock = NumberBlock::create(this->numberBlockSize, accurateNumber);
-            this->numberNodeMatrix[h][w] = numberBlock;
+            auto numberBlock = this->numberNodeMatrix[h][w];
+            numberBlock->SetNumber(accurateNumber);
+            numberBlock->setVisible(true);
 
             // add number block
             numberBlock->setAnchorPoint(Point(0, 0));
@@ -50,7 +62,7 @@ void NumberMatrix::startGame() {
                 h * (this->numberBlockInterval + this->numberBlockSize));
             numberBlock->setPosition(w * (this->numberBlockInterval + this->numberBlockSize), layerSize.height);
             this->addChild(numberBlock, 0);
-            numberBlock->runAction(MoveTo::create(this->duration, targetPosition));
+            numberBlock->runAction(Sequence::create(DelayTime::create(0.01 * (w + h)), MoveTo::create(this->duration, targetPosition), NULL));
         }
     }
 }

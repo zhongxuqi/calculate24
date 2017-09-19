@@ -15,6 +15,8 @@ public:
     static cocos2d::Color4B Number24DefaultColor;
     static cocos2d::Color4B Number24FailColor;
     static cocos2d::Color4B Number24SuccessColor;
+    static cocos2d::Color4B DangerColor;
+    static cocos2d::Color4B SuccessColor;
 
     static cocos2d::Color4B GetColorsByNumber(AccurateNumber *accurateNumber);
 };
