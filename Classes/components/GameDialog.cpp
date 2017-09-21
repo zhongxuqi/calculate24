@@ -7,8 +7,10 @@ USING_NS_CC;
 using namespace ui;
 using namespace cocos2d::extension;
 
-GameDialog::GameDialog() : contentLayer(Layer::create()), borderWidth(4) {
+GameDialog* GameDialog::Instance = NULL;
 
+GameDialog::GameDialog() : contentLayer(Layer::create()), borderWidth(4) {
+    GameDialog::Instance = this;
 }
 
 bool GameDialog::init() {
@@ -28,49 +30,45 @@ GameDialog* GameDialog::create(float width, float height) {
     gameDialog->contentLayer->setAnchorPoint(Point(0.5, 0.5));
     gameDialog->contentLayer->setPosition(Point(width / 2, height / 2));
     gameDialog->addChild(gameDialog->contentLayer, 0);
-    auto contentSize = gameDialog->contentLayer->getContentSize();
 
-    // add background
-    auto backGround = DrawNode::create();
-    gameDialog->points = new Vec2[4]{
-        Vec2(0, 0),
-        Vec2(contentSize.width, 0),
-        Vec2(contentSize.width, contentSize.height * 3 / 4 - 10),
-        Vec2(0, contentSize.height * 3 / 4 - 10),
-    };
-    backGround->drawPolygon(gameDialog->points, 4, Color4F(Colors::Transparent), gameDialog->borderWidth, Color4F(Colors::White));
-    backGround->setPosition(Point(0, contentSize.height / 4 + 10));
-    backGround->setAnchorPoint(Point(0, 0));
-    gameDialog->contentLayer->addChild(backGround, 0);
-
+    gameDialog->addStarBox();
     gameDialog->addStars();
-
     gameDialog->addBackButton();
     gameDialog->addRestartButton();
 
     return gameDialog;
 }
 
-void GameDialog::addStars() {
+void GameDialog::addStarBox() {
     auto contentSize = this->contentLayer->getContentSize();
-    auto edgeLimit = PhysicsBody::createEdgePolygon(this->points, 4, PhysicsMaterial(0.1f, 1.0f, 0.0f), 1);
+    this->starBox = Layer::create();
+    this->starBox->setContentSize(Size(contentSize.width, contentSize.height * 3 / 4 - 10));
+    this->starBox->setIgnoreAnchorPointForPosition(false);
+    this->starBox->setAnchorPoint(Point(0, 0));
+    this->starBox->setPosition(Point(0, contentSize.height / 4 + 10));
+    this->contentLayer->addChild(this->starBox, 0);
+    auto starBoxSize = this->starBox->getContentSize();
+
+    auto points = new Vec2[4]{
+        Vec2(0, 0),
+        Vec2(starBoxSize.width, 0),
+        Vec2(starBoxSize.width, starBoxSize.height),
+        Vec2(0, starBoxSize.height),
+    };
+    auto edgeLimit = PhysicsBody::createEdgePolygon(points, 4, PhysicsMaterial(0.1f, 1.0f, 0.0f), 1);
     edgeLimit->setDynamic(false);
-    edgeLimit->setPositionOffset(Vec2(-contentSize.width/2, contentSize.height / 4 + 10 - contentSize.height / 2));
-    this->contentLayer->addComponent(edgeLimit);
+    edgeLimit->setPositionOffset(Vec2(- starBoxSize.width / 2, - starBoxSize.height / 2));
+    this->starBox->addComponent(edgeLimit);
 
-    auto dialogSize = this->getContentSize();
-    auto physicsBody = PhysicsBody::createBox(Size(65.0f, 81.0f), PhysicsMaterial(0.1f, 1.0f, 0.0f));
-    physicsBody->setGravityEnable(true);
+    // add background
+    auto backGround = DrawNode::create();
+    backGround->drawPolygon(points, 4, Color4F(Colors::Transparent), this->borderWidth, Color4F(Colors::White));
+    backGround->setPosition(this->starBox->getPosition());
+    backGround->setAnchorPoint(Point(0, 0));
+    this->contentLayer->addChild(backGround, 0);
+}
 
-    //create a sprite
-    auto sprite = Sprite::create("res/Star.png");
-    sprite->setPosition(Point(dialogSize.width / 2, dialogSize.height / 2));
-    this->addChild(sprite);
-
-    //apply physicsBody to the sprite
-    sprite->addComponent(physicsBody);
-    sprite->getPhysicsBody()->setCategoryBitmask(0x02);
-    sprite->getPhysicsBody()->setCollisionBitmask(0x01);
+void GameDialog::addStars() {
 }
 
 void GameDialog::addBackButton() {
@@ -78,7 +76,7 @@ void GameDialog::addBackButton() {
     auto button = BtnGameQuit::create(contentSize.width / 2 - 10, contentSize.height / 4 - 10);
     button->setAnchorPoint(Point(0, 0));
     button->setPosition(Point(0, 0));
-    this->contentLayer->addChild(button);
+    this->contentLayer->addChild(button, 0);
 }
 
 void GameDialog::addRestartButton() {
@@ -86,11 +84,25 @@ void GameDialog::addRestartButton() {
     auto button = BtnGameResume::create(contentSize.width / 2 - 10, contentSize.height / 4 - 10);
     button->setAnchorPoint(Point(1, 0));
     button->setPosition(Point(contentSize.width, 0));
-    this->contentLayer->addChild(button);
+    this->contentLayer->addChild(button, 0);
 }
 
 void GameDialog::SetScore(int score) {
-    std::stringstream numberStr;
-    numberStr << "Score: " << score;
-    numberStr.str();
+    auto starBoxSize = this->starBox->getContentSize();
+    this->starBox->removeAllChildren();
+
+    for (int i=0; i<score; i++) {
+    
+        //create a sprite
+        auto sprite = Sprite::create("res/Star.png");
+        sprite->setAnchorPoint(Point(0.5, 0.5));
+        sprite->setPosition(Point(starBoxSize.width * RandomHelper::random_real(0.2, 0.8) + starBoxSize.width * 0.2, starBoxSize.height / 2));
+        sprite->setScale(starBoxSize.height / 10 / sprite->getContentSize().height);
+        this->starBox->addChild(sprite, 0);
+    
+        //apply physicsBody to the sprite
+        auto physicsBody = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0.1f, 1.0f, 0.0f));
+        physicsBody->setGravityEnable(true);
+        sprite->addComponent(physicsBody);
+    }
 }

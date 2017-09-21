@@ -16,13 +16,15 @@ protected:
     const float borderWidth;
     void addRestartButton();
     void addStars();
-    cocos2d::Vec2 *points;
+    void addStarBox();
+    cocos2d::Layer *starBox;
 
 public:
     GameDialog();
     static GameDialog* create(float width, float height);
     CREATE_FUNC(GameDialog);
     void SetScore(int score);
+    static GameDialog* Instance;
 };
 
 #endif

@@ -8,7 +8,7 @@ const int NUMBER_MAX = 13;
 const int MATRIX_WIDTH = 8;
 const int MATRIX_HEIGHT = 10;
 const int NUMBER_DISABLE = -1;
-const int TOTAL_TICK = 10;
+const int TOTAL_TICK = 60;
 
 struct BlockLocation {
     int W;

@@ -23,7 +23,49 @@ THE SOFTWARE.
 ****************************************************************************/
 package org.cocos2dx.cpp;
 
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Bundle;
+
 import org.cocos2dx.lib.Cocos2dxActivity;
 
-public class AppActivity extends Cocos2dxActivity {
+public class AppActivity extends Cocos2dxActivity implements SensorEventListener {
+    private static final String TAG = "AppActivity";
+
+    protected SensorManager mSensorManager = null;
+    protected Sensor mSensor = null;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        this.mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, this.mSensor, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        PushSensorInfo(event.values[0], event.values[1]);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    protected native void PushSensorInfo(float forceX, float forceY);
 }

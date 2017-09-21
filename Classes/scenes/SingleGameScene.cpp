@@ -116,6 +116,8 @@ bool SingleGameScene::initWithPhysics() {
         this->levelBar->SetLevel(gameEngine->GetLevel());
         this->targetBar->SetTarget(gameEngine->GetRoundTarget());
         this->scoreBar->SetScore(gameEngine->GetScore());
+        this->dialog->setZOrder(-1);
+        this->gameDialog->setZOrder(-1);
     });
     gameEngine->StartGame();
     gameEngine->SetOnEndListener([this]() {

@@ -145,7 +145,7 @@ void PUCircleEmitter::initParticlePosition(PUParticle3D* particle)
     }
     //else
     //{
-    //	particle->position = getDerivedPosition() + _emitterScale * ( mOrientation * Vec3(mX * mRadius, 0, mZ * mRadius) );
+    //	particle->position = getDerivedPosition() + _emitterScale * ( mSensor * Vec3(mX * mRadius, 0, mZ * mRadius) );
     //}
     particle->originalPosition = particle->position;
 }
@@ -160,7 +160,7 @@ void PUCircleEmitter::initParticleDirection(PUParticle3D* particle)
         generateAngle(angle);
         if (angle != 0.0f)
         {
-            //particle->direction = (mOrientation * Vec3(mX, 0, mZ) ).randomDeviant(angle, mUpVector);
+            //particle->direction = (mSensor * Vec3(mX, 0, mZ) ).randomDeviant(angle, mUpVector);
             Mat4 mat;
             Mat4::createRotation(_orientation, &mat);
             Vec3 temp = mat * Vec3(_x, 0, _z);
