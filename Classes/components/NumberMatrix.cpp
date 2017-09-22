@@ -57,11 +57,9 @@ void NumberMatrix::StartGame() {
             numberBlock->setVisible(true);
 
             // add number block
-            numberBlock->setAnchorPoint(Point(0, 0));
             auto targetPosition = Point(w * (this->numberBlockInterval + this->numberBlockSize), \
                 h * (this->numberBlockInterval + this->numberBlockSize));
             numberBlock->setPosition(w * (this->numberBlockInterval + this->numberBlockSize), layerSize.height);
-            this->addChild(numberBlock, 0);
             numberBlock->runAction(Sequence::create(DelayTime::create(0.01 * (w + h)), MoveTo::create(this->duration, targetPosition), NULL));
         }
     }

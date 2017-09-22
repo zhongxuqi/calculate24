@@ -320,10 +320,12 @@ void GameEngine::TimeTick() {
                 listener();
             }
         } else {
-            this->isEnd = true;
-            auto listener = this->onEndListener;
-            if (listener != NULL) {
-                listener();
+            if (!this->isEnd) {
+                this->isEnd = true;
+                auto listener = this->onEndListener;
+                if (listener != NULL) {
+                    listener();
+                }
             }
         }
     }
