@@ -18,6 +18,9 @@ protected:
     void addStarBox();
     cocos2d::Layer *starBox;
     cocos2d::Label *scoreLabel;
+    cocos2d::PhysicsBody **physicsBodies;
+    int score;
+    cocos2d::Size starSize;
 
 public:
     GameDialog();
@@ -25,6 +28,7 @@ public:
     CREATE_FUNC(GameDialog);
     void SetScore(int score);
     static GameDialog* Instance;
+    void SetForce(float forceX, float forceY);
 };
 
 #endif

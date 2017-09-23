@@ -11,6 +11,7 @@ GameDialog* GameDialog::Instance = NULL;
 
 GameDialog::GameDialog() : contentLayer(Layer::create()), borderWidth(4) {
     GameDialog::Instance = this;
+    this->score = 0;
 }
 
 bool GameDialog::init() {
@@ -97,18 +98,32 @@ void GameDialog::SetScore(int score) {
 
     auto starBoxSize = this->starBox->getContentSize();
     this->starBox->removeAllChildren();
+    this->physicsBodies = new PhysicsBody*[score];
     for (int i=0; i<score; i++) {
     
         //create a sprite
         auto sprite = Sprite::create("res/Star.png");
         sprite->setAnchorPoint(Point(0.5, 0.5));
-        sprite->setPosition(Point(starBoxSize.width / 2, starBoxSize.height / 2));
+        sprite->setPosition(Point(starBoxSize.width * 0.2 + RandomHelper::random_real(0.0, 0.6) * starBoxSize.width, starBoxSize.height / 2));
         sprite->setScale(starBoxSize.height / 10 / sprite->getContentSize().height);
         this->starBox->addChild(sprite, 0);
+        this->starSize = sprite->getContentSize();
     
         //apply physicsBody to the sprite
-        auto physicsBody = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0.1f, 1.0f, 0.0f));
-        physicsBody->setGravityEnable(true);
-        sprite->addComponent(physicsBody);
+        this->physicsBodies[i] = PhysicsBody::createBox(this->starSize, PhysicsMaterial(0.1f, 1.0f, 0.0f));
+        this->physicsBodies[i]->setGravityEnable(false);
+        this->physicsBodies[i]->setVelocity(Vec2(RandomHelper::random_real(0.0, 1.0) * 100, RandomHelper::random_real(0.0, 1.0) * 100));
+        sprite->addComponent(this->physicsBodies[i]);
+    }
+    this->score = score;
+}
+
+void GameDialog::SetForce(float forceX, float forceY) {
+    auto score = this->score;
+    auto physicsBodies = this->physicsBodies;
+    for (int i=0; i<score; i++) {
+        if (physicsBodies[i] != NULL) {
+            physicsBodies[i]->applyForce(Vec2(-forceX * 1000, -forceY * 1000));
+        }
     }
 }
