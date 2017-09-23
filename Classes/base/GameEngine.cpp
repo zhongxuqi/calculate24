@@ -306,7 +306,11 @@ void GameEngine::StartGame() {
 void GameEngine::levelUp() {
     this->tick = TOTAL_TICK;
     this->level++;
-    this->roundTarget++;
+    auto addTarget = 6 + 2 * this->level;
+    if (addTarget > 18) {
+        addTarget = 18;
+    }
+    this->roundTarget += addTarget;
 }
 
 void GameEngine::TimeTick() {

@@ -15,9 +15,9 @@ protected:
     void addBackButton();
     const float borderWidth;
     void addRestartButton();
-    void addStars();
     void addStarBox();
     cocos2d::Layer *starBox;
+    cocos2d::Label *scoreLabel;
 
 public:
     GameDialog();

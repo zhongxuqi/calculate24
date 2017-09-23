@@ -32,7 +32,6 @@ GameDialog* GameDialog::create(float width, float height) {
     gameDialog->addChild(gameDialog->contentLayer, 0);
 
     gameDialog->addStarBox();
-    gameDialog->addStars();
     gameDialog->addBackButton();
     gameDialog->addRestartButton();
 
@@ -66,9 +65,13 @@ void GameDialog::addStarBox() {
     backGround->setPosition(this->starBox->getPosition());
     backGround->setAnchorPoint(Point(0, 0));
     this->contentLayer->addChild(backGround, 0);
-}
 
-void GameDialog::addStars() {
+    // add score lable
+    this->scoreLabel = Label::createWithTTF("", "fonts/arial.ttf", contentSize.height / 4);
+    this->scoreLabel->setAnchorPoint(Point(0.5, 0.5));
+    this->scoreLabel->setPosition(Point(contentSize.width / 2, this->starBox->getPosition().y + starBoxSize.height / 2));
+    this->scoreLabel->setTextColor(Colors::White);
+    this->contentLayer->addChild(this->scoreLabel, 0);
 }
 
 void GameDialog::addBackButton() {
@@ -88,15 +91,18 @@ void GameDialog::addRestartButton() {
 }
 
 void GameDialog::SetScore(int score) {
+    std::stringstream numberStr;
+    numberStr << score;
+    this->scoreLabel->setString(numberStr.str());
+
     auto starBoxSize = this->starBox->getContentSize();
     this->starBox->removeAllChildren();
-
     for (int i=0; i<score; i++) {
     
         //create a sprite
         auto sprite = Sprite::create("res/Star.png");
         sprite->setAnchorPoint(Point(0.5, 0.5));
-        sprite->setPosition(Point(starBoxSize.width * RandomHelper::random_real(0.2, 0.8) + starBoxSize.width * 0.2, starBoxSize.height / 2));
+        sprite->setPosition(Point(starBoxSize.width / 2, starBoxSize.height / 2));
         sprite->setScale(starBoxSize.height / 10 / sprite->getContentSize().height);
         this->starBox->addChild(sprite, 0);
     
