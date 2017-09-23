@@ -3,6 +3,8 @@
 
 #include "cocos2d.h"
 
+#define TOP_SCORE "top_score"
+
 const int SELECTED_MAX = 4;
 const int NUMBER_MAX = 13;
 const int MATRIX_WIDTH = 8;

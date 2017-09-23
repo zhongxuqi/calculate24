@@ -5,10 +5,14 @@
 #include "../components/SolutionBoard.h"
 #include "../base/GameEngine.h"
 #include "../utils/TimeUtils.h"
+#include "../utils/PreferenceUtils.h"
+#include "../utils/GameUtils.h"
+#include "MainScene.h"
 
 USING_NS_CC;
 
 GameEngine* const gameEngine = GameEngine::Instance;
+SingleGameScene* SingleGameScene::Instance = NULL;
 
 SingleGameScene* SingleGameScene::createWithPhysics() {
     SingleGameScene *ret = new (std::nothrow) SingleGameScene();
@@ -25,6 +29,8 @@ bool SingleGameScene::initWithPhysics() {
     if (!Scene::initWithPhysics()) {
         return false;
     }
+    
+    SingleGameScene::Instance = this;
 
     // add event
     auto listener = EventListenerKeyboard::create();
@@ -57,7 +63,11 @@ bool SingleGameScene::initWithPhysics() {
     this->btnGameJudge->setPosition(origin.x + 20, origin.y + visibleSize.height * 8 / 9 - 60);
     this->addChild(this->btnGameJudge, 0);
     this->btnGameJudge->SetOnClickListener([this]() {
-        gameEngine->JudgeLevel();
+        if (this->btnGameJudge->IsPass()) {
+            gameEngine->JudgeLevel();
+        } else {
+            GameUtils::AlertEndGame();
+        }
     });
 
     // add starbox
@@ -110,22 +120,28 @@ bool SingleGameScene::initWithPhysics() {
     });
     gameEngine->StartGame();
     gameEngine->SetOnEndListener([this]() {
-        Director::getInstance()->popScene();
+        PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
+        this->QuitGame();
     });
 
     return true;
 }
 
-void SingleGameScene::addStarBox() {
-
-}
-
 void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
     if (keyCode == EventKeyboard::KeyCode::KEY_BACK) {
-        Director::getInstance()->popScene();
+        GameUtils::AlertQuitGame();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
         exit(0);
 #endif
     }
+}
+
+void SingleGameScene::QuitGame() {
+    Director::getInstance()->popScene();
+    MainScene::Instance->UpdateScore();
+}
+
+void SingleGameScene::EndGame() {
+    gameEngine->JudgeLevel();
 }

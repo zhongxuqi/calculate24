@@ -93,6 +93,7 @@ void BtnGameJudge::SetOnClickListener(std::function<void()> listener) {
 }
 
 void BtnGameJudge::SetPassState(bool passState) {
+    this->passState = passState;
     if (passState) {
         this->color = Colors::SuccessColor;
         this->textLabel->setString("Level Up");
@@ -101,4 +102,8 @@ void BtnGameJudge::SetPassState(bool passState) {
         this->textLabel->setString("Over");
     }
     this->setActive(false);
+}
+
+bool BtnGameJudge::IsPass() {
+    return this->passState;
 }

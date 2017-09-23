@@ -2,12 +2,15 @@
 #include "MainScene.h"
 #include "../components/BgMain.h"
 #include "../components/PersonalInfo.h"
-#include "../components/ScoreBar.h"
 #include "../components/BtnNormalMode.h"
 #include "../components/BtnOnlineBattle.h"
 #include "SingleGameScene.h"
+#include "../utils/PreferenceUtils.h"
+#include "../base/GameEngine.h"
 
 USING_NS_CC;
+
+MainScene* MainScene::Instance = NULL;
 
 Scene* MainScene::createScene()
 {
@@ -18,6 +21,7 @@ bool MainScene::init() {
     if (!Scene::init()) {
         return false;
     }
+    MainScene::Instance = this;
 
     // add event
     auto listener = EventListenerKeyboard::create();
@@ -40,11 +44,12 @@ bool MainScene::init() {
     this->addChild(personalInfo, 0);
 
     // add user score
-    auto scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto scoreBarSize = scoreBar->getContentSize();
-    scoreBar->setAnchorPoint(Point(1, 1));
-    scoreBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
-    this->addChild(scoreBar, 0);
+    this->scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
+    auto scoreBarSize = this->scoreBar->getContentSize();
+    this->scoreBar->setAnchorPoint(Point(1, 1));
+    this->scoreBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(this->scoreBar, 0);
+    this->UpdateScore();
 
     // add normal mode btn
     auto btnNormalMode = BtnNormalMode::create(visibleSize.width - 40, visibleSize.height * 0.3);
@@ -72,4 +77,8 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
         exit(0);
 #endif
     }
+}
+
+void MainScene::UpdateScore() {
+    this->scoreBar->SetScore(PreferenceUtils::GetIntPref(TOP_SCORE));
 }

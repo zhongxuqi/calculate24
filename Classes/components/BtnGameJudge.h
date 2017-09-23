@@ -14,6 +14,7 @@ protected:
     cocos2d::Label* textLabel;
     cocos2d::Color4B color;
     void setActive(bool isActive);
+    bool passState;
 
 public:
     BtnGameJudge();
@@ -25,6 +26,7 @@ public:
     virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event);
     void SetOnClickListener(std::function<void()> listener);
     void SetPassState(bool passState);
+    bool IsPass();
 };
 
 #endif

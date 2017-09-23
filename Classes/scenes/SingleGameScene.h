@@ -21,16 +21,18 @@ protected:
     TargetBar *targetBar;
     BtnGameJudge *btnGameJudge;
     void updateCustom(float dt);
-    void addStarBox();
 
 public:
     virtual bool initWithPhysics();
+    static SingleGameScene* Instance;
 
     // implement the "static create()" method manually
     static SingleGameScene *createWithPhysics(); 
     CREATE_FUNC(SingleGameScene);
 
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
+    void QuitGame();
+    void EndGame();
 };
 
 #endif

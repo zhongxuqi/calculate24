@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">calculate24</string>
+
+    <string name="end_alert">Affirm to End?</string>
+    <string name="quit_alert">Affirm to Quit?</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
 </resources>
