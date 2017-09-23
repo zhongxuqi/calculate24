@@ -33,7 +33,7 @@ GameDialog* GameDialog::create(float width, float height) {
     gameDialog->addChild(gameDialog->contentLayer, 0);
 
     gameDialog->addStarBox();
-    gameDialog->addBackButton();
+    gameDialog->addQuitButton();
     gameDialog->addRestartButton();
 
     return gameDialog;
@@ -75,20 +75,32 @@ void GameDialog::addStarBox() {
     this->contentLayer->addChild(this->scoreLabel, 0);
 }
 
-void GameDialog::addBackButton() {
+void GameDialog::addQuitButton() {
     auto contentSize = this->contentLayer->getContentSize();
     auto button = BtnGameQuit::create(contentSize.width / 2 - 10, contentSize.height / 4 - 10);
     button->setAnchorPoint(Point(0, 0));
     button->setPosition(Point(0, 0));
     this->contentLayer->addChild(button, 0);
+    button->SetOnClickListener([this]() {
+        auto listener = this->quitListener;
+        if (listener != NULL) {
+            listener();
+        }
+    });
 }
 
 void GameDialog::addRestartButton() {
     auto contentSize = this->contentLayer->getContentSize();
-    auto button = BtnGameResume::create(contentSize.width / 2 - 10, contentSize.height / 4 - 10);
+    auto button = BtnGameRestart::create(contentSize.width / 2 - 10, contentSize.height / 4 - 10);
     button->setAnchorPoint(Point(1, 0));
     button->setPosition(Point(contentSize.width, 0));
     this->contentLayer->addChild(button, 0);
+    button->SetOnClickListener([this]() {
+        auto listener = this->restartListener;
+        if (listener != NULL) {
+            listener();
+        }
+    });
 }
 
 void GameDialog::SetScore(int score) {
@@ -126,4 +138,12 @@ void GameDialog::SetForce(float forceX, float forceY) {
             physicsBodies[i]->applyForce(Vec2(-forceX * 1000, -forceY * 1000));
         }
     }
+}
+
+void GameDialog::SetQuitListener(std::function<void()> listener) {
+    this->quitListener = listener;
+}
+
+void GameDialog::SetRestartListener(std::function<void()> listener) {
+    this->restartListener = listener;
 }

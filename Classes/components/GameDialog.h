@@ -6,13 +6,14 @@
 #include "../base/GameEngine.h"
 #include "BtnGameQuit.h"
 #include "BtnGameResume.h"
+#include "BtnGameRestart.h"
 
 class GameDialog : public cocos2d::LayerColor {
 protected:
     virtual bool init();
     cocos2d::Label *gameLabel;
     cocos2d::Layer* const contentLayer;
-    void addBackButton();
+    void addQuitButton();
     const float borderWidth;
     void addRestartButton();
     void addStarBox();
@@ -21,6 +22,8 @@ protected:
     cocos2d::PhysicsBody **physicsBodies;
     int score;
     cocos2d::Size starSize;
+    std::function<void()> quitListener;
+    std::function<void()> restartListener;
 
 public:
     GameDialog();
@@ -29,6 +32,8 @@ public:
     void SetScore(int score);
     static GameDialog* Instance;
     void SetForce(float forceX, float forceY);
+    void SetQuitListener(std::function<void()> listener);
+    void SetRestartListener(std::function<void()> listener);
 };
 
 #endif

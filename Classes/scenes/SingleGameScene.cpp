@@ -90,6 +90,12 @@ bool SingleGameScene::initWithPhysics() {
     this->gameDialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
     this->addChild(this->gameDialog, -1);
     this->gameDialog->setZOrder(-1);
+    this->gameDialog->SetQuitListener([this]() {
+        Director::getInstance()->popScene();
+    });
+    this->gameDialog->SetRestartListener([this]() {
+        gameEngine->StartGame();
+    });
 
     // add number matrix
     this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height - scoreBarSize.height - timeBarSize.height);
