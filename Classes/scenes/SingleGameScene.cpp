@@ -26,9 +26,6 @@ bool SingleGameScene::initWithPhysics() {
         return false;
     }
 
-    // setup schedule
-    schedule(schedule_selector(SingleGameScene::updateCustom), 1.0f, kRepeatForever, 0);
-
     // add event
     auto listener = EventListenerKeyboard::create();
     listener->onKeyReleased = CC_CALLBACK_2(SingleGameScene::onKeyReleased, this);
@@ -42,33 +39,32 @@ bool SingleGameScene::initWithPhysics() {
     LayerBgGameDefault->setPosition(origin);
     this->addChild(LayerBgGameDefault, 0);
 
-    // add user score
-    this->scoreBar = ScoreBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto scoreBarSize = this->scoreBar->getContentSize();
-    this->scoreBar->setAnchorPoint(Point(0, 1));
-    this->scoreBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
-    this->addChild(this->scoreBar, 0);
-
     // add level bar
     this->levelBar = LevelBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto levelBarSize = this->levelBar->getContentSize();
-    this->levelBar->setAnchorPoint(Point(0.5, 1));
-    this->levelBar->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - 20);
+    this->levelBar->setAnchorPoint(Point(0, 1));
+    this->levelBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
     this->addChild(this->levelBar, 0);
 
     // add target bar
     this->targetBar = TargetBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    auto targetBarSize = this->targetBar->getContentSize();
-    this->targetBar->setAnchorPoint(Point(1, 1));
-    this->targetBar->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->targetBar->setAnchorPoint(Point(0, 1));
+    this->targetBar->setPosition(origin.x + 20, origin.y + visibleSize.height * 17 / 18 - 40);
     this->addChild(this->targetBar, 0);
 
-    // add time bar
-    this->timeBar = TimeBar::create(visibleSize.width - 40, visibleSize.height / 18);
-    auto timeBarSize = this->timeBar->getContentSize();
-    this->timeBar->setAnchorPoint(Point(0.5, 1));
-    this->timeBar->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - scoreBarSize.height - 40);
-    this->addChild(this->timeBar, 0);
+    // add judge btn
+    this->btnGameJudge = BtnGameJudge::create(visibleSize.width * 0.25, visibleSize.height / 18);
+    this->btnGameJudge->setAnchorPoint(Point(0, 1));
+    this->btnGameJudge->setPosition(origin.x + 20, origin.y + visibleSize.height * 8 / 9 - 60);
+    this->addChild(this->btnGameJudge, 0);
+    this->btnGameJudge->SetOnClickListener([this]() {
+        gameEngine->JudgeLevel();
+    });
+
+    // add starbox
+    this->starBox = StarBox::create(visibleSize.width * 0.75 - 60, visibleSize.height / 6 + 40);
+    this->starBox->setAnchorPoint(Point(1, 1));
+    this->starBox->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->addChild(this->starBox, 0);
 
     // add dialog
     this->dialog = SolutionDialog::create(visibleSize.width - 40, visibleSize.width - 40);
@@ -80,25 +76,13 @@ bool SingleGameScene::initWithPhysics() {
         if (this->numberMatrix->PushSolution(inputSteps)) {
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
-            this->scoreBar->SetScore(gameEngine->GetScore());
+            this->starBox->AddScore();
+            this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
         }
     });
 
-    // add game over dialog
-    this->gameDialog = GameDialog::create(visibleSize.width, visibleSize.height);
-    this->gameDialog->setAnchorPoint(Point(0.5, 0.5));
-    this->gameDialog->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
-    this->addChild(this->gameDialog, -1);
-    this->gameDialog->setZOrder(-1);
-    this->gameDialog->SetQuitListener([this]() {
-        Director::getInstance()->popScene();
-    });
-    this->gameDialog->SetRestartListener([this]() {
-        gameEngine->StartGame();
-    });
-
     // add number matrix
-    this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height - scoreBarSize.height - timeBarSize.height);
+    this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height - visibleSize.height / 6 - 60);
     this->numberMatrix->setAnchorPoint(Point(0.5, 0));
     this->numberMatrix->setPosition(visibleSize.width / 2, 20);
     this->numberMatrix->setTouchable(true);
@@ -121,24 +105,19 @@ bool SingleGameScene::initWithPhysics() {
         this->numberMatrix->StartGame();
         this->levelBar->SetLevel(gameEngine->GetLevel());
         this->targetBar->SetTarget(gameEngine->GetRoundTarget());
-        this->scoreBar->SetScore(gameEngine->GetScore());
         this->dialog->setZOrder(-1);
-        this->gameDialog->setZOrder(-1);
+        this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
     });
     gameEngine->StartGame();
     gameEngine->SetOnEndListener([this]() {
-        this->gameDialog->SetScore(gameEngine->GetScore());
-        this->gameDialog->setZOrder(1);
-        this->numberMatrix->setTouchable(false);
-        this->dialog->setZOrder(-1);
+        Director::getInstance()->popScene();
     });
 
     return true;
 }
 
-void SingleGameScene::updateCustom(float dt) {
-    gameEngine->TimeTick();
-    this->timeBar->SetPercent(100.0 * gameEngine->GetTick() / TOTAL_TICK);
+void SingleGameScene::addStarBox() {
+
 }
 
 void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {

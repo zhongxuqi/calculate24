@@ -9,17 +9,19 @@
 #include "../components/TimeBar.h"
 #include "../components/LevelBar.h"
 #include "../components/TargetBar.h"
+#include "../components/BtnGameJudge.h"
+#include "../components/StarBox.h"
 
 class SingleGameScene : public cocos2d::Scene {
 protected:
     NumberMatrix* numberMatrix;
     SolutionDialog* dialog;
-    GameDialog* gameDialog;
-    ScoreBar* scoreBar;
-    TimeBar *timeBar;
+    StarBox *starBox;
     LevelBar *levelBar;
     TargetBar *targetBar;
+    BtnGameJudge *btnGameJudge;
     void updateCustom(float dt);
+    void addStarBox();
 
 public:
     virtual bool initWithPhysics();

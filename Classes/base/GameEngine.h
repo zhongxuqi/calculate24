@@ -8,7 +8,6 @@ const int NUMBER_MAX = 13;
 const int MATRIX_WIDTH = 8;
 const int MATRIX_HEIGHT = 10;
 const int NUMBER_DISABLE = -1;
-const int TOTAL_TICK = 60;
 
 struct BlockLocation {
     int W;
@@ -57,7 +56,6 @@ protected:
     int score;
     int roundTarget;
     int level;
-    long tick;
     bool isEnd;
     std::function<void()> onStartListener;
     void levelUp();
@@ -71,12 +69,11 @@ public:
     int GetRoundTarget();
     static GameEngine* Instance;
     void StartGame();
-    void TimeTick();
     int GetLevel();
-    long GetTick();
     void SetOnEndListener();
     void SetOnStartListener(std::function<void()> listener);
     void SetOnEndListener(std::function<void()> listener);
+    void JudgeLevel();
 };
 
 #endif

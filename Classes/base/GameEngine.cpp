@@ -304,7 +304,6 @@ void GameEngine::StartGame() {
 }
 
 void GameEngine::levelUp() {
-    this->tick = TOTAL_TICK;
     this->level++;
     auto addTarget = 6 + 2 * this->level;
     if (addTarget > 18) {
@@ -313,30 +312,23 @@ void GameEngine::levelUp() {
     this->roundTarget += addTarget;
 }
 
-void GameEngine::TimeTick() {
-    this->tick--;
-    if (this->tick <= 0) {
-        if (this->score >= this->roundTarget) {
-            this->levelUp();
-            this->initNumberMatrix();
-            auto listener = this->onStartListener;
+void GameEngine::JudgeLevel() {
+    if (this->score >= this->roundTarget) {
+        this->levelUp();
+        this->initNumberMatrix();
+        auto listener = this->onStartListener;
+        if (listener != NULL) {
+            listener();
+        }
+    } else {
+        if (!this->isEnd) {
+            this->isEnd = true;
+            auto listener = this->onEndListener;
             if (listener != NULL) {
                 listener();
             }
-        } else {
-            if (!this->isEnd) {
-                this->isEnd = true;
-                auto listener = this->onEndListener;
-                if (listener != NULL) {
-                    listener();
-                }
-            }
         }
     }
-}
-
-long GameEngine::GetTick() {
-    return this->tick;
 }
 
 int GameEngine::GetLevel() {
