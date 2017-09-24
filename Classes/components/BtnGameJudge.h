@@ -2,10 +2,11 @@
 #define __GAME_JUDGE_H__
 
 #include "cocos2d.h"
+#include "cocos-ext.h" 
 
 class BtnGameJudge : public cocos2d::Layer {
 protected:
-    cocos2d::DrawNode* NodeBackground;
+    cocos2d::ui::Scale9Sprite* NodeBackground;
     const float borderWidth;
     cocos2d::Vec2 *points;
     virtual bool init();
@@ -13,7 +14,6 @@ protected:
     std::function<void()> clickListener;
     cocos2d::Label* textLabel;
     cocos2d::Color4B color;
-    void setActive(bool isActive);
     bool passState;
 
 public:

@@ -3,6 +3,7 @@
 #include "../base/Colors.h"
 
 USING_NS_CC;
+using namespace cocos2d::extension;
 
 BtnGameJudge::BtnGameJudge(): borderWidth(4) {
 
@@ -21,16 +22,10 @@ BtnGameJudge* BtnGameJudge::create(float width, float height) {
     btnGameJudge->setIgnoreAnchorPointForPosition(false);
 
     // add background
-    btnGameJudge->color = Colors::DangerColor;
-    btnGameJudge->NodeBackground = DrawNode::create();
-    btnGameJudge->points = new Vec2[4]{
-        Vec2(0, 0),
-        Vec2(width, 0),
-        Vec2(width, height),
-        Vec2(0, height),
-    };
-    btnGameJudge->NodeBackground->drawPolygon(btnGameJudge->points, 4, Color4F(Colors::Transparent), \
-        btnGameJudge->borderWidth, Color4F(btnGameJudge->color));
+    btnGameJudge->NodeBackground = Scale9Sprite::create("res/BgButtonRed.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
+    btnGameJudge->NodeBackground->setContentSize(btnGameJudge->getContentSize());
+    btnGameJudge->NodeBackground->setAnchorPoint(Point(0, 0));
+    btnGameJudge->NodeBackground->setPosition(Point(width / 2, height / 2));
     btnGameJudge->addChild(btnGameJudge->NodeBackground, 0);
 
     // add text
@@ -38,7 +33,7 @@ BtnGameJudge* BtnGameJudge::create(float width, float height) {
     btnGameJudge->textLabel->enableBold();
     btnGameJudge->textLabel->setAnchorPoint(Point(0.5, 0.5));
     btnGameJudge->textLabel->setPosition(width / 2, height / 2);
-    btnGameJudge->textLabel->setTextColor(btnGameJudge->color);
+    btnGameJudge->textLabel->setTextColor(Colors::White);
     btnGameJudge->addChild(btnGameJudge->textLabel, 0);
 
     // add event listener
@@ -52,22 +47,10 @@ BtnGameJudge* BtnGameJudge::create(float width, float height) {
     return btnGameJudge;
 }
 
-void BtnGameJudge::setActive(bool isActive) {
-    this->NodeBackground->clear();
-    if (isActive) {
-        this->NodeBackground->drawPolygon(this->points, 4, Color4F(this->color), this->borderWidth, Color4F(this->color));
-        this->textLabel->setTextColor(Colors::BgColor);
-    } else {
-        this->NodeBackground->drawPolygon(this->points, 4, Color4F(Colors::Transparent), this->borderWidth, Color4F(this->color));
-        this->textLabel->setTextColor(this->color);
-    }
-}
-
 bool BtnGameJudge::onTouchBegan(Touch *touch, Event *unused_event) {
     auto locationOnView = this->convertToNodeSpace(touch->getLocation());
     if (locationOnView.x > 0 && locationOnView.x < this->getContentSize().width && \
     locationOnView.y > 0 && locationOnView.y < this->getContentSize().height) {
-        this->setActive(true);
         return true;
     }
     return false;
@@ -85,7 +68,6 @@ void BtnGameJudge::onTouchEnded(Touch *touch, Event *unused_event) {
             this->clickListener();
         }
     }
-    this->setActive(false);
 }
 
 void BtnGameJudge::SetOnClickListener(std::function<void()> listener) {
@@ -96,12 +78,15 @@ void BtnGameJudge::SetPassState(bool passState) {
     this->passState = passState;
     if (passState) {
         this->color = Colors::SuccessColor;
-        this->textLabel->setString("Level Up");
+        this->textLabel->setString("LevelUp");
+        this->NodeBackground->initWithFile("res/BgButtonGreen.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
+        this->NodeBackground->setContentSize(this->getContentSize());
     } else {
         this->color = Colors::DangerColor;
-        this->textLabel->setString("Over");
+        this->textLabel->setString("GiveUp");
+        this->NodeBackground->initWithFile("res/BgButtonRed.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
+        this->NodeBackground->setContentSize(this->getContentSize());
     }
-    this->setActive(false);
 }
 
 bool BtnGameJudge::IsPass() {

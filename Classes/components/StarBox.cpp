@@ -56,7 +56,7 @@ StarBox* StarBox::create(float width, float height) {
     starBox->scoreLabel->setAnchorPoint(Point(0.5, 0.5));
     starBox->scoreLabel->setPosition(Point(starBoxSize.width / 2, starBoxSize.height / 2));
     starBox->scoreLabel->setTextColor(Colors::White);
-    starBox->addChild(starBox->scoreLabel, 0);
+    starBox->addChild(starBox->scoreLabel, 1);
 
     return starBox;
 }
