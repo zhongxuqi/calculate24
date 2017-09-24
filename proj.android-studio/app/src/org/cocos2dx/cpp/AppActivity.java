@@ -113,6 +113,20 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
         return sharedPreferences.getInt(key, 0);
     }
 
+    public static void PutBoolPref(String key, boolean value) {
+        if (sharedPreferences == null) {
+            return;
+        }
+        sharedPreferences.edit().putBoolean(key, value).apply();
+    }
+
+    public static boolean GetBoolPref(String key) {
+        if (sharedPreferences == null) {
+            return false;
+        }
+        return sharedPreferences.getBoolean(key, false);
+    }
+
     protected native void QuitGame();
     public static void AlertQuitGame() {
         if (handler == null) {
@@ -185,6 +199,48 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
                             activity.dialog.dismiss();
                         }
                         activity.EndGame();
+                    }
+                });
+                activity.dialog = builder.create();
+                activity.dialog.show();
+            }
+        });
+    }
+
+    protected native void NewGame();
+    protected native void ResumeGame();
+    public static void AlertResumeGame() {
+        if (handler == null) {
+            return;
+        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                final AppActivity activity = AppActivity.activity;
+                if (activity == null) {
+                    return;
+                }
+                if (activity.dialog != null) {
+                    activity.dialog.dismiss();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage(activity.getString(R.string.resume_alert));
+                builder.setNegativeButton(R.string.new_game, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (activity.dialog != null) {
+                            activity.dialog.dismiss();
+                        }
+                        activity.NewGame();
+                    }
+                });
+                builder.setPositiveButton(R.string.resume_game, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (activity.dialog != null) {
+                            activity.dialog.dismiss();
+                        }
+                        activity.ResumeGame();
                     }
                 });
                 activity.dialog = builder.create();

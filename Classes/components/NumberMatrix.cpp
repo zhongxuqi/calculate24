@@ -54,7 +54,7 @@ void NumberMatrix::StartGame() {
             accurateNumber->divider = 1;
             auto numberBlock = this->numberNodeMatrix[h][w];
             numberBlock->SetNumber(accurateNumber);
-            numberBlock->setVisible(true);
+            numberBlock->setVisible(accurateNumber->value > 0);
 
             // add number block
             auto targetPosition = Point(w * (this->numberBlockInterval + this->numberBlockSize), \
@@ -66,6 +66,8 @@ void NumberMatrix::StartGame() {
 }
 
 bool NumberMatrix::onTouchBegan(Touch *touch, Event *unused_event) {
+    touchPoint.x = touch->getLocation().x;
+    touchPoint.y = touch->getLocation().y;
     return this->handleTouch(touch);
 }
 
@@ -272,4 +274,8 @@ void NumberMatrix::handleTransfer(BlockTransfer *transfer) {
         }
         cursor = cursor->Next;
     }
+}
+
+TouchPoint NumberMatrix::GetTouchPoint() {
+    return this->touchPoint;
 }

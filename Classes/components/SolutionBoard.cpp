@@ -172,6 +172,12 @@ void SolutionBoard::onNumberClickListener(Ref *pRef) {
     }
     for (int i = 0; i < 4; i++) {
         if (this->numberFrames[i] == pRef) {
+
+            // check illegel
+            if (this->currIndex == 2 && this->operatorOuts[this->currLine]->GetOperator() == '/' && this->numberBlocks[i]->GetNumber()->value == 0) {
+                return;
+            }
+
             auto numberBlock = this->numberBlocks[i];
             this->numberBlocks[i] = NULL;
             if (numberBlock != NULL) {

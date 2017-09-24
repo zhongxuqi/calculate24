@@ -6,6 +6,11 @@
 #include "../base/GameEngine.h"
 #include "SolutionBoard.h"
 
+struct TouchPoint {
+    float x;
+    float y;
+};
+
 class NumberMatrix : public cocos2d::Layer {
 protected:
     const float duration = 0.3;
@@ -21,6 +26,7 @@ protected:
     void handleSelectBlock();
     std::function<void(AccurateNumber*[4])> selectListener;
     void handleTransfer(BlockTransfer *transfer);
+    TouchPoint touchPoint;
 
 public:
     static NumberMatrix* create(float width, float height);
@@ -33,6 +39,7 @@ public:
     bool PushSolution(InputStep* inputSteps[3]);
     void CancelSelectBlock();
     void StartGame();
+    TouchPoint GetTouchPoint();
 };
 
 #endif

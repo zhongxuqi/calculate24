@@ -4,6 +4,10 @@
 #include "cocos2d.h"
 
 #define TOP_SCORE "top_score"
+#define HAS_SAVE_GAME "has_save_game"
+#define GAME_LEVEL "game_level"
+#define GAME_SCORE "game_score"
+#define GAME_MATRIX "game_matrix"
 
 const int SELECTED_MAX = 4;
 const int NUMBER_MAX = 13;
@@ -53,6 +57,7 @@ protected:
     BlockTransfer *sortMatrix();
     void printSolution(SolutionStep *solution, int layer);
     void initNumberMatrix();
+    int getLevelTarget(int level);
 
     // game info
     int score;
@@ -61,7 +66,7 @@ protected:
     bool isEnd;
     std::function<void()> onStartListener;
     void levelUp();
-    std::function<void()> onEndListener; 
+    std::function<void()> onEndListener;
 
 public:
     int GetNumber(int w, int h);
@@ -76,6 +81,10 @@ public:
     void SetOnStartListener(std::function<void()> listener);
     void SetOnEndListener(std::function<void()> listener);
     void JudgeLevel();
+    void SaveGame();
+    void RestoreGame();
+    bool IsEnd();
+    bool HasSaveGame();
 };
 
 #endif

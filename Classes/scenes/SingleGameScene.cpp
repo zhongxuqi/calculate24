@@ -45,6 +45,13 @@ bool SingleGameScene::initWithPhysics() {
     LayerBgGameDefault->setPosition(origin);
     this->addChild(LayerBgGameDefault, 0);
 
+    // add action star
+    this->actionStar = Sprite::create("res/Star.png");
+    this->actionStar->setAnchorPoint(Point(0.5, 0.5));
+    this->actionStar->setScale(visibleSize.height / 60 / this->actionStar->getContentSize().height);
+    this->actionStar->setVisible(false);
+    this->addChild(this->actionStar, 1);
+
     // add level bar
     this->levelBar = LevelBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
     this->levelBar->setAnchorPoint(Point(0, 1));
@@ -86,8 +93,19 @@ bool SingleGameScene::initWithPhysics() {
         if (this->numberMatrix->PushSolution(inputSteps)) {
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
-            this->starBox->AddScore();
             this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
+
+            // add star to star box
+            auto callFunc = CallFunc::create([this]() {
+                this->starBox->AddScore();
+                this->actionStar->setVisible(false);
+            });
+            auto targetPosition = Point(this->starBox->getPosition().x - this->starBox->getContentSize().width / 2, \
+                this->starBox->getPosition().y - this->starBox->getContentSize().height / 2);
+            auto touchPoint = this->numberMatrix->GetTouchPoint();
+            this->actionStar->setVisible(true);
+            this->actionStar->setPosition(Point(touchPoint.x, touchPoint.y));
+            this->actionStar->runAction(Sequence::create(MoveTo::create(this->duration, targetPosition), callFunc, NULL));
         }
     });
 
@@ -117,12 +135,21 @@ bool SingleGameScene::initWithPhysics() {
         this->targetBar->SetTarget(gameEngine->GetRoundTarget());
         this->dialog->setZOrder(-1);
         this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
+        for (int i=0; i<gameEngine->GetScore(); i++) {
+            this->starBox->AddScore();
+        }
     });
-    gameEngine->StartGame();
     gameEngine->SetOnEndListener([this]() {
         PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
         this->QuitGame();
     });
+    this->numberMatrix->setVisible(false);
+    if (gameEngine->HasSaveGame()) {
+        GameUtils::AlertResumeGame();
+    } else {
+        this->numberMatrix->setVisible(true);
+        gameEngine->StartGame();
+    }
 
     return true;
 }
@@ -138,10 +165,23 @@ void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event
 }
 
 void SingleGameScene::QuitGame() {
+    if (!gameEngine->IsEnd()) {
+        gameEngine->SaveGame();
+    }
     Director::getInstance()->popScene();
     MainScene::Instance->UpdateScore();
 }
 
 void SingleGameScene::EndGame() {
     gameEngine->JudgeLevel();
+}
+
+void SingleGameScene::NewGame() {
+    this->numberMatrix->setVisible(true);
+    gameEngine->StartGame();
+}
+
+void SingleGameScene::ResumeGame() {
+    this->numberMatrix->setVisible(true);
+    gameEngine->RestoreGame();
 }

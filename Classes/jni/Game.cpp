@@ -4,7 +4,6 @@
 
 extern "C" {
     void Java_org_cocos2dx_cpp_AppActivity_QuitGame(JNIEnv *env, jobject thiz) {
-        CCLOG("===>>> Java_org_cocos2dx_cpp_AppActivity_QuitGame");
         auto singleGameScene = SingleGameScene::Instance;
         if (singleGameScene != NULL) {
             singleGameScene->QuitGame();
@@ -12,10 +11,23 @@ extern "C" {
     }
 
     void Java_org_cocos2dx_cpp_AppActivity_EndGame(JNIEnv *env, jobject thiz) {
-        CCLOG("===>>> Java_org_cocos2dx_cpp_AppActivity_EndGame");
         auto singleGameScene = SingleGameScene::Instance;
         if (singleGameScene != NULL) {
             singleGameScene->EndGame();
+        }
+    }
+
+    void Java_org_cocos2dx_cpp_AppActivity_NewGame(JNIEnv *env, jobject thiz) {
+        auto singleGameScene = SingleGameScene::Instance;
+        if (singleGameScene != NULL) {
+            singleGameScene->NewGame();
+        }
+    }
+
+    void Java_org_cocos2dx_cpp_AppActivity_ResumeGame(JNIEnv *env, jobject thiz) {
+        auto singleGameScene = SingleGameScene::Instance;
+        if (singleGameScene != NULL) {
+            singleGameScene->ResumeGame();
         }
     }
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">算24</string>
+
+    <string name="end_alert">是否结束游戏?</string>
+    <string name="quit_alert">是否退出游戏?</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
+
+    <string name="resume_alert">是否继续游戏?</string>
+    <string name="resume_game">继续游戏</string>
+    <string name="new_game">新游戏</string>
+</resources>

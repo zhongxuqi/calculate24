@@ -21,6 +21,8 @@ protected:
     TargetBar *targetBar;
     BtnGameJudge *btnGameJudge;
     void updateCustom(float dt);
+    cocos2d::Sprite *actionStar;
+    const float duration = 1.0;
 
 public:
     virtual bool initWithPhysics();
@@ -33,6 +35,8 @@ public:
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void QuitGame();
     void EndGame();
+    void NewGame();
+    void ResumeGame();
 };
 
 #endif

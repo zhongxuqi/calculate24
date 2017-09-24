@@ -18,6 +18,13 @@ public:
             methodInfo.env->CallStaticVoidMethod(methodInfo.classID, methodInfo.methodID);
         }
     }
+
+    static void AlertResumeGame() {
+        cocos2d::JniMethodInfo methodInfo;
+        if (cocos2d::JniHelper::getStaticMethodInfo(methodInfo, "org/cocos2dx/cpp/AppActivity", "AlertResumeGame", "()V")) {
+            methodInfo.env->CallStaticVoidMethod(methodInfo.classID, methodInfo.methodID);
+        }
+    }
 };
 
 #endif

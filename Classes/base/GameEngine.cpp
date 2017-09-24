@@ -1,6 +1,7 @@
 #include "GameEngine.h"
 #include "Colors.h"
 #include "../utils/TimeUtils.h"
+#include "../utils/PreferenceUtils.h"
 
 USING_NS_CC;
 
@@ -293,11 +294,11 @@ int GameEngine::GetRoundTarget() {
 void GameEngine::StartGame() {
     this->initNumberMatrix();
     this->isEnd = false;
-    auto listener = this->onStartListener;
     this->level = 0;
     this->roundTarget = 0;
     this->score = 0;
     this->levelUp();
+    auto listener = this->onStartListener;
     if (listener != NULL) {
         listener();
     }
@@ -305,11 +306,7 @@ void GameEngine::StartGame() {
 
 void GameEngine::levelUp() {
     this->level++;
-    auto addTarget = 6 + 2 * this->level;
-    if (addTarget > 18) {
-        addTarget = 18;
-    }
-    this->roundTarget += addTarget;
+    this->roundTarget = this->getLevelTarget(this->level);
 }
 
 void GameEngine::JudgeLevel() {
@@ -323,6 +320,7 @@ void GameEngine::JudgeLevel() {
     } else {
         if (!this->isEnd) {
             this->isEnd = true;
+            PreferenceUtils::SetBoolPref(HAS_SAVE_GAME, false);
             auto listener = this->onEndListener;
             if (listener != NULL) {
                 listener();
@@ -335,6 +333,18 @@ int GameEngine::GetLevel() {
     return this->level;
 }
 
+int GameEngine::getLevelTarget(int level) {
+    int target = 0;
+    for (int i=0;i<level;i++) {
+        auto add = 8 + 2 * i;
+        if (add > 20) {
+            add = 20;
+        }
+        target += add;
+    }
+    return target;
+}
+
 void GameEngine::SetOnStartListener(std::function<void()> listener) {
     this->onStartListener = listener;
 }
@@ -342,3 +352,59 @@ void GameEngine::SetOnStartListener(std::function<void()> listener) {
 void GameEngine::SetOnEndListener(std::function<void()> listener) {
     this->onEndListener = listener;
 }
+
+void GameEngine::SaveGame() {
+    PreferenceUtils::SetBoolPref(HAS_SAVE_GAME, true);
+    PreferenceUtils::SetIntPref(GAME_LEVEL, this->level);
+    PreferenceUtils::SetIntPref(GAME_SCORE, this->score);
+    std::stringstream numberStr;
+    for (int h=0;h<MATRIX_HEIGHT;h++) {
+        for (int w=0;w<MATRIX_WIDTH;w++) {
+            numberStr << this->numberMatrix[h][w] << " ";
+        }
+    }
+    PreferenceUtils::SetStringPref(GAME_MATRIX, numberStr.str().c_str());
+}
+
+int getNextNumber(std::string str, int &currIndex) {
+    int ret = 0;
+    for (; currIndex < str.length(); currIndex++) {
+        if (str[currIndex] >= '0' && str[currIndex] <= '9') {
+            break;
+        }
+    }
+    while (currIndex < str.length() && str[currIndex] >= '0' && str[currIndex] <= '9') {
+        ret = ret * 10 + (str[currIndex] - '0');
+        currIndex++;
+    }
+    return ret;
+}
+
+void GameEngine::RestoreGame() {
+    if (!PreferenceUtils::GetBoolPref(HAS_SAVE_GAME)) {
+        return;
+    }
+    this->isEnd = false;
+    this->level = PreferenceUtils::GetIntPref(GAME_LEVEL);
+    this->roundTarget = this->getLevelTarget(this->level);
+    this->score = PreferenceUtils::GetIntPref(GAME_SCORE);
+    auto matrixStr = PreferenceUtils::GetStringPref(GAME_MATRIX);
+    int currIndex = 0;
+    for (int h=0;h<MATRIX_HEIGHT;h++) {
+        for (int w=0;w<MATRIX_WIDTH;w++) {
+            this->numberMatrix[h][w] = getNextNumber(matrixStr, currIndex);
+        }
+    }
+    auto listener = this->onStartListener;
+    if (listener != NULL) {
+        listener();
+    }
+}
+
+bool GameEngine::IsEnd() {
+    return this->isEnd;
+}
+
+ bool GameEngine::HasSaveGame() {
+     return PreferenceUtils::GetBoolPref(HAS_SAVE_GAME);
+ }

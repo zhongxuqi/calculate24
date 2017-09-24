@@ -33,7 +33,7 @@ StarBox* StarBox::create(float width, float height) {
     auto starBoxSize = starBox->getContentSize();
 
     // add edge
-    auto edgeLimit = PhysicsBody::createEdgeBox(starBoxSize, PhysicsMaterial(0.1f, 1.0f, 0.0f));
+    auto edgeLimit = PhysicsBody::createEdgeBox(starBoxSize, PhysicsMaterial(0.1f, 1.0f, 0.0f), 20);
     edgeLimit->setDynamic(false);
     edgeLimit->setPositionOffset(Vec2(0, 0));
     starBox->addComponent(edgeLimit);

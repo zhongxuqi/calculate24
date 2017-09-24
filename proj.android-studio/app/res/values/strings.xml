@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">calculate24</string>
 
-    <string name="end_alert">Affirm to End?</string>
-    <string name="quit_alert">Affirm to Quit?</string>
-    <string name="no">否</string>
-    <string name="yes">是</string>
+    <string name="end_alert">Whethe to End?</string>
+    <string name="quit_alert">Whethe to Quit?</string>
+    <string name="no">no</string>
+    <string name="yes">yes</string>
+
+    <string name="resume_alert">Whethe to Resume?</string>
+    <string name="resume_game">Resume Game</string>
+    <string name="new_game">New Game</string>
 </resources>
