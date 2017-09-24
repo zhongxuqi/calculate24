@@ -22,6 +22,7 @@ public:
 
     void onKeyReleased(cocos2d::EventKeyboard::KeyCode keyCode, cocos2d::Event* event);
     void UpdateScore();
+    void QuitAPP();
 };
 
 #endif

@@ -25,6 +25,13 @@ public:
             methodInfo.env->CallStaticVoidMethod(methodInfo.classID, methodInfo.methodID);
         }
     }
+
+    static void AlertQuitAPP() {
+        cocos2d::JniMethodInfo methodInfo;
+        if (cocos2d::JniHelper::getStaticMethodInfo(methodInfo, "org/cocos2dx/cpp/AppActivity", "AlertQuitAPP", "()V")) {
+            methodInfo.env->CallStaticVoidMethod(methodInfo.classID, methodInfo.methodID);
+        }
+    }
 };
 
 #endif

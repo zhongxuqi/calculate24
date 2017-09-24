@@ -9,4 +9,9 @@
     <string name="resume_alert">Whethe to Resume?</string>
     <string name="resume_game">Resume Game</string>
     <string name="new_game">New Game</string>
+
+    <string name="quit_app_alert">Whethe to Quit?</string>
+
+    <string name="quit">Quit</string>
+    <string name="cancel">Cancel</string>
 </resources>

@@ -23,6 +23,7 @@ protected:
     void updateCustom(float dt);
     cocos2d::Sprite *actionStar;
     const float duration = 1.0;
+    bool isSoluting;
 
 public:
     virtual bool initWithPhysics();

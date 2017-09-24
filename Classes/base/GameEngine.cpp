@@ -300,7 +300,7 @@ void GameEngine::StartGame() {
     this->levelUp();
     auto listener = this->onStartListener;
     if (listener != NULL) {
-        listener();
+        listener(false);
     }
 }
 
@@ -315,7 +315,7 @@ void GameEngine::JudgeLevel() {
         this->initNumberMatrix();
         auto listener = this->onStartListener;
         if (listener != NULL) {
-            listener();
+            listener(true);
         }
     } else {
         if (!this->isEnd) {
@@ -345,7 +345,7 @@ int GameEngine::getLevelTarget(int level) {
     return target;
 }
 
-void GameEngine::SetOnStartListener(std::function<void()> listener) {
+void GameEngine::SetOnStartListener(std::function<void(bool)> listener) {
     this->onStartListener = listener;
 }
 
@@ -384,6 +384,7 @@ void GameEngine::RestoreGame() {
     if (!PreferenceUtils::GetBoolPref(HAS_SAVE_GAME)) {
         return;
     }
+    CCLOG("GameEngine::RestoreGame Start");
     this->isEnd = false;
     this->level = PreferenceUtils::GetIntPref(GAME_LEVEL);
     this->roundTarget = this->getLevelTarget(this->level);
@@ -397,8 +398,9 @@ void GameEngine::RestoreGame() {
     }
     auto listener = this->onStartListener;
     if (listener != NULL) {
-        listener();
+        listener(false);
     }
+    CCLOG("GameEngine::RestoreGame End");
 }
 
 bool GameEngine::IsEnd() {

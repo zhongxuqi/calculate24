@@ -64,7 +64,7 @@ protected:
     int roundTarget;
     int level;
     bool isEnd;
-    std::function<void()> onStartListener;
+    std::function<void(bool)> onStartListener;
     void levelUp();
     std::function<void()> onEndListener;
 
@@ -78,7 +78,7 @@ public:
     void StartGame();
     int GetLevel();
     void SetOnEndListener();
-    void SetOnStartListener(std::function<void()> listener);
+    void SetOnStartListener(std::function<void(bool)> listener);
     void SetOnEndListener(std::function<void()> listener);
     void JudgeLevel();
     void SaveGame();

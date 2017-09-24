@@ -243,6 +243,47 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
                         activity.ResumeGame();
                     }
                 });
+                builder.setCancelable(false);
+                activity.dialog = builder.create();
+                activity.dialog.show();
+            }
+        });
+    }
+
+    protected native void QuitAPP();
+    public static void AlertQuitAPP() {
+        if (handler == null) {
+            return;
+        }
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                final AppActivity activity = AppActivity.activity;
+                if (activity == null) {
+                    return;
+                }
+                if (activity.dialog != null) {
+                    activity.dialog.dismiss();
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage(activity.getString(R.string.quit_app_alert));
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (activity.dialog != null) {
+                            activity.dialog.dismiss();
+                        }
+                    }
+                });
+                builder.setPositiveButton(R.string.quit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (activity.dialog != null) {
+                            activity.dialog.dismiss();
+                        }
+                        activity.QuitAPP();
+                    }
+                });
                 activity.dialog = builder.create();
                 activity.dialog.show();
             }

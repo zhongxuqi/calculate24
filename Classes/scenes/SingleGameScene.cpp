@@ -31,6 +31,7 @@ bool SingleGameScene::initWithPhysics() {
     }
     
     SingleGameScene::Instance = this;
+    this->isSoluting = false;
 
     // add event
     auto listener = EventListenerKeyboard::create();
@@ -70,6 +71,9 @@ bool SingleGameScene::initWithPhysics() {
     this->btnGameJudge->setPosition(origin.x + 20, origin.y + visibleSize.height * 8 / 9 - 60);
     this->addChild(this->btnGameJudge, 0);
     this->btnGameJudge->SetOnClickListener([this]() {
+        if (this->isSoluting) {
+            return;
+        }
         if (this->btnGameJudge->IsPass()) {
             gameEngine->JudgeLevel();
         } else {
@@ -91,6 +95,7 @@ bool SingleGameScene::initWithPhysics() {
     this->dialog->setZOrder(-1);
     this->dialog->SetOnFinishListener([this](InputStep* inputSteps[3]) {
         if (this->numberMatrix->PushSolution(inputSteps)) {
+            this->isSoluting = false;
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
             this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
@@ -108,6 +113,12 @@ bool SingleGameScene::initWithPhysics() {
             this->actionStar->runAction(Sequence::create(MoveTo::create(this->duration, targetPosition), callFunc, NULL));
         }
     });
+    this->dialog->SetOnCloseListener([this](Ref* pRef) {
+        this->isSoluting = false;
+        this->dialog->setZOrder(-1);
+        this->numberMatrix->setTouchable(true);
+        this->numberMatrix->CancelSelectBlock();
+    });
 
     // add number matrix
     this->numberMatrix = NumberMatrix::create(visibleSize.width - 40, visibleSize.height - visibleSize.height / 6 - 60);
@@ -115,29 +126,28 @@ bool SingleGameScene::initWithPhysics() {
     this->numberMatrix->setPosition(visibleSize.width / 2, 20);
     this->numberMatrix->setTouchable(true);
     this->numberMatrix->SetOnSelectListener([this](AccurateNumber *accurateNumber[4]) {
+        this->isSoluting = true;
         this->dialog->setZOrder(1);
         this->dialog->SetNumbers(accurateNumber);
         this->numberMatrix->setTouchable(false);
-
-        // add close listener
-        this->dialog->SetOnCloseListener([this](Ref* pRef) {
-            this->dialog->setZOrder(-1);
-            this->numberMatrix->setTouchable(true);
-            this->numberMatrix->CancelSelectBlock();
-        });
     });
     this->addChild(this->numberMatrix, 0);
 
     // start game
-    gameEngine->SetOnStartListener([this]() {
+    gameEngine->SetOnStartListener([this](bool isLevelUp) {
+        CCLOG("gameEngine->SetOnStartListener start");
+        this->isSoluting = false;
         this->numberMatrix->StartGame();
         this->levelBar->SetLevel(gameEngine->GetLevel());
         this->targetBar->SetTarget(gameEngine->GetRoundTarget());
         this->dialog->setZOrder(-1);
         this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
-        for (int i=0; i<gameEngine->GetScore(); i++) {
-            this->starBox->AddScore();
+        if (!isLevelUp) {
+            for (int i=0; i<gameEngine->GetScore(); i++) {
+                this->starBox->AddScore();
+            }
         }
+        CCLOG("gameEngine->SetOnStartListener end");
     });
     gameEngine->SetOnEndListener([this]() {
         PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());

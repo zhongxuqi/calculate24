@@ -7,6 +7,7 @@
 #include "SingleGameScene.h"
 #include "../utils/PreferenceUtils.h"
 #include "../base/GameEngine.h"
+#include "../utils/GameUtils.h"
 
 USING_NS_CC;
 
@@ -71,7 +72,7 @@ bool MainScene::init() {
 
 void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
     if (keyCode == EventKeyboard::KeyCode::KEY_BACK) {
-        Director::getInstance()->end();
+        GameUtils::AlertQuitAPP();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
         exit(0);
@@ -81,4 +82,8 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
 
 void MainScene::UpdateScore() {
     this->scoreBar->SetScore(PreferenceUtils::GetIntPref(TOP_SCORE));
+}
+
+void MainScene::QuitAPP() {
+    Director::getInstance()->end();
 }

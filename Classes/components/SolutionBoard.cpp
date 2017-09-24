@@ -172,13 +172,20 @@ void SolutionBoard::onNumberClickListener(Ref *pRef) {
     }
     for (int i = 0; i < 4; i++) {
         if (this->numberFrames[i] == pRef) {
-
-            // check illegel
-            if (this->currIndex == 2 && this->operatorOuts[this->currLine]->GetOperator() == '/' && this->numberBlocks[i]->GetNumber()->value == 0) {
+            
+            auto numberBlock = this->numberBlocks[i];
+            if (numberBlock == NULL) {
                 return;
             }
 
-            auto numberBlock = this->numberBlocks[i];
+            // check illegel
+            if (this->currIndex == 2) {
+                auto operatorOut = this->operatorOuts[this->currLine];
+                if (operatorOut != NULL && operatorOut->GetOperator() == '/' && numberBlock->GetNumber()->value == 0) {
+                    return;
+                }
+            }
+
             this->numberBlocks[i] = NULL;
             if (numberBlock != NULL) {
                 numberBlock->runAction(MoveTo::create(this->duration, this->getTargetLocation()));
