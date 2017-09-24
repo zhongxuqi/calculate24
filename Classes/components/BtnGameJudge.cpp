@@ -22,19 +22,26 @@ BtnGameJudge* BtnGameJudge::create(float width, float height) {
     btnGameJudge->setIgnoreAnchorPointForPosition(false);
 
     // add background
-    btnGameJudge->NodeBackground = Scale9Sprite::create("res/BgButtonRed.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
-    btnGameJudge->NodeBackground->setContentSize(btnGameJudge->getContentSize());
-    btnGameJudge->NodeBackground->setAnchorPoint(Point(0, 0));
-    btnGameJudge->NodeBackground->setPosition(Point(width / 2, height / 2));
-    btnGameJudge->addChild(btnGameJudge->NodeBackground, 0);
+    btnGameJudge->BackgroundRed = Scale9Sprite::create("res/BgButtonRed.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
+    btnGameJudge->BackgroundRed->setContentSize(Size(width, height));
+    btnGameJudge->BackgroundRed->setAnchorPoint(Point(0, 0));
+    btnGameJudge->BackgroundRed->setPosition(Point(0, 0));
+    btnGameJudge->addChild(btnGameJudge->BackgroundRed, 0);
+    btnGameJudge->BackgroundRed->setVisible(true);
+    btnGameJudge->BackgroundGreen = Scale9Sprite::create("res/BgButtonGreen.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
+    btnGameJudge->BackgroundGreen->setContentSize(Size(width, height));
+    btnGameJudge->BackgroundGreen->setAnchorPoint(Point(0, 0));
+    btnGameJudge->BackgroundGreen->setPosition(Point(0, 0));
+    btnGameJudge->addChild(btnGameJudge->BackgroundGreen, 0);
+    btnGameJudge->BackgroundGreen->setVisible(false);
 
     // add text
-    btnGameJudge->textLabel = Label::createWithTTF("Over", "fonts/arial.ttf", height / 2);
+    btnGameJudge->textLabel = Label::createWithTTF("", "fonts/arial.ttf", height / 2);
     btnGameJudge->textLabel->enableBold();
     btnGameJudge->textLabel->setAnchorPoint(Point(0.5, 0.5));
-    btnGameJudge->textLabel->setPosition(width / 2, height / 2);
+    btnGameJudge->textLabel->setPosition(Point(width / 2, height / 2));
     btnGameJudge->textLabel->setTextColor(Colors::White);
-    btnGameJudge->addChild(btnGameJudge->textLabel, 0);
+    btnGameJudge->addChild(btnGameJudge->textLabel, 1);
 
     // add event listener
     btnGameJudge->eventListener = EventListenerTouchOneByOne::create();
@@ -76,16 +83,19 @@ void BtnGameJudge::SetOnClickListener(std::function<void()> listener) {
 
 void BtnGameJudge::SetPassState(bool passState) {
     this->passState = passState;
+    auto layerSize = this->getContentSize();
     if (passState) {
+        CCLOG("SetOnClickListener pass true");
         this->color = Colors::SuccessColor;
         this->textLabel->setString("LevelUp");
-        this->NodeBackground->initWithFile("res/BgButtonGreen.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
-        this->NodeBackground->setContentSize(this->getContentSize());
+        this->BackgroundRed->setVisible(false);
+        this->BackgroundGreen->setVisible(true);
     } else {
+        CCLOG("SetOnClickListener pass false");
         this->color = Colors::DangerColor;
         this->textLabel->setString("GiveUp");
-        this->NodeBackground->initWithFile("res/BgButtonRed.png", Rect(0, 0, 208, 66), Rect(50, 20, 108, 26));
-        this->NodeBackground->setContentSize(this->getContentSize());
+        this->BackgroundRed->setVisible(true);
+        this->BackgroundGreen->setVisible(false);
     }
 }
 

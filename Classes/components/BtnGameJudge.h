@@ -6,7 +6,8 @@
 
 class BtnGameJudge : public cocos2d::Layer {
 protected:
-    cocos2d::ui::Scale9Sprite* NodeBackground;
+    cocos2d::ui::Scale9Sprite* BackgroundRed;
+    cocos2d::ui::Scale9Sprite* BackgroundGreen;
     const float borderWidth;
     cocos2d::Vec2 *points;
     virtual bool init();

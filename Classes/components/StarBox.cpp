@@ -16,7 +16,7 @@ StarBox::StarBox() : borderWidth(4.0) {
 }
 
 StarBox::~StarBox() {
-    
+    StarBox::Instance = NULL;
 }
 
 bool StarBox::init() {
@@ -33,7 +33,7 @@ StarBox* StarBox::create(float width, float height) {
     auto starBoxSize = starBox->getContentSize();
 
     // add edge
-    auto edgeLimit = PhysicsBody::createEdgeBox(starBoxSize, PhysicsMaterial(0.1f, 1.0f, 0.0f), 20);
+    auto edgeLimit = PhysicsBody::createEdgeBox(starBoxSize, PhysicsMaterial(0.1f, 1.0f, 0.0f), 10);
     edgeLimit->setDynamic(false);
     edgeLimit->setPositionOffset(Vec2(0, 0));
     starBox->addComponent(edgeLimit);
@@ -77,7 +77,7 @@ void StarBox::AddScore() {
 
     //apply physicsBody to the sprite
     auto linkItem = new PhysicsBodyLink{};
-    linkItem->Body = PhysicsBody::createBox(sprite->getContentSize(), PhysicsMaterial(0.1f, 1.0f, 0.0f));
+    linkItem->Body = PhysicsBody::createBox(sprite->getContentSize());
     linkItem->Body->setGravityEnable(false);
     linkItem->Body->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, RandomHelper::random_real(-1.0, 1.0) * 100));
     sprite->addComponent(linkItem->Body);
@@ -89,6 +89,7 @@ void StarBox::AddScore() {
 void StarBox::SetForce(float forceX, float forceY) {
     auto currLink = this->linkHead;
     while (currLink!=NULL) {
+        currLink->Body->resetForces();
         currLink->Body->applyForce(Vec2(-forceX * 1000, -forceY * 1000));
         currLink = currLink->Next;
     }

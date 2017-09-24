@@ -150,7 +150,9 @@ bool SingleGameScene::initWithPhysics() {
         CCLOG("gameEngine->SetOnStartListener end");
     });
     gameEngine->SetOnEndListener([this]() {
-        PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
+        if (gameEngine->GetScore() > PreferenceUtils::GetIntPref(TOP_SCORE)) {
+            PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
+        }
         this->QuitGame();
     });
     this->numberMatrix->setVisible(false);
@@ -167,10 +169,6 @@ bool SingleGameScene::initWithPhysics() {
 void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
     if (keyCode == EventKeyboard::KeyCode::KEY_BACK) {
         GameUtils::AlertQuitGame();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-        exit(0);
-#endif
     }
 }
 
@@ -180,6 +178,11 @@ void SingleGameScene::QuitGame() {
     }
     Director::getInstance()->popScene();
     MainScene::Instance->UpdateScore();
+    SingleGameScene::Instance = NULL;
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+        exit(0);
+#endif
 }
 
 void SingleGameScene::EndGame() {

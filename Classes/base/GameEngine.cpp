@@ -336,7 +336,7 @@ int GameEngine::GetLevel() {
 int GameEngine::getLevelTarget(int level) {
     int target = 0;
     for (int i=0;i<level;i++) {
-        auto add = 8 + 2 * i;
+        auto add = 1 + 2 * i;
         if (add > 20) {
             add = 20;
         }

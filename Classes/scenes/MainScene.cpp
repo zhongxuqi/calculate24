@@ -74,9 +74,6 @@ void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {
     if (keyCode == EventKeyboard::KeyCode::KEY_BACK) {
         GameUtils::AlertQuitAPP();
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-        exit(0);
-#endif
     }
 }
 
@@ -86,4 +83,8 @@ void MainScene::UpdateScore() {
 
 void MainScene::QuitAPP() {
     Director::getInstance()->end();
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+        exit(0);
+#endif
 }
