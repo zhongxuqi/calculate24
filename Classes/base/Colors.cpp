@@ -14,7 +14,7 @@ Color4B Colors::Number24SuccessColor = Color4B(0, 230, 118, 255);
 Color4B Colors::DangerColor = Color4B(229, 57, 53, 255);
 Color4B Colors::SuccessColor = Color4B(118, 255, 3, 255);
 
-Color4B *Colors::NumberColors = new Color4B[19]{Color4B(244, 67, 54, 255), \
+Color4B *Colors::NumberColors = new Color4B[NUMBER_MAX]{Color4B(244, 67, 54, 255), \
     Color4B(233, 30, 99, 255), \
     Color4B(156, 39, 176, 255), \
     Color4B(103, 58, 183, 255), \

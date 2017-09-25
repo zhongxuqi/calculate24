@@ -8,39 +8,19 @@ USING_NS_CC;
 GameEngine* GameEngine::Instance = new GameEngine();
 
 GameEngine::GameEngine() {
-    this->numbers = new int[NUMBER_MAX]{
-        13, \
-        11, \
-        9, \
-        7, \
-        5, \
-        3, \
-        1, \
-        12, \
-        10, \
-        8, \
-        6, \
-        4, \
-        2, \
-    };
+    
 }
 
 void GameEngine::initNumberMatrix() {
     for (int i=0;i<MATRIX_HEIGHT;i++) {
         for (int j=0;j<MATRIX_WIDTH;j++) {
-            this->numberMatrix[i][j] = this->randomNumber();
+            this->numberMatrix[i][j] = RandomHelper::random_int(1, 13);
         }
     }
 }
 
 int GameEngine::randomNumber() {
-    double seed = RandomHelper::random_real(0.0, 1.0);
-    double result = 1.0;
-    for (int i = 0; i < this->tick; i++) {
-        result *= seed;
-    }
-    CCLOG("====>>> %d %f %f", this->tick, seed, result);
-    return this->numbers[(int)(result * (NUMBER_MAX - 0.01))];
+    return RandomHelper::random_int(1, NUMBER_MAX);
 }
 
 int GameEngine::GetNumber(int w, int h) {
@@ -84,7 +64,6 @@ Response *GameEngine::PushSolution(SolutionStep *solution) {
     resp->isValid = true;
     resp->blockTransfer = this->sortMatrix();
     this->score++;
-    this->tick++;
     return resp;
 }
 
@@ -305,7 +284,6 @@ int GameEngine::GetScore() {
 
 void GameEngine::StartGame() {
     this->score = 0;
-    this->tick = 1;
     this->initNumberMatrix();
     auto listener = this->onStartListener;
     if (listener != NULL) {
@@ -324,7 +302,6 @@ void GameEngine::SetOnEndListener(std::function<void()> listener) {
 void GameEngine::SaveGame() {
     PreferenceUtils::SetBoolPref(HAS_SAVE_GAME, true);
     PreferenceUtils::SetIntPref(GAME_SCORE, this->score);
-    PreferenceUtils::SetIntPref(GAME_TICK, this->tick);
     std::stringstream numberStr;
     for (int h=0;h<MATRIX_HEIGHT;h++) {
         for (int w=0;w<MATRIX_WIDTH;w++) {
@@ -353,7 +330,6 @@ void GameEngine::RestoreGame() {
         return;
     }
     this->score = PreferenceUtils::GetIntPref(GAME_SCORE);
-    this->tick = PreferenceUtils::GetIntPref(GAME_TICK);
     auto matrixStr = PreferenceUtils::GetStringPref(GAME_MATRIX);
     int currIndex = 0;
     for (int h=0;h<MATRIX_HEIGHT;h++) {

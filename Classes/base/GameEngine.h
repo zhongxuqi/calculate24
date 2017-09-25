@@ -10,7 +10,7 @@
 #define GAME_TICK "game_tick"
 
 const int SELECTED_MAX = 4;
-const int NUMBER_MAX = 13;
+const int NUMBER_MAX = 19;
 const int MATRIX_WIDTH = 8;
 const int MATRIX_HEIGHT = 10;
 const int NUMBER_DISABLE = -1;
@@ -60,14 +60,12 @@ protected:
     void printSolution(SolutionStep *solution, int layer);
     void initNumberMatrix();
     int getLevelTarget(int level);
-    int *numbers;
 
     // game info
     int score;
     std::function<void()> onStartListener;
     std::function<void()> onEndListener;
     int randomNumber();
-    int tick;
 
 public:
     int GetNumber(int w, int h);

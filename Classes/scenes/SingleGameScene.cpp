@@ -86,6 +86,7 @@ bool SingleGameScene::initWithPhysics() {
             // update top score
             if (gameEngine->GetScore() > PreferenceUtils::GetIntPref(TOP_SCORE)) {
                 gameEngine->SaveGame();
+                PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
             }
         }
     });
