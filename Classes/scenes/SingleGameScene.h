@@ -17,9 +17,6 @@ protected:
     NumberMatrix* numberMatrix;
     SolutionDialog* dialog;
     StarBox *starBox;
-    LevelBar *levelBar;
-    TargetBar *targetBar;
-    BtnGameJudge *btnGameJudge;
     void updateCustom(float dt);
     cocos2d::Sprite *actionStar;
     const float duration = 1.0;

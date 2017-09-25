@@ -11,13 +11,6 @@ extern "C" {
         }
     }
 
-    void Java_org_cocos2dx_cpp_AppActivity_EndGame(JNIEnv *env, jobject thiz) {
-        auto singleGameScene = SingleGameScene::Instance;
-        if (singleGameScene != NULL) {
-            singleGameScene->EndGame();
-        }
-    }
-
     void Java_org_cocos2dx_cpp_AppActivity_NewGame(JNIEnv *env, jobject thiz) {
         auto singleGameScene = SingleGameScene::Instance;
         if (singleGameScene != NULL) {

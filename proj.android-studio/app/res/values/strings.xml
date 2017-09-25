@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">calculate24</string>
 
-    <string name="end_alert">Whethe to End?</string>
     <string name="quit_alert">Whethe to Quit?</string>
     <string name="no">no</string>
     <string name="yes">yes</string>

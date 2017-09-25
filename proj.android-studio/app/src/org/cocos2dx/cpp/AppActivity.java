@@ -167,46 +167,6 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
         });
     }
 
-    protected native void EndGame();
-    public static void AlertEndGame() {
-        if (handler == null) {
-            return;
-        }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                final AppActivity activity = AppActivity.activity;
-                if (activity == null) {
-                    return;
-                }
-                if (activity.dialog != null) {
-                    activity.dialog.dismiss();
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setMessage(activity.getString(R.string.end_alert));
-                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (activity.dialog != null) {
-                            activity.dialog.dismiss();
-                        }
-                    }
-                });
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (activity.dialog != null) {
-                            activity.dialog.dismiss();
-                        }
-                        activity.EndGame();
-                    }
-                });
-                activity.dialog = builder.create();
-                activity.dialog.show();
-            }
-        });
-    }
-
     protected native void NewGame();
     protected native void ResumeGame();
     public static void AlertResumeGame() {

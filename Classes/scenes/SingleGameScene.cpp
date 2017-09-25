@@ -53,36 +53,8 @@ bool SingleGameScene::initWithPhysics() {
     this->actionStar->setVisible(false);
     this->addChild(this->actionStar, 1);
 
-    // add level bar
-    this->levelBar = LevelBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    this->levelBar->setAnchorPoint(Point(0, 1));
-    this->levelBar->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
-    this->addChild(this->levelBar, 0);
-
-    // add target bar
-    this->targetBar = TargetBar::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    this->targetBar->setAnchorPoint(Point(0, 1));
-    this->targetBar->setPosition(origin.x + 20, origin.y + visibleSize.height * 17 / 18 - 40);
-    this->addChild(this->targetBar, 0);
-
-    // add judge btn
-    this->btnGameJudge = BtnGameJudge::create(visibleSize.width * 0.25, visibleSize.height / 18);
-    this->btnGameJudge->setAnchorPoint(Point(0, 1));
-    this->btnGameJudge->setPosition(origin.x + 20, origin.y + visibleSize.height * 8 / 9 - 60);
-    this->addChild(this->btnGameJudge, 0);
-    this->btnGameJudge->SetOnClickListener([this]() {
-        if (this->isSoluting) {
-            return;
-        }
-        if (this->btnGameJudge->IsPass()) {
-            gameEngine->JudgeLevel();
-        } else {
-            GameUtils::AlertEndGame();
-        }
-    });
-
     // add starbox
-    this->starBox = StarBox::create(visibleSize.width * 0.75 - 60, visibleSize.height / 6 + 40);
+    this->starBox = StarBox::create(visibleSize.width - 40, visibleSize.height / 6 + 40);
     this->starBox->setAnchorPoint(Point(1, 1));
     this->starBox->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
     this->addChild(this->starBox, 0);
@@ -98,7 +70,6 @@ bool SingleGameScene::initWithPhysics() {
             this->isSoluting = false;
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
-            this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
 
             // add star to star box
             auto callFunc = CallFunc::create([this]() {
@@ -111,6 +82,11 @@ bool SingleGameScene::initWithPhysics() {
             this->actionStar->setVisible(true);
             this->actionStar->setPosition(Point(touchPoint.x, touchPoint.y));
             this->actionStar->runAction(Sequence::create(MoveTo::create(this->duration, targetPosition), callFunc, NULL));
+
+            // update top score
+            if (gameEngine->GetScore() > PreferenceUtils::GetIntPref(TOP_SCORE)) {
+                PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
+            }
         }
     });
     this->dialog->SetOnCloseListener([this](Ref* pRef) {
@@ -134,25 +110,17 @@ bool SingleGameScene::initWithPhysics() {
     this->addChild(this->numberMatrix, 0);
 
     // start game
-    gameEngine->SetOnStartListener([this](bool isLevelUp) {
+    gameEngine->SetOnStartListener([this]() {
         CCLOG("gameEngine->SetOnStartListener start");
         this->isSoluting = false;
         this->numberMatrix->StartGame();
-        this->levelBar->SetLevel(gameEngine->GetLevel());
-        this->targetBar->SetTarget(gameEngine->GetRoundTarget());
         this->dialog->setZOrder(-1);
-        this->btnGameJudge->SetPassState(gameEngine->GetScore()>=gameEngine->GetRoundTarget());
-        if (!isLevelUp) {
-            for (int i=0; i<gameEngine->GetScore(); i++) {
-                this->starBox->AddScore();
-            }
+        for (int i=0; i<gameEngine->GetScore(); i++) {
+            this->starBox->AddScore();
         }
         CCLOG("gameEngine->SetOnStartListener end");
     });
     gameEngine->SetOnEndListener([this]() {
-        if (gameEngine->GetScore() > PreferenceUtils::GetIntPref(TOP_SCORE)) {
-            PreferenceUtils::SetIntPref(TOP_SCORE, gameEngine->GetScore());
-        }
         this->QuitGame();
     });
     this->numberMatrix->setVisible(false);
@@ -173,9 +141,7 @@ void SingleGameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event
 }
 
 void SingleGameScene::QuitGame() {
-    if (!gameEngine->IsEnd()) {
-        gameEngine->SaveGame();
-    }
+    gameEngine->SaveGame();
     Director::getInstance()->popScene();
     MainScene::Instance->UpdateScore();
     SingleGameScene::Instance = NULL;
@@ -183,10 +149,6 @@ void SingleGameScene::QuitGame() {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
         exit(0);
 #endif
-}
-
-void SingleGameScene::EndGame() {
-    gameEngine->JudgeLevel();
 }
 
 void SingleGameScene::NewGame() {

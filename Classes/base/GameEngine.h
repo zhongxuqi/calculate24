@@ -5,7 +5,6 @@
 
 #define TOP_SCORE "top_score"
 #define HAS_SAVE_GAME "has_save_game"
-#define GAME_LEVEL "game_level"
 #define GAME_SCORE "game_score"
 #define GAME_MATRIX "game_matrix"
 
@@ -63,11 +62,7 @@ protected:
 
     // game info
     int score;
-    int roundTarget;
-    int level;
-    bool isEnd;
-    std::function<void(bool)> onStartListener;
-    void levelUp();
+    std::function<void()> onStartListener;
     std::function<void()> onEndListener;
     int randomNumber();
 
@@ -76,17 +71,12 @@ public:
     Response *PushSolution(SolutionStep *solution);
     AccurateNumber *CalculateFormula(AccurateNumber accurateNumberLeft, char theOp, AccurateNumber accurateNumberRight);
     int GetScore();
-    int GetRoundTarget();
     static GameEngine* Instance;
     void StartGame();
-    int GetLevel();
-    void SetOnEndListener();
-    void SetOnStartListener(std::function<void(bool)> listener);
+    void SetOnStartListener(std::function<void()> listener);
     void SetOnEndListener(std::function<void()> listener);
-    void JudgeLevel();
     void SaveGame();
     void RestoreGame();
-    bool IsEnd();
     bool HasSaveGame();
 };
 
