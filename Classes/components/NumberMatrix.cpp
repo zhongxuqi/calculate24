@@ -54,7 +54,6 @@ void NumberMatrix::StartGame() {
             accurateNumber->divider = 1;
             auto numberBlock = this->numberNodeMatrix[h][w];
             numberBlock->SetNumber(accurateNumber);
-            numberBlock->setVisible(accurateNumber->value > 0);
 
             // add number block
             auto targetPosition = Point(w * (this->numberBlockInterval + this->numberBlockSize), \
@@ -247,13 +246,7 @@ bool NumberMatrix::PushSolution(InputStep* inputSteps[3]) {
 }
 
 void NumberMatrix::handleTransfer(BlockTransfer *transfer) {
-    // clear selected number block
-    for (int i = 0; i < SELECTED_MAX; i++) {
-        if (this->selectedBlockIndexes[i].H >= 0 && this->selectedBlockIndexes[i].H < MATRIX_HEIGHT && \
-        this->selectedBlockIndexes[i].W >= 0 && this->selectedBlockIndexes[i].W < MATRIX_WIDTH) {
-            this->numberNodeMatrix[this->selectedBlockIndexes[i].H][this->selectedBlockIndexes[i].W]->setVisible(false);
-        }
-    }
+    auto layerSize = this->getContentSize();
     this->CancelSelectBlock();
     auto cursor = transfer;
     while (cursor != NULL) {
@@ -263,14 +256,19 @@ void NumberMatrix::handleTransfer(BlockTransfer *transfer) {
             cursor->NewLocation.W >= 0 && cursor->NewLocation.W < MATRIX_WIDTH) {
             int oldH = cursor->OldLocation.H, oldW = cursor->OldLocation.W;
             int newH = cursor->NewLocation.H, newW = cursor->NewLocation.W;
-            this->numberNodeMatrix[oldH][oldW]->setVisible(false);
-            this->numberNodeMatrix[newH][newW]->SetNumber(this->numberNodeMatrix[oldH][oldW]->GetNumber());
-            this->numberNodeMatrix[newH][newW]->setVisible(true);
-
-            auto originPosition = this->numberNodeMatrix[oldH][oldW]->getPosition();
-            auto targetPosition = this->numberNodeMatrix[newH][newW]->getPosition();
-            this->numberNodeMatrix[newH][newW]->setPosition(originPosition);
-            this->numberNodeMatrix[newH][newW]->runAction(MoveTo::create(this->duration, targetPosition));
+            if (cursor->IsNew && cursor->Number != NULL) {
+                auto targetPosition = Point(newW * (this->numberBlockInterval + this->numberBlockSize), \
+                    newH * (this->numberBlockInterval + this->numberBlockSize));
+                this->numberNodeMatrix[newH][newW]->SetNumber(cursor->Number);
+                this->numberNodeMatrix[newH][newW]->setPosition(Point(newW * (this->numberBlockInterval + this->numberBlockSize), layerSize.height));
+                this->numberNodeMatrix[newH][newW]->runAction(MoveTo::create(this->duration, targetPosition));
+            } else {
+                this->numberNodeMatrix[newH][newW]->SetNumber(this->numberNodeMatrix[oldH][oldW]->GetNumber());
+                auto originPosition = this->numberNodeMatrix[oldH][oldW]->getPosition();
+                auto targetPosition = this->numberNodeMatrix[newH][newW]->getPosition();
+                this->numberNodeMatrix[newH][newW]->setPosition(originPosition);
+                this->numberNodeMatrix[newH][newW]->runAction(MoveTo::create(this->duration, targetPosition));
+            }
         }
         cursor = cursor->Next;
     }

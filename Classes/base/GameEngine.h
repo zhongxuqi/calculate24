@@ -37,6 +37,8 @@ struct SolutionStep {
 };
 
 struct BlockTransfer {
+    bool IsNew;
+    AccurateNumber *Number;
     BlockLocation OldLocation;
     BlockLocation NewLocation;
     BlockTransfer *Next;
@@ -67,6 +69,7 @@ protected:
     std::function<void(bool)> onStartListener;
     void levelUp();
     std::function<void()> onEndListener;
+    int randomNumber();
 
 public:
     int GetNumber(int w, int h);

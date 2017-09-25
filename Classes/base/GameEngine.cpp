@@ -15,9 +15,13 @@ GameEngine::GameEngine() {
 void GameEngine::initNumberMatrix() {
     for (int i=0;i<MATRIX_HEIGHT;i++) {
         for (int j=0;j<MATRIX_WIDTH;j++) {
-            this->numberMatrix[i][j] = cocos2d::RandomHelper::random_int(1, NUMBER_MAX);
+            this->numberMatrix[i][j] = this->randomNumber();
         }
     }
+}
+
+int GameEngine::randomNumber() {
+    return cocos2d::RandomHelper::random_int(1, NUMBER_MAX);
 }
 
 int GameEngine::GetNumber(int w, int h) {
@@ -81,6 +85,7 @@ BlockTransfer* GameEngine::sortMatrix() {
                         CCLOG("Transfer (%d, %d) => (%d, %d)", ht, w, h, w);
                         if (head == NULL) {
                             head = new BlockTransfer{};
+                            head->IsNew = false;
                             head->OldLocation.H = ht;
                             head->OldLocation.W = w;
                             head->NewLocation.H = h;
@@ -89,6 +94,7 @@ BlockTransfer* GameEngine::sortMatrix() {
                             curr = head;
                         } else {
                             curr->Next = new BlockTransfer{};
+                            curr->Next->IsNew = false;
                             curr->Next->OldLocation.H = ht;
                             curr->Next->OldLocation.W = w;
                             curr->Next->NewLocation.H = h;
@@ -102,40 +108,33 @@ BlockTransfer* GameEngine::sortMatrix() {
             }
         }
     }
-    for (int w = 0; w < MATRIX_WIDTH - 1; w++) {
-        if (this->numberMatrix[0][w] <= 0) {
-            int wt;
-            bool hasFind = false;
-            for (wt = w + 1; wt < MATRIX_WIDTH; wt++) {
-                if (this->numberMatrix[0][wt] > 0) {
-                    hasFind = true;
-                    break;
-                }
-            }
-            if (!hasFind) {
-                break;
-            }
-            for (int h = 0; h < MATRIX_HEIGHT; h++) {
-                if (this->numberMatrix[h][wt] <= 0) {
-                    break;
-                }
-                this->numberMatrix[h][w] = this->numberMatrix[h][wt];
-                this->numberMatrix[h][wt] = 0;
+    for (int h = 0; h < MATRIX_HEIGHT; h++) {
+        for (int w = 0; w < MATRIX_WIDTH; w++) {
+            if (this->numberMatrix[h][w] <= 0) {
+                this->numberMatrix[h][w] = this->randomNumber();
 
                 // add transfer to chain
-                CCLOG("Transfer (%d, %d) => (%d, %d)", h, wt, h, w);
+                CCLOG("New (%d, %d) %d", h, w, this->numberMatrix[h][w]);
                 if (head == NULL) {
                     head = new BlockTransfer{};
+                    head->IsNew = true;
+                    head->Number = new AccurateNumber{};
+                    head->Number->value = this->numberMatrix[h][w];
+                    head->Number->divider = 1;
                     head->OldLocation.H = h;
-                    head->OldLocation.W = wt;
+                    head->OldLocation.W = w;
                     head->NewLocation.H = h;
                     head->NewLocation.W = w;
                     head->Next = NULL;
                     curr = head;
                 } else {
                     curr->Next = new BlockTransfer{};
+                    curr->Next->IsNew = true;
+                    curr->Next->Number = new AccurateNumber{};
+                    curr->Next->Number->value = this->numberMatrix[h][w];
+                    curr->Next->Number->divider = 1;
                     curr->Next->OldLocation.H = h;
-                    curr->Next->OldLocation.W = wt;
+                    curr->Next->OldLocation.W = w;
                     curr->Next->NewLocation.H = h;
                     curr->Next->NewLocation.W = w;
                     curr->Next->Next = NULL;
@@ -336,7 +335,7 @@ int GameEngine::GetLevel() {
 int GameEngine::getLevelTarget(int level) {
     int target = 0;
     for (int i=0;i<level;i++) {
-        auto add = 1 + 2 * i;
+        auto add = 8 + 2 * i;
         if (add > 20) {
             add = 20;
         }
