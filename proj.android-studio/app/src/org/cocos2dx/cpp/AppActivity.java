@@ -144,7 +144,7 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
                 }
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setMessage(activity.getString(R.string.quit_alert));
-                builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (activity.dialog != null) {
@@ -152,13 +152,22 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
                         }
                     }
                 });
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                builder.setPositiveButton(R.string.quit_game, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (activity.dialog != null) {
                             activity.dialog.dismiss();
                         }
                         activity.QuitGame();
+                    }
+                });
+                builder.setNeutralButton(R.string.new_game, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (activity.dialog != null) {
+                            activity.dialog.dismiss();
+                        }
+                        activity.NewGame();
                     }
                 });
                 activity.dialog = builder.create();

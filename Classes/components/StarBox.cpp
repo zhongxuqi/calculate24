@@ -39,14 +39,8 @@ StarBox* StarBox::create(float width, float height) {
     starBox->addComponent(edgeLimit);
 
     // add background
-    auto points = new Vec2[4]{
-        Vec2(0, 0),
-        Vec2(starBoxSize.width, 0),
-        Vec2(starBoxSize.width, starBoxSize.height),
-        Vec2(0, starBoxSize.height),
-    };
-    auto backGround = DrawNode::create();
-    backGround->drawPolygon(points, 4, Color4F(Colors::Transparent), starBox->borderWidth, Color4F(Colors::White));
+    auto backGround = Scale9Sprite::create("res/StarBoxFrame.png", Rect(0, 0, 285, 385), Rect(100, 100, 85, 185));
+    backGround->setContentSize(starBoxSize);
     backGround->setPosition(Point(0, 0));
     backGround->setAnchorPoint(Point(0, 0));
     starBox->addChild(backGround, 0);

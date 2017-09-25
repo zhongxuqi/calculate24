@@ -7,6 +7,7 @@
 #define HAS_SAVE_GAME "has_save_game"
 #define GAME_SCORE "game_score"
 #define GAME_MATRIX "game_matrix"
+#define GAME_TICK "game_tick"
 
 const int SELECTED_MAX = 4;
 const int NUMBER_MAX = 13;
@@ -59,12 +60,14 @@ protected:
     void printSolution(SolutionStep *solution, int layer);
     void initNumberMatrix();
     int getLevelTarget(int level);
+    int *numbers;
 
     // game info
     int score;
     std::function<void()> onStartListener;
     std::function<void()> onEndListener;
     int randomNumber();
+    int tick;
 
 public:
     int GetNumber(int w, int h);

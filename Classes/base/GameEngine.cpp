@@ -8,7 +8,21 @@ USING_NS_CC;
 GameEngine* GameEngine::Instance = new GameEngine();
 
 GameEngine::GameEngine() {
-    
+    this->numbers = new int[NUMBER_MAX]{
+        13, \
+        11, \
+        9, \
+        7, \
+        5, \
+        3, \
+        1, \
+        12, \
+        10, \
+        8, \
+        6, \
+        4, \
+        2, \
+    };
 }
 
 void GameEngine::initNumberMatrix() {
@@ -20,7 +34,13 @@ void GameEngine::initNumberMatrix() {
 }
 
 int GameEngine::randomNumber() {
-    return cocos2d::RandomHelper::random_int(1, NUMBER_MAX);
+    double seed = RandomHelper::random_real(0.0, 1.0);
+    double result = 1.0;
+    for (int i = 0; i < this->tick; i++) {
+        result *= seed;
+    }
+    CCLOG("====>>> %d %f %f", this->tick, seed, result);
+    return this->numbers[(int)(result * (NUMBER_MAX - 0.01))];
 }
 
 int GameEngine::GetNumber(int w, int h) {
@@ -64,6 +84,7 @@ Response *GameEngine::PushSolution(SolutionStep *solution) {
     resp->isValid = true;
     resp->blockTransfer = this->sortMatrix();
     this->score++;
+    this->tick++;
     return resp;
 }
 
@@ -283,8 +304,9 @@ int GameEngine::GetScore() {
 }
 
 void GameEngine::StartGame() {
-    this->initNumberMatrix();
     this->score = 0;
+    this->tick = 1;
+    this->initNumberMatrix();
     auto listener = this->onStartListener;
     if (listener != NULL) {
         listener();
@@ -302,6 +324,7 @@ void GameEngine::SetOnEndListener(std::function<void()> listener) {
 void GameEngine::SaveGame() {
     PreferenceUtils::SetBoolPref(HAS_SAVE_GAME, true);
     PreferenceUtils::SetIntPref(GAME_SCORE, this->score);
+    PreferenceUtils::SetIntPref(GAME_TICK, this->tick);
     std::stringstream numberStr;
     for (int h=0;h<MATRIX_HEIGHT;h++) {
         for (int w=0;w<MATRIX_WIDTH;w++) {
@@ -329,8 +352,8 @@ void GameEngine::RestoreGame() {
     if (!PreferenceUtils::GetBoolPref(HAS_SAVE_GAME)) {
         return;
     }
-    CCLOG("GameEngine::RestoreGame Start");
     this->score = PreferenceUtils::GetIntPref(GAME_SCORE);
+    this->tick = PreferenceUtils::GetIntPref(GAME_TICK);
     auto matrixStr = PreferenceUtils::GetStringPref(GAME_MATRIX);
     int currIndex = 0;
     for (int h=0;h<MATRIX_HEIGHT;h++) {
@@ -342,7 +365,6 @@ void GameEngine::RestoreGame() {
     if (listener != NULL) {
         listener();
     }
-    CCLOG("GameEngine::RestoreGame End");
 }
 
  bool GameEngine::HasSaveGame() {

@@ -13,4 +13,6 @@
 
     <string name="quit">Quit</string>
     <string name="cancel">Cancel</string>
+
+    <string name="quit_game">Quit Game</string>
 </resources>
