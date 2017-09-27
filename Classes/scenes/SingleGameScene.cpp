@@ -55,8 +55,8 @@ bool SingleGameScene::initWithPhysics() {
 
     // add starbox
     this->starBox = StarBox::create(visibleSize.width - 40, visibleSize.height / 6 + 40);
-    this->starBox->setAnchorPoint(Point(1, 1));
-    this->starBox->setPosition(origin.x + visibleSize.width - 20, origin.y + visibleSize.height - 20);
+    this->starBox->setAnchorPoint(Point(0, 1));
+    this->starBox->setPosition(origin.x + 20, origin.y + visibleSize.height - 20);
     this->addChild(this->starBox, 0);
 
     // add dialog
@@ -71,13 +71,16 @@ bool SingleGameScene::initWithPhysics() {
             this->dialog->setZOrder(-1);
             this->numberMatrix->setTouchable(true);
 
+            auto starBoxSize = this->starBox->getContentSize();
+            float width = starBoxSize.width * RandomHelper::random_real(0.0, 1.0);
+            float height = starBoxSize.height * RandomHelper::random_real(0.0, 1.0);
+
             // add star to star box
-            auto callFunc = CallFunc::create([this]() {
-                this->starBox->AddScore();
+            auto callFunc = CallFunc::create([this, width, height]() {
+                this->starBox->AddScore(width, height);
                 this->actionStar->setVisible(false);
             });
-            auto targetPosition = Point(this->starBox->getPosition().x - this->starBox->getContentSize().width / 2, \
-                this->starBox->getPosition().y - this->starBox->getContentSize().height / 2);
+            auto targetPosition = Point(this->starBox->getPosition().x + width, this->starBox->getPosition().y - starBoxSize.height + height);
             auto touchPoint = this->numberMatrix->GetTouchPoint();
             this->actionStar->setVisible(true);
             this->actionStar->setPosition(Point(touchPoint.x, touchPoint.y));
@@ -116,8 +119,10 @@ bool SingleGameScene::initWithPhysics() {
         this->isSoluting = false;
         this->numberMatrix->StartGame();
         this->dialog->setZOrder(-1);
+        auto starBoxSize = this->starBox->getContentSize();
         for (int i=0; i<gameEngine->GetScore(); i++) {
-            this->starBox->AddScore();
+            this->starBox->AddScore(starBoxSize.width * RandomHelper::random_real(0.0, 1.0), \
+                starBoxSize.height * RandomHelper::random_real(0.0, 1.0));
         }
         CCLOG("gameEngine->SetOnStartListener end");
     });

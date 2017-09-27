@@ -39,7 +39,7 @@ StarBox* StarBox::create(float width, float height) {
     starBox->addComponent(edgeLimit);
 
     // add background
-    auto backGround = Scale9Sprite::create("res/StarBoxFrame.png", Rect(0, 0, 285, 385), Rect(100, 100, 85, 185));
+    auto backGround = Scale9Sprite::create("res/BgStarBox.png", Rect(0, 0, 94, 94), Rect(30, 30, 34, 34));
     backGround->setContentSize(starBoxSize);
     backGround->setPosition(Point(0, 0));
     backGround->setAnchorPoint(Point(0, 0));
@@ -55,17 +55,28 @@ StarBox* StarBox::create(float width, float height) {
     return starBox;
 }
 
-void StarBox::AddScore() {
+void StarBox::AddScore(float width, float height) {
     this->score++;
     std::stringstream numberStr;
     numberStr << this->score;
     this->scoreLabel->setString(numberStr.str());
     auto starBoxSize = this->getContentSize();
 
+    if (width < 10) {
+        width = 10;
+    } else if (width > starBoxSize.width - 10) {
+        width = starBoxSize.width - 10;
+    }
+    if (height < 10) {
+        height = 10;
+    } else if (height > starBoxSize.height - 10) {
+        height = starBoxSize.height - 10;
+    }
+
     // add star
     auto sprite = Sprite::create("res/Star.png");
     sprite->setAnchorPoint(Point(0.5, 0.5));
-    sprite->setPosition(Point(starBoxSize.width / 2, starBoxSize.height / 2));
+    sprite->setPosition(Point(width, height));
     sprite->setScale(starBoxSize.height / 10 / sprite->getContentSize().height);
     this->addChild(sprite, 0);
 

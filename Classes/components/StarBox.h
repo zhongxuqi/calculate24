@@ -22,7 +22,7 @@ public:
     static StarBox* create(float width, float height);
     CREATE_FUNC(StarBox);
     static StarBox* Instance;
-    void AddScore();
+    void AddScore(float width, float height);
     void SetForce(float forceX, float forceY);
 };
 
