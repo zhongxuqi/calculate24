@@ -120,10 +120,7 @@ bool SingleGameScene::initWithPhysics() {
         this->numberMatrix->StartGame();
         this->dialog->setZOrder(-1);
         auto starBoxSize = this->starBox->getContentSize();
-        for (int i=0; i<gameEngine->GetScore(); i++) {
-            this->starBox->AddScore(starBoxSize.width * RandomHelper::random_real(0.0, 1.0), \
-                starBoxSize.height * RandomHelper::random_real(0.0, 1.0));
-        }
+        this->starBox->SetScore(gameEngine->GetScore());
         CCLOG("gameEngine->SetOnStartListener end");
     });
     gameEngine->SetOnEndListener([this]() {
@@ -131,6 +128,9 @@ bool SingleGameScene::initWithPhysics() {
     });
     this->numberMatrix->setVisible(false);
     if (gameEngine->HasSaveGame()) {
+        Sprite::create("res/ScoreStar.png");
+        Sprite::create("res/ScoreMoon.png");
+        Sprite::create("res/ScoreSun.png");
         GameUtils::AlertResumeGame();
     } else {
         this->numberMatrix->setVisible(true);
@@ -153,7 +153,7 @@ void SingleGameScene::QuitGame() {
     SingleGameScene::Instance = NULL;
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-        exit(0);
+    exit(0);
 #endif
 }
 

@@ -86,28 +86,28 @@ SolutionBoard* SolutionBoard::create(float width, float height) {
     solutionBoard->operatePlusBtn = OperatePlus::create(solutionBoard->operateSize);
     solutionBoard->operatePlusBtn->setAnchorPoint(Point(0.5, 0.5));
     solutionBoard->operatePlusBtn->setPosition(Point(leftWidth + rightWidth / 2, height * 3 / 4 + height / 4 / 2));
-    solutionBoard->addChild(solutionBoard->operatePlusBtn, 0);
+    solutionBoard->addChild(solutionBoard->operatePlusBtn, 1);
     solutionBoard->operatePlusBtn->SetOnClickListener(CC_CALLBACK_1(SolutionBoard::onOperatorClickListener, solutionBoard));
 
     // add operate -
     solutionBoard->operateMinusBtn = OperateMinus::create(solutionBoard->operateSize);
     solutionBoard->operateMinusBtn->setAnchorPoint(Point(0.5, 0.5));
     solutionBoard->operateMinusBtn->setPosition(Point(leftWidth + rightWidth / 2, height * 2 / 4 + height / 4 / 2));
-    solutionBoard->addChild(solutionBoard->operateMinusBtn, 0);
+    solutionBoard->addChild(solutionBoard->operateMinusBtn, 1);
     solutionBoard->operateMinusBtn->SetOnClickListener(CC_CALLBACK_1(SolutionBoard::onOperatorClickListener, solutionBoard));
 
     // add operate *
     solutionBoard->operateMultBtn = OperateMult::create(solutionBoard->operateSize);
     solutionBoard->operateMultBtn->setAnchorPoint(Point(0.5, 0.5));
     solutionBoard->operateMultBtn->setPosition(Point(leftWidth + rightWidth / 2, height * 1 / 4 + height / 4 / 2));
-    solutionBoard->addChild(solutionBoard->operateMultBtn, 0);
+    solutionBoard->addChild(solutionBoard->operateMultBtn, 1);
     solutionBoard->operateMultBtn->SetOnClickListener(CC_CALLBACK_1(SolutionBoard::onOperatorClickListener, solutionBoard));
 
     // add operate /
     solutionBoard->operateDivBtn = OperateDiv::create(solutionBoard->operateSize);
     solutionBoard->operateDivBtn->setAnchorPoint(Point(0.5, 0.5));
     solutionBoard->operateDivBtn->setPosition(Point(leftWidth + rightWidth / 2, height / 4 / 2));
-    solutionBoard->addChild(solutionBoard->operateDivBtn, 0);
+    solutionBoard->addChild(solutionBoard->operateDivBtn, 1);
     solutionBoard->operateDivBtn->SetOnClickListener(CC_CALLBACK_1(SolutionBoard::onOperatorClickListener, solutionBoard));
 
     return solutionBoard;

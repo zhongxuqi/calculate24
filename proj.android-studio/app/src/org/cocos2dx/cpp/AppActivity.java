@@ -38,6 +38,7 @@ import android.util.Log;
 import com.musketeer.calculate24.R;
 
 import org.cocos2dx.lib.Cocos2dxActivity;
+import org.cocos2dx.lib.Cocos2dxHandler;
 
 public class AppActivity extends Cocos2dxActivity implements SensorEventListener {
     private static final String TAG = "AppActivity";
@@ -45,6 +46,7 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
     protected static SharedPreferences sharedPreferences = null;
     protected static AppActivity activity = null;
     protected static Handler handler;
+    protected static Cocos2dxHandler cocos2dxHandler;
 
     protected SensorManager mSensorManager = null;
     protected Sensor mSensor = null;
@@ -59,6 +61,7 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
         sharedPreferences = getSharedPreferences("calculate24", Context.MODE_PRIVATE);
         activity = this;
         handler = new Handler();
+        cocos2dxHandler = new Cocos2dxHandler(this);
     }
 
     @Override
@@ -159,15 +162,6 @@ public class AppActivity extends Cocos2dxActivity implements SensorEventListener
                             activity.dialog.dismiss();
                         }
                         activity.QuitGame();
-                    }
-                });
-                builder.setNeutralButton(R.string.new_game, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (activity.dialog != null) {
-                            activity.dialog.dismiss();
-                        }
-                        activity.NewGame();
                     }
                 });
                 activity.dialog = builder.create();
