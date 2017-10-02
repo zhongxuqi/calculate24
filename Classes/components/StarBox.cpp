@@ -34,6 +34,7 @@ StarBox* StarBox::create(float width, float height) {
     starBox->setIgnoreAnchorPointForPosition(false);
     auto starBoxSize = starBox->getContentSize();
     starBox->iconSize = (starBoxSize.height - 2 * BORDER_OFFSET) / 10;
+    starBox->physicsSize = starBox->iconSize *  Sprite::create("res/ScoreStar.png")->getContentSize().height / starBox->iconSize;
 
     // add edge
     auto edgeLimit = PhysicsBody::createEdgeBox(starBoxSize, PhysicsMaterial(0.1f, 1.0f, 0.0f), 10);
@@ -68,7 +69,7 @@ void StarBox::addSun(float width, float height) {
     
     //apply physicsBody to the sprite
     auto linkItem = new PhysicsBodyLink{};
-    linkItem->Body = PhysicsBody::createBox(Size(this->iconSize, this->iconSize));
+    linkItem->Body = PhysicsBody::createBox(Size(this->physicsSize, this->physicsSize));
     linkItem->Body->setGravityEnable(false);
     linkItem->Body->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, RandomHelper::random_real(-1.0, 1.0) * 100));
     sprite->addComponent(linkItem->Body);
@@ -85,7 +86,7 @@ void StarBox::addMoon(float width, float height) {
     sprite->setAnchorPoint(Point(0.5, 0.5));
     sprite->setPosition(Point(width, height));
     sprite->setScale(this->iconSize / sprite->getContentSize().height);
-    auto moonBody = PhysicsBody::createBox(Size(this->iconSize, this->iconSize));
+    auto moonBody = PhysicsBody::createBox(Size(this->physicsSize, this->physicsSize));
     moonBody->setGravityEnable(false);
     moonBody->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, RandomHelper::random_real(-1.0, 1.0) * 100));
     sprite->addComponent(moonBody);
@@ -125,7 +126,7 @@ void StarBox::addStar(float width, float height) {
     sprite->setAnchorPoint(Point(0.5, 0.5));
     sprite->setPosition(Point(width, height));
     sprite->setScale(this->iconSize / sprite->getContentSize().height);
-    auto starBody = PhysicsBody::createBox(Size(this->iconSize, this->iconSize));
+    auto starBody = PhysicsBody::createBox(Size(this->physicsSize, this->physicsSize));
     starBody->setGravityEnable(false);
     starBody->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, RandomHelper::random_real(-1.0, 1.0) * 100));
     sprite->addComponent(starBody);
@@ -185,20 +186,20 @@ void StarBox::SetForce(float forceX, float forceY) {
     // add force to stars
     for (int i = 0; i < this->starNum; i++) {
         this->stars[i]->getPhysicsBody()->resetForces();
-        this->stars[i]->getPhysicsBody()->applyForce(Vec2(-forceX * 100, -forceY * 100));
+        this->stars[i]->getPhysicsBody()->applyForce(Vec2(-forceX * 700, -forceY * 700));
     }
 
     // add force to moons
     for (int i = 0; i < this->moonNum; i++) {
         this->moons[i]->getPhysicsBody()->resetForces();
-        this->moons[i]->getPhysicsBody()->applyForce(Vec2(-forceX * 100, -forceY * 100));
+        this->moons[i]->getPhysicsBody()->applyForce(Vec2(-forceX * 700, -forceY * 700));
     }
 
     // add force to suns
     auto currLink = this->linkHead;
     while (currLink!=NULL) {
         currLink->Body->resetForces();
-        currLink->Body->applyForce(Vec2(-forceX * 100, -forceY * 100));
+        currLink->Body->applyForce(Vec2(-forceX * 700, -forceY * 700));
         currLink = currLink->Next;
     }
 }
@@ -227,7 +228,7 @@ void StarBox::SetScore(int score) {
         auto starSize = this->stars[i]->getContentSize();
         this->stars[i]->setPosition(Point(cnt / LEVEL_UP_NUMBER * this->iconSize + this->iconSize / 2 + BORDER_OFFSET, \
             cnt % LEVEL_UP_NUMBER * this->iconSize + this->iconSize / 2 + BORDER_OFFSET));
-        auto starBody = PhysicsBody::createBox(Size(this->iconSize, this->iconSize));
+        auto starBody = PhysicsBody::createBox(Size(this->physicsSize, this->physicsSize));
         starBody->setGravityEnable(false);
         starBody->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, \
             RandomHelper::random_real(-1.0, 1.0) * 100));
@@ -247,7 +248,7 @@ void StarBox::SetScore(int score) {
         auto moonSize = this->moons[i]->getContentSize();
         this->moons[i]->setPosition(Point(cnt / LEVEL_UP_NUMBER * this->iconSize + this->iconSize / 2 + BORDER_OFFSET, \
             cnt % LEVEL_UP_NUMBER * this->iconSize + this->iconSize / 2 + BORDER_OFFSET));
-        auto moonBody = PhysicsBody::createBox(Size(this->iconSize, this->iconSize));
+        auto moonBody = PhysicsBody::createBox(Size(this->physicsSize, this->physicsSize));
         moonBody->setGravityEnable(false);
         moonBody->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, \
             RandomHelper::random_real(-1.0, 1.0) * 100));
@@ -271,7 +272,7 @@ void StarBox::SetScore(int score) {
 
         //apply physicsBody to the sprite
         auto linkItem = new PhysicsBodyLink{};
-        linkItem->Body = PhysicsBody::createBox(Size(this->iconSize, this->iconSize));
+        linkItem->Body = PhysicsBody::createBox(Size(this->physicsSize, this->physicsSize));
         linkItem->Body->setGravityEnable(false);
         linkItem->Body->setVelocity(Vec2(RandomHelper::random_real(-1.0, 1.0) * 100, RandomHelper::random_real(-1.0, 1.0) * 100));
         sprite->addComponent(linkItem->Body);

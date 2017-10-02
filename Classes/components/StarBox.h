@@ -28,6 +28,7 @@ protected:
     void addSun(float width, float height);
     float borderOffset;
     float iconSize;
+    float physicsSize;
 
 public:
     StarBox();
